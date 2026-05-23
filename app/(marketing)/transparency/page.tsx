@@ -11,8 +11,9 @@ export const metadata = {
 
 // Transparency page is the one-stop public record. Required to keep current
 // while the 1023-EZ is pending and as the org publishes its first 990s.
-// Update the IRS status block here AND in lib/org.ts (irsStatus flag) the
-// day the determination letter arrives.
+// Day the IRS determination letter arrives: the status block here AND
+// the irsStatus flag in lib/org.ts both flip; touching one without the
+// other lands a half-truth on the public record.
 export default function TransparencyPage() {
   return (
     <Section>

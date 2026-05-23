@@ -1,0 +1,23 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "app/**/{page,layout,loading,not-found,error,template,default}.{ts,tsx}",
+    "app/**/route.ts",
+    "app/**/{opengraph,twitter}-image.tsx",
+    "keystatic.config.ts"
+  ],
+  "project": ["**/*.{ts,tsx}"],
+  "ignoreDependencies": [
+    "tailwindcss",
+    "secretlint",
+    "@secretlint/secretlint-rule-preset-recommend"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "ignore": [
+    "lib/content/reader.ts",
+    "lib/brand/assets.ts",
+    "lib/applications/schemas.ts",
+    "lib/env/public.ts",
+    "lib/env/server.ts"
+  ]
+}

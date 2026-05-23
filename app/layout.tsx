@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import { Inter, Quicksand } from "next/font/google";
 import { PostHogProvider } from "@/components/analytics/posthog-provider";
-import { ComplianceFooter } from "@/components/compliance/compliance-footer";
-import { SiteHeader } from "@/components/layout/site-header";
 import { OrganizationJsonLd } from "@/components/seo/organization-jsonld";
 import { publicEnv } from "@/lib/env/public";
 import "./globals.css";
 
-// Font choices mirror the logo's voice: Quicksand for display copy (rounded,
-// playful geometric forms; matches the logomark's "ti" / "ists" treatment),
-// Inter for body (quiet, legible, high x-height). Both load via next/font so
-// no FOUT and zero external requests.
+// Root layout: html/body + brand-wide concerns only (fonts, JSON-LD,
+// analytics, skip link). Site chrome (SiteHeader + ComplianceFooter) lives
+// in app/(marketing)/layout.tsx — the marketing route group. The admin
+// route group (app/(admin)/) has its own minimal layout so /keystatic and
+// /admin/* don't render inside the marketing header/footer.
 const quicksand = Quicksand({
   subsets: ["latin"],
   display: "swap",
@@ -24,12 +23,6 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-// Site-wide metadata. Per-page metadata overrides surface via the Metadata
-// API on each route. The favicon (app/icon.png), Apple touch icon
-// (app/apple-icon.png), and OG fallback (app/opengraph-image.png) are
-// auto-discovered by Next.js' file-based metadata convention. All three
-// are cut from the master artwork — see lib/brand/assets.ts and
-// brand/source/REGENERATE.txt before swapping any of them by hand.
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.NEXT_PUBLIC_SITE_URL),
   title: {
@@ -53,8 +46,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${quicksand.variable} ${inter.variable}`}>
       <body>
-        {/* Skip link for keyboard and screen-reader users — required by WCAG 2.4.1.
-            Visually hidden until focused. */}
+        {/* Skip link for keyboard and screen-reader users — WCAG 2.4.1.
+            Visually hidden until focused. The matching #main anchor is
+            inside (marketing)/layout.tsx for marketing routes; admin
+            routes don't need it (no nested nav to skip past). */}
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-[var(--radius-card)] focus:bg-[var(--color-ink)] focus:px-3 focus:py-2 focus:text-[var(--color-paper)]"
@@ -63,11 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <OrganizationJsonLd />
         <PostHogProvider />
-        <SiteHeader />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <ComplianceFooter />
+        {children}
       </body>
     </html>
   );

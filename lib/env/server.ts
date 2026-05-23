@@ -20,6 +20,14 @@ const schema = z.object({
   SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
   SENTRY_ORG: z.string().min(1).optional(),
   SENTRY_PROJECT: z.string().min(1).optional(),
+
+  // /opportunities. All three start optional so the scaffold keeps building
+  // before the ingest pipeline and the AI integration are provisioned. The
+  // call sites surface a typed `dependency_unavailable` Result error when the
+  // key they need is missing, instead of crashing the request.
+  GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1).optional(),
+  CRON_SECRET: z.string().min(1).optional(),
+  OPPORTUNITIES_INBOX_WEBHOOK_SECRET: z.string().min(1).optional(),
 });
 
 export const serverEnv = schema.parse({
@@ -33,6 +41,9 @@ export const serverEnv = schema.parse({
   SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
   SENTRY_ORG: process.env.SENTRY_ORG,
   SENTRY_PROJECT: process.env.SENTRY_PROJECT,
+  GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+  CRON_SECRET: process.env.CRON_SECRET,
+  OPPORTUNITIES_INBOX_WEBHOOK_SECRET: process.env.OPPORTUNITIES_INBOX_WEBHOOK_SECRET,
 });
 
 export type ServerEnv = z.infer<typeof schema>;

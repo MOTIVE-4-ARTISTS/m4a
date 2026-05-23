@@ -15,7 +15,9 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["lib/**/*.test.ts", "lib/**/*.test.tsx"],
+    // Webhook tests live next to their route handler (app/api/...) so the
+    // include list now covers both lib/** and app/api/**.
+    include: ["lib/**/*.test.ts", "lib/**/*.test.tsx", "app/api/**/*.test.ts"],
     exclude: ["node_modules", ".next", "tests/e2e/**"],
     reporters: process.env.CI ? ["default", "github-actions"] : ["default"],
   },

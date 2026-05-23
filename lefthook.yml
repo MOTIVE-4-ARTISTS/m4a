@@ -18,6 +18,12 @@ pre-commit:
       stage_fixed: true
     comment-quality:
       run: sh scripts/comment-quality.sh
+    # secretlint scans staged files for the standard secret patterns
+    # (Stripe keys, AWS keys, JWTs, GitHub PATs, .env-style assignments).
+    # Allowlist for our test fixtures lives in .secretlintrc.json.
+    secrets:
+      glob: "*.{ts,tsx,js,jsx,json,jsonc,md,mdx,yml,yaml,env*,sql}"
+      run: pnpm exec secretlint --no-color {staged_files}
 
 commit-msg:
   commands:

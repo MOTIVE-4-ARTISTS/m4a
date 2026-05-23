@@ -48,6 +48,92 @@ export interface Subscriber {
   created_at: string;
 }
 
+// /opportunities — see supabase/migrations/0003_opportunities.sql and
+// docs/adr/0004-opportunities-data-model.md. Kept structurally aligned with
+// the SQL; any drift will surface at the first query call site.
+
+export type OpportunityType = "grant" | "residency" | "fellowship" | "call";
+
+export type LocationRequirement = "nyc" | "nyc_metro" | "ny_state" | "national" | "international";
+
+export type SubmissionStatus = "pending" | "approved" | "rejected";
+
+export interface Opportunity {
+  id: string;
+  canonical_key: string;
+  name: string;
+  funder_name: string;
+  funder_slug: string;
+  type: OpportunityType;
+  deadline: string | null;
+  is_rolling: boolean;
+  application_window: string | null;
+  amount_min_cents: number | null;
+  amount_max_cents: number | null;
+  amount_display: string | null;
+  eligibility_individual: boolean;
+  eligibility_fiscal_sponsor: boolean;
+  eligibility_501c3: boolean;
+  location_requirement: LocationRequirement;
+  application_fee_cents: number;
+  discipline_tags: string[];
+  genre_tags: string[];
+  career_stage: string[];
+  equity_tags: string[];
+  description_short: string;
+  source_url: string;
+  application_platform: string | null;
+  is_archived: boolean;
+  archived_reason: string | null;
+  last_verified_at: string;
+  verified_by: string;
+  embedding: number[] | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OpportunitySource {
+  id: string;
+  opportunity_id: string;
+  source: string;
+  source_url: string;
+  seen_at: string;
+  raw_payload: Record<string, unknown>;
+}
+
+export interface OpportunitySubmission {
+  id: string;
+  name: string;
+  funder_name: string;
+  funder_slug: string | null;
+  type: OpportunityType;
+  deadline: string | null;
+  is_rolling: boolean;
+  application_window: string | null;
+  amount_min_cents: number | null;
+  amount_max_cents: number | null;
+  amount_display: string | null;
+  eligibility_individual: boolean | null;
+  eligibility_fiscal_sponsor: boolean | null;
+  eligibility_501c3: boolean | null;
+  location_requirement: LocationRequirement | null;
+  application_fee_cents: number | null;
+  discipline_tags: string[];
+  genre_tags: string[];
+  career_stage: string[];
+  equity_tags: string[];
+  description_short: string | null;
+  source_url: string;
+  application_platform: string | null;
+  submitter_email: string | null;
+  status: SubmissionStatus;
+  reviewer_notes: string | null;
+  reviewed_at: string | null;
+  reviewed_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 // Database shape passed to Supabase clients. Once `supabase gen types
 // typescript --linked` is wired in CI, this becomes the auto-generated
 // `Database` type instead — the structural shape stays the same.
@@ -76,10 +162,48 @@ export interface Database {
         Update: Partial<Subscriber>;
         Relationships: [];
       };
+      opportunities: {
+        Row: Opportunity;
+        // The narrowed-insert shape mirrors the SQL: every NOT NULL column
+        // without a default must be present. This catches missing fields at
+        // compile time instead of at runtime.
+        Insert: Partial<Opportunity> &
+          Pick<
+            Opportunity,
+            | "canonical_key"
+            | "name"
+            | "funder_name"
+            | "funder_slug"
+            | "type"
+            | "description_short"
+            | "source_url"
+            | "verified_by"
+          >;
+        Update: Partial<Opportunity>;
+        Relationships: [];
+      };
+      opportunity_sources: {
+        Row: OpportunitySource;
+        Insert: Partial<OpportunitySource> &
+          Pick<OpportunitySource, "opportunity_id" | "source" | "source_url">;
+        Update: Partial<OpportunitySource>;
+        Relationships: [];
+      };
+      opportunity_submissions: {
+        Row: OpportunitySubmission;
+        Insert: Partial<OpportunitySubmission> &
+          Pick<OpportunitySubmission, "name" | "funder_name" | "type" | "source_url">;
+        Update: Partial<OpportunitySubmission>;
+        Relationships: [];
+      };
     };
     Views: Record<never, never>;
     Functions: Record<never, never>;
-    Enums: Record<never, never>;
+    Enums: {
+      opportunity_type: OpportunityType;
+      location_requirement: LocationRequirement;
+      submission_status: SubmissionStatus;
+    };
     CompositeTypes: Record<never, never>;
   };
 }

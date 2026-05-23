@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandLockup } from "@/components/brand/logo";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
 
 // Top-level navigation. Mirrors the IA in the build plan (section 1).
@@ -7,9 +8,9 @@ import { Button } from "@/components/ui/button";
 // a deliberate compliance decision to keep nonprofit programming and LLC
 // rental visibly separate.
 //
-// Mobile menu uses native <details>/<summary> instead of useState. Zero JS
-// cost, fully accessible (keyboard + screen reader), and degrades gracefully
-// if JS fails entirely.
+// Mobile menu lives in a tiny client component (<MobileNav />) so we can
+// close the <details> disclosure when a link is tapped. The component
+// itself is the only client code added by the header.
 const NAV = [
   { href: "/programs", label: "Programs" },
   { href: "/artists", label: "Artists" },
@@ -51,17 +52,7 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        {/* Mobile: <details> = zero-JS disclosure that closes when the user
-            taps a link (we add onClick="this.closest('details').open=false"
-            via inline event would require client component; for now the
-            page navigation itself unmounts the menu on route change). */}
-        <details className="relative md:hidden">
-          <summary
-            className="inline-flex cursor-pointer list-none items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-rule)] px-3 py-1.5 text-sm marker:hidden [&::-webkit-details-marker]:hidden"
-            aria-label="Toggle navigation menu"
-          >
-            Menu
-          </summary>
+        <MobileNav>
           <nav
             aria-label="Mobile"
             className="absolute right-0 mt-2 w-56 rounded-[var(--radius-card)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-2 shadow-lg"
@@ -90,7 +81,7 @@ export function SiteHeader() {
               </li>
             </ul>
           </nav>
-        </details>
+        </MobileNav>
       </div>
     </header>
   );

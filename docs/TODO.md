@@ -8,7 +8,7 @@ What's left to do, in one place. Each item carries a **trigger** (when it's safe
 | 🟡 | Triggered by IRS — unblocks the day the 501(c)(3) determination letter arrives |
 | 🟢 | Engineering — any human or AI agent can grab this any time |
 
-Counts as of `28e08e0`: **4** Eran items · **10** IRS-triggered items · **14** engineering items · **2** in-code TODO comments.
+Counts as of latest commit: **4** Eran items · **10** IRS-triggered items · **11** engineering items · **2** in-code TODO comments. (3 Tier C items closed in the post-launch smoke + polish pass: knip, secretlint, `/keystatic` route-group.)
 
 ---
 
@@ -83,11 +83,11 @@ These come from the "When the data layer lands" tier of prior work — gated on 
 
 ### Tier C — Nice-to-haves
 
-- [ ] `knip` for unused exports/files
+- [x] `knip` for unused exports/files — wired into `pnpm qa`
 - [ ] `@next/bundle-analyzer` on a manual `workflow_dispatch` to keep CI green
-- [ ] `detect-secrets` pre-commit hook (add to `lefthook.yml`)
+- [x] `detect-secrets` pre-commit hook — landed as `secretlint` in `lefthook.yml`
 - [ ] **Content-contract test** — assert every Keystatic entry parses against the schema. Deferred until `content/` has material entries beyond the four seed files.
-- [ ] **Refactor `/keystatic` into `app/(admin)/keystatic/...`** so the marketing chrome doesn't wrap the CMS UI
+- [x] **Refactor `/keystatic` into `app/(admin)/keystatic/...`** so the marketing chrome doesn't wrap the CMS UI
 
 ### Tier D — Migrations (no engineering blocker, just content work)
 

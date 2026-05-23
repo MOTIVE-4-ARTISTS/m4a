@@ -107,15 +107,22 @@ export function ApplicationForm({
         <FieldRow key={f.name} field={f} />
       ))}
 
-      {/* Honeypot. Position: absolute + opacity-0 keeps it off-canvas; the
-          tabindex/aria-hidden combo hides it from keyboard + assistive tech. */}
+      {/* Honeypot.
+          - `position: absolute; -left-[9999px]` keeps it off-canvas (bots that
+            check display:none/visibility:hidden still see this; offset-page is
+            the canonical anti-bot pattern).
+          - `aria-hidden` on both the wrapper AND the input. Wrapper inheritance
+            doesn't always reach the input in the accessibility tree, which the
+            /apply smoke test confirmed; belt-and-braces here.
+          - `tabIndex={-1}` removes it from keyboard tab order.
+          - `autoComplete="off"` so password managers don't fill it. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden"
       >
         <label>
           Leave this field blank
-          <input type="text" name="hp_field" tabIndex={-1} autoComplete="off" />
+          <input type="text" name="hp_field" tabIndex={-1} autoComplete="off" aria-hidden="true" />
         </label>
       </div>
 

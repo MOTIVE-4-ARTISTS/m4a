@@ -21,18 +21,39 @@ function generateNonce(): string {
 }
 
 function buildCsp(nonce: string): string {
+  const isDev = process.env.NODE_ENV !== "production";
+
   // 'strict-dynamic' lets nonced scripts load further scripts without
   // enumerating every Stripe / PostHog domain. Modern browsers honor it;
   // older browsers fall back to the explicit allow-list below.
+  //
+  // Dev-only carve-outs we deliberately accept:
+  //  - 'unsafe-eval' — React dev mode uses Function/eval for HMR and
+  //    fast-refresh module concatenation. Production React never does;
+  //    we drop it from the prod CSP.
+  //  - 'unsafe-inline' on scripts — Next.js dev runtime injects inline
+  //    bootstrap scripts that pre-date its own nonce propagation. Without
+  //    this, /keystatic renders blank in dev and you get console-error
+  //    overlays on every route. Prod build does NOT need this.
+  //  - 'ws:' in connect-src for Turbopack HMR.
   const stripeOrigins = "https://js.stripe.com https://*.stripe.com";
   const supabaseOrigins = "https://*.supabase.co https://*.supabase.in";
+
+  const scriptSrc = isDev
+    ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' 'unsafe-inline' ${stripeOrigins}`
+    : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${stripeOrigins}`;
+
+  const connectSrc = isDev
+    ? `connect-src 'self' ${supabaseOrigins} ${stripeOrigins} https://api.resend.com https://us.i.posthog.com ws: wss:`
+    : `connect-src 'self' ${supabaseOrigins} ${stripeOrigins} https://api.resend.com https://us.i.posthog.com`;
+
   return [
     `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${stripeOrigins}`,
+    scriptSrc,
     `style-src 'self' 'unsafe-inline'`,
     `img-src 'self' data: blob: https:`,
     `font-src 'self' data: https://fonts.gstatic.com`,
-    `connect-src 'self' ${supabaseOrigins} ${stripeOrigins} https://api.resend.com https://us.i.posthog.com`,
+    connectSrc,
     `frame-src ${stripeOrigins}`,
     `object-src 'none'`,
     `base-uri 'self'`,

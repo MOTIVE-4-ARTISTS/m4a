@@ -1,18 +1,23 @@
 import type { MetadataRoute } from "next";
+import { reader } from "@/lib/content/reader";
 import { publicEnv } from "@/lib/env/public";
 
-// Static sitemap for Phase 2 routes. Phase 3 expands this to include
-// /artists/[slug] and /cohorts/[id] from the Keystatic content tree; Phase 5
-// adds nothing here (apply pages are intentionally indexable, but no
-// per-applicant routes).
+// Sitemap covers:
+//  - the marketing routes (static)
+//  - dynamic /artists/[slug] from Keystatic
+//  - dynamic /cohorts/[slug] from Keystatic
 //
-// Excluded by design: /admin/* (handled in robots.ts), /apply/* may be added
-// later once the forms are live.
-export default function sitemap(): MetadataRoute.Sitemap {
+// Excluded by design (handled in robots.ts): /admin/*, /apply/* deep
+// state, /keystatic (admin UI).
+//
+// Per-route OG metadata is generated from the page-level metadata API
+// (app/(marketing)/artists/[slug]/opengraph-image.tsx and
+// app/(marketing)/cohorts/[slug]/opengraph-image.tsx).
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = publicEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
   const now = new Date();
 
-  const routes = [
+  const staticRoutes = [
     "",
     "/about",
     "/about/mission",
@@ -31,15 +36,44 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/connect",
     "/donate",
     "/apply",
+    "/apply/residency",
+    "/apply/international",
+    "/apply/discounted-space",
     "/accessibility",
     "/privacy",
     "/terms",
   ];
 
-  return routes.map((route) => ({
-    url: `${base}${route}`,
-    lastModified: now,
-    changeFrequency: route === "" ? "weekly" : "monthly",
-    priority: route === "" ? 1.0 : route.startsWith("/programs") ? 0.8 : 0.6,
-  }));
+  // Read Keystatic slugs at build time. If the reader fails (no content/
+  // committed yet), we silently fall back to just the static routes so a
+  // first-time build never crashes.
+  let artistSlugs: string[] = [];
+  let cohortSlugs: string[] = [];
+  try {
+    artistSlugs = await reader.collections.artists.list();
+    cohortSlugs = await reader.collections.cohorts.list();
+  } catch {
+    // ignored — content not yet present
+  }
+
+  return [
+    ...staticRoutes.map((route) => ({
+      url: `${base}${route}`,
+      lastModified: now,
+      changeFrequency: (route === "" ? "weekly" : "monthly") as "weekly" | "monthly",
+      priority: route === "" ? 1.0 : route.startsWith("/programs") ? 0.8 : 0.6,
+    })),
+    ...artistSlugs.map((slug) => ({
+      url: `${base}/artists/${slug}`,
+      lastModified: now,
+      changeFrequency: "yearly" as const,
+      priority: 0.7,
+    })),
+    ...cohortSlugs.map((slug) => ({
+      url: `${base}/cohorts/${slug}`,
+      lastModified: now,
+      changeFrequency: "yearly" as const,
+      priority: 0.7,
+    })),
+  ];
 }

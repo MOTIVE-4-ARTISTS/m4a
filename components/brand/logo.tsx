@@ -42,29 +42,6 @@ export function Wordmark({ width, className, priority }: WordmarkProps) {
   );
 }
 
-// Square treatment of the same mark — only for genuinely-square surfaces
-// (avatars, social profile images, square OG variants). For the favicon /
-// apple-touch / OG fallback, prefer the files in `app/` which Next.js
-// auto-discovers; this component is for in-page usage.
-type SquareProps = {
-  size: number;
-  className?: string | undefined;
-  priority?: boolean | undefined;
-};
-
-export function LogomarkSquare({ size, className, priority }: SquareProps) {
-  return (
-    <Image
-      src={BRAND_ASSETS.square.src}
-      alt={BRAND_ASSETS.square.alt}
-      width={size}
-      height={size}
-      priority={priority ?? false}
-      className={className}
-    />
-  );
-}
-
 // Header / footer "click the logo to go home" treatment. The wordmark
 // itself carries the alt text, so the <Link> gets `aria-label` for AT
 // users and the image is the sole visual.

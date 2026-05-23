@@ -36,7 +36,7 @@ export default async function ArtistsPage() {
               <Link href={`/artists/${slug}`} className="block h-full">
                 <Card className="h-full hover:border-[var(--color-brand-deep)]/40">
                   <CardEyebrow>{entry.location || "Artist"}</CardEyebrow>
-                  <CardTitle className="mt-2">{slug.replace(/-/g, " ")}</CardTitle>
+                  <CardTitle className="mt-2">{entry.name || slug}</CardTitle>
                   {entry.headline ? (
                     <p className="mt-2 text-sm text-[var(--color-ink-muted)]">{entry.headline}</p>
                   ) : null}

@@ -17,9 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
   const entry = await reader.collections.artists.read(slug);
   if (!entry) return { title: "Artist" };
 
+  // Use the proper-case name from the frontmatter; the slug is kebab-lowercase
+  // ASCII for URL hygiene and is the wrong thing to surface to humans.
   return {
-    title: slug.replace(/-/g, " "),
-    description: entry.headline || `Artist profile: ${slug}`,
+    title: entry.name || slug,
+    description: entry.headline || `Artist profile: ${entry.name || slug}`,
   };
 }
 
@@ -37,7 +39,7 @@ export default async function ArtistPage({ params }: { params: Promise<Params> }
           <div className="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-rule)]">
             <Image
               src={`/content/artists/${entry.headshot}`}
-              alt={slug.replace(/-/g, " ")}
+              alt={entry.name || slug}
               width={600}
               height={750}
               className="h-auto w-full"
@@ -48,8 +50,8 @@ export default async function ArtistPage({ params }: { params: Promise<Params> }
         <div>
           <ProseHero
             eyebrow={entry.location ? `Artist · ${entry.location}` : "Artist"}
-            title={slug.replace(/-/g, " ")}
-            lead={entry.headline}
+            title={entry.name || slug}
+            {...(entry.headline ? { lead: entry.headline } : {})}
           />
 
           {entry.disciplines && entry.disciplines.length > 0 ? (
