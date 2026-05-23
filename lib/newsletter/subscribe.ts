@@ -4,6 +4,7 @@ import "server-only";
 import { z } from "zod";
 import { serverEnv } from "@/lib/env/server";
 import { actionError, err, ok, type Result } from "@/lib/result";
+import { emailSchema, sourceSchema } from "@/lib/validation";
 
 // Degrades gracefully until Phase 4 lands the Supabase `subscribers` table
 // and Phase 7 wires Resend Broadcasts: the action validates input, logs the
@@ -12,13 +13,8 @@ import { actionError, err, ok, type Result } from "@/lib/result";
 // happy-path payload won't change when Resend/Supabase are wired.
 
 const schema = z.object({
-  // The message lives on every clause so Zod's first-error wins regardless
-  // of how the input degrades (missing, wrong type, malformed).
-  email: z
-    .string({ message: "Please enter a valid email" })
-    .min(1, "Please enter a valid email")
-    .email("Please enter a valid email"),
-  source: z.string().max(64).optional(),
+  email: emailSchema,
+  source: sourceSchema.optional(),
 });
 
 export type SubscribeOk = { readonly message: string };

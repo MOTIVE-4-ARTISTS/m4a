@@ -1,0 +1,58 @@
+name: lighthouse
+
+# Marketing + donation sites live or die on accessibility, SEO, and
+# performance scores. Running against a production-parity build catches
+# regressions before they reach Vercel. Performance is a `warn` (not
+# `error`) because CI runners are noisy; a11y and SEO are hard gates.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+
+      - name: Start server
+        run: pnpm start &
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+
+      - name: Wait for server
+        run: npx --yes wait-on http://127.0.0.1:3000 --timeout 60000
+
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://127.0.0.1:3000/
+            http://127.0.0.1:3000/donate
+            http://127.0.0.1:3000/apply
+            http://127.0.0.1:3000/accessibility
+          configPath: ./.lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true

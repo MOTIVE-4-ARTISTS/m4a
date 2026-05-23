@@ -1,0 +1,34 @@
+# Lefthook replaces husky + lint-staged with a single config that runs
+# pre-commit jobs in parallel and auto-restages formatter fixes
+# (stage_fixed: true). The pattern is lifted from out-there-services/lefthook.yml
+# but with two intentional deviations:
+#   1. We keep commit-msg enforcement (Conventional Commits) — see scripts/commit-msg.sh.
+#   2. pre-push runs the full qa suite, mirroring CI exactly so a clean push
+#      cannot land a CI-red commit.
+#
+# To skip a single hook in an emergency: LEFTHOOK_EXCLUDE=<name> git commit ...
+# To bypass entirely (and explain in the PR description): git commit --no-verify.
+
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{ts,tsx,js,jsx,json,jsonc,md,mdx,css,yml,yaml}"
+      run: pnpm exec biome check --write --no-errors-on-unmatched {staged_files}
+      stage_fixed: true
+    comment-quality:
+      run: sh scripts/comment-quality.sh
+
+commit-msg:
+  commands:
+    conventional:
+      run: sh scripts/commit-msg.sh {1}
+
+# pre-push intentionally runs the full qa suite (lint + typecheck + test +
+# build). It is slow (~15s) but it is the single most useful guardrail for
+# solo + AI-heavy workflows: it makes "pnpm qa locally" and "CI is green"
+# the same statement.
+pre-push:
+  commands:
+    qa:
+      run: pnpm qa

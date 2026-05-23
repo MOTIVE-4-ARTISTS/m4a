@@ -1,3 +1,0 @@
-set -e
-pnpm exec lint-staged
-sh scripts/comment-quality.sh

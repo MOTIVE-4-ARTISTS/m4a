@@ -20,3 +20,5 @@ const res = await fetch(url, { next: { revalidate: 86400 } });
 - **Error boundaries.** `error.tsx` + `not-found.tsx` at the segment level. Errors thrown in Server Components fall through to the nearest boundary.
 - **Forms.** Native `<form action={serverAction}>` first, `useActionState` for progressive enhancement, only reach for libraries if a form actually needs them.
 - **Images.** `next/image` always. No raw `<img>` except inside Markdown rendered from Keystatic content.
+
+When adding any Server Action, follow `docs/checklists/server-action.md` end to end. It lists the exact files to touch, the order, the shared validator hub (`lib/validation/`), the `Result<T, E>` contract, and the test layout. Treat it as the source of truth — if it disagrees with this rule, the checklist wins.
