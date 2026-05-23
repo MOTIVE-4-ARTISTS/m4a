@@ -1,20 +1,37 @@
 @import "tailwindcss";
 
-/* Brand tokens carry over MOtiVE Brooklyn's editorial calm: warm neutrals,
- * one accent for actionable language, no gradients, no shadows by default.
- * These are placeholders — Phase 1 design pass refines them with Lilach. */
+/* Brand tokens anchored to the MOtiVE 4 Artists logo (see public/brand/logo.png).
+ *
+ * Color discipline:
+ *  - --color-brand is the warm yellow from the logo, used as our signature accent
+ *    (logomark surface, primary CTAs, focus ring, occasional callout blocks).
+ *  - White text on --color-brand is ~2:1 contrast, which FAILS WCAG even for
+ *    large text. White-on-brand is therefore reserved for the logomark as art;
+ *    any *functional* copy on a brand-yellow surface uses --color-ink (~10:1).
+ *  - The default surface is --color-paper (warm cream). Default text is --color-ink.
+ *
+ * Typography:
+ *  - --font-display (Quicksand) loaded via next/font in app/layout.tsx; mirrors
+ *    the rounded, lowercase-aware letterforms of the logo.
+ *  - --font-body (Inter) is the quiet, highly legible body type.
+ */
 @theme {
-  --color-ink: oklch(0.18 0.01 60);
-  --color-ink-muted: oklch(0.45 0.01 60);
-  --color-paper: oklch(0.985 0.005 80);
-  --color-paper-warm: oklch(0.96 0.01 80);
-  --color-rule: oklch(0.88 0.01 80);
-  --color-accent: oklch(0.55 0.14 30);
+  --color-brand: #f4b414;
+  --color-brand-deep: #d99a05;
+  --color-brand-soft: #fef2c8;
 
-  --font-display: ui-serif, Georgia, "Times New Roman", serif;
-  --font-body: ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+  --color-ink: #1a1a1a;
+  --color-ink-muted: #56544b;
+
+  --color-paper: #fafaf7;
+  --color-paper-warm: #f3ede0;
+  --color-rule: #e3ded1;
+
+  --font-display: var(--font-quicksand), ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
 
   --radius-card: 0.5rem;
+  --radius-pill: 9999px;
 
   --container-page: 72rem;
 }
@@ -37,10 +54,18 @@ body {
   flex-direction: column;
 }
 
+::selection {
+  background: var(--color-brand);
+  color: var(--color-ink);
+}
+
 /* Visible focus ring — never let designers strip this without replacing it.
- * Required by WCAG 2.2 AA (success criterion 2.4.13). */
+ * Required by WCAG 2.2 AA (success criterion 2.4.13). The brand yellow on a
+ * dark element clears AAA contrast easily; on light surfaces we add a ring
+ * offset so the keyboard path is always traceable.
+ */
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-brand-deep);
   outline-offset: 2px;
 }
 

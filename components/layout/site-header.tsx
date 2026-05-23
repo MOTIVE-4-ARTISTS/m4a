@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLockup } from "@/components/brand/logo";
 
 // Top-level navigation. Mirrors the IA in the build plan (section 1).
 // Studio rental intentionally links out to motivebrooklyn.com (LLC),
@@ -15,18 +16,12 @@ const NAV = [
 export function SiteHeader() {
   return (
     <header className="border-b border-[var(--color-rule)] bg-[var(--color-paper)]">
-      <div className="mx-auto flex max-w-[var(--container-page)] items-center justify-between px-6 py-5">
-        <Link
-          href="/"
-          className="font-[var(--font-display)] text-xl tracking-tight"
-          aria-label="MOtiVE 4 Artists — home"
-        >
-          MOtiVE <span className="text-[var(--color-accent)]">4</span> Artists
-        </Link>
+      <div className="mx-auto flex max-w-[var(--container-page)] items-center justify-between gap-6 px-6 py-4">
+        <BrandLockup />
         <nav aria-label="Primary">
-          <ul className="flex items-center gap-6 text-sm">
+          <ul className="flex items-center gap-5 text-sm md:gap-7">
             {NAV.map((item) => (
-              <li key={item.href}>
+              <li key={item.href} className="hidden sm:list-item">
                 <Link
                   href={item.href}
                   className="text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -39,9 +34,12 @@ export function SiteHeader() {
               </li>
             ))}
             <li>
+              {/* Donate is the only brand-yellow CTA in the header so it owns
+                  the eye. Functional copy on yellow uses --color-ink per the
+                  contrast rule in app/globals.css. */}
               <Link
                 href="/donate"
-                className="rounded-[var(--radius-card)] border border-[var(--color-ink)] px-3 py-1.5 text-sm hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
+                className="inline-flex items-center rounded-[var(--radius-pill)] bg-[var(--color-brand)] px-4 py-2 text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-brand-deep)] hover:text-[var(--color-paper)]"
               >
                 Donate
               </Link>

@@ -1,12 +1,30 @@
 import type { Metadata } from "next";
+import { Inter, Quicksand } from "next/font/google";
 import { ComplianceFooter } from "@/components/compliance/compliance-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { publicEnv } from "@/lib/env/public";
 import "./globals.css";
 
+// Font choices mirror the logo's voice: Quicksand for display copy (rounded,
+// playful geometric forms; matches the logomark's "ti" / "ists" treatment),
+// Inter for body (quiet, legible, high x-height). Both load via next/font so
+// no FOUT and zero external requests.
+const quicksand = Quicksand({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-quicksand",
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
+
 // Site-wide metadata. Per-page metadata overrides surface via the Metadata
-// API on each route. Open Graph image generation lives in app/opengraph-image.tsx
-// once the Phase 1 design pass is in.
+// API on each route. The OG fallback image is the canonical logomark at
+// app/opengraph-image.png; route-specific OGs land in Phase 1.
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.NEXT_PUBLIC_SITE_URL),
   title: {
@@ -28,7 +46,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${quicksand.variable} ${inter.variable}`}>
       <body>
         {/* Skip link for keyboard and screen-reader users — required by WCAG 2.4.1.
             Visually hidden until focused. */}
