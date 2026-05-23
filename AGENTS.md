@@ -43,7 +43,7 @@ Single source of truth for the logo, color, and typography lives in **`lib/brand
 - **Validation = Zod.** Every Server Action input, every webhook payload. Types derive from schemas.
 - **Errors = typed Result objects** from Server Actions. Use `app/error.tsx` + `app/not-found.tsx` for the rest.
 - **Caching = explicit.** Every `fetch` / route handler declares `revalidate` or `cache` intent.
-- **Conventional Commits.** Enforced by `.husky/commit-msg`.
+- **Conventional Commits.** Enforced by `lefthook` (`commit-msg` hook).
 
 ## Compliance baked in
 
@@ -81,3 +81,7 @@ docs/adr/           architecture decision records
 2. Check `.cursor/rules/` for coding conventions.
 3. Check comments at the relevant call site.
 4. Ask the user before guessing on legal/compliance language.
+
+## What's left to do
+
+`docs/TODO.md` is the single source of open work, tagged by trigger (you / IRS / engineering) and grouped into pickable tiers. Look there before asking "what should I work on next?"
