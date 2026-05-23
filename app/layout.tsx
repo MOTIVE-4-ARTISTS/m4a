@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Quicksand } from "next/font/google";
+import { PostHogProvider } from "@/components/analytics/posthog-provider";
 import { ComplianceFooter } from "@/components/compliance/compliance-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { OrganizationJsonLd } from "@/components/seo/organization-jsonld";
 import { publicEnv } from "@/lib/env/public";
 import "./globals.css";
 
@@ -59,6 +61,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to main content
         </a>
+        <OrganizationJsonLd />
+        <PostHogProvider />
         <SiteHeader />
         <main id="main" className="flex-1">
           {children}
