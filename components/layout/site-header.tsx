@@ -3,20 +3,33 @@ import { BrandLockup } from "@/components/brand/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
 
-// Top-level navigation. Mirrors the IA in the build plan (section 1).
-// Studio rental intentionally links out to motivebrooklyn.com (LLC) — that's
-// a deliberate compliance decision to keep nonprofit programming and LLC
-// rental visibly separate.
+// Top-level navigation. Order is artist-first per the May 2026 design audit
+// (docs/research/design-audit-2026-05.md §6): Opportunities first because
+// it's the highest-utility item for an arriving artist who doesn't know us
+// yet; Apply as a dedicated top-level item (the MacDowell pattern — Apply
+// is always one click away); About fifth because due-diligence visitors
+// scroll for it, first-visit artists do not.
+//
+// "Studio" used to be a top-level external link to motivebrooklyn.com
+// (LLC). The audit moved it out of the primary nav: an artist clicking it
+// at 11pm and landing on a studio-rental LLC site without the two-entity
+// context is confused and may not return. It still appears in the footer
+// + an About-page sentence explaining the two-entity structure.
+//
+// "Donate" became "Support" (muted styling, not brand-yellow) — yellow is
+// reserved for artist actions now (ADR 0002's rare-yellow rule applied
+// consistently to the artist-first POV; see audit §11 item 4).
 //
 // Mobile menu lives in a tiny client component (<MobileNav />) so we can
 // close the <details> disclosure when a link is tapped. The component
 // itself is the only client code added by the header.
 const NAV = [
+  { href: "/opportunities", label: "Opportunities" },
   { href: "/programs", label: "Programs" },
+  { href: "/apply", label: "Apply" },
   { href: "/artists", label: "Artists" },
   { href: "/events", label: "Events" },
   { href: "/about", label: "About" },
-  { href: "https://www.motivebrooklyn.com", label: "Studio", external: true },
 ] as const;
 
 export function SiteHeader() {
@@ -45,8 +58,8 @@ export function SiteHeader() {
               </li>
             ))}
             <li>
-              <Button as={Link} href="/donate" intent="brand" size="sm">
-                Donate
+              <Button as={Link} href="/donate" intent="ink" size="sm">
+                Support
               </Button>
             </li>
           </ul>
@@ -63,9 +76,6 @@ export function SiteHeader() {
                   <Link
                     href={item.href}
                     className="block rounded px-3 py-2 text-[var(--color-ink-muted)] hover:bg-[var(--color-paper-warm)] hover:text-[var(--color-ink)]"
-                    {...("external" in item && item.external
-                      ? { rel: "noopener", target: "_blank" }
-                      : {})}
                   >
                     {item.label}
                   </Link>
@@ -74,9 +84,9 @@ export function SiteHeader() {
               <li className="mt-1 border-t border-[var(--color-rule)] pt-1">
                 <Link
                   href="/donate"
-                  className="block rounded bg-[var(--color-brand)] px-3 py-2 text-center text-[var(--color-ink)] hover:bg-[var(--color-brand-deep)] hover:text-[var(--color-paper)]"
+                  className="block rounded border border-[var(--color-ink)] px-3 py-2 text-center text-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
                 >
-                  Donate
+                  Support
                 </Link>
               </li>
             </ul>

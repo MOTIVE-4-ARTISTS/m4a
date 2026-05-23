@@ -1,3 +1,4 @@
+import { HairlineRule } from "@/components/ui/hairline-rule";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 import { ORG } from "@/lib/org";
@@ -14,9 +15,10 @@ export default function PrivacyPage() {
     <Section>
       <ProseHero
         eyebrow="Privacy"
-        title="Privacy policy."
-        lead="Plain English version. The shortest possible policy that says what we actually do."
+        title="privacy policy."
+        lead="plain English version. the shortest possible policy that says what we actually do."
       />
+      <HairlineRule variant="short" className="mb-12 border-[var(--color-brand)]" />
       <Prose>
         <h2>What we collect</h2>
         <ul>

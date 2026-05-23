@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { CycleStatus } from "@/components/programs/cycle-status";
 import { Button } from "@/components/ui/button";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
+import { PROGRAMS } from "@/lib/programs";
 
 export const metadata = {
   title: "International Exchange",
@@ -9,14 +11,17 @@ export const metadata = {
     "Long-term partnerships connecting movement-based artists in New York with peer organizations abroad. Travel both directions.",
 };
 
+const PROGRAM = PROGRAMS.find((p) => p.id === "international");
+
 export default function InternationalExchangePage() {
   return (
     <Section>
       <ProseHero
         eyebrow="Programs · International Exchange"
-        title="Partnerships that move both directions."
-        lead="We connect artists to international venues, companies, and systems of support — and host their artists when they come to New York."
+        title="partnerships that move both directions."
+        lead="we connect artists to international venues, companies, and systems of support — and host their artists when they come to New York."
       />
+      {PROGRAM ? <CycleStatus program={PROGRAM} /> : null}
       <Prose>
         <p>
           We believe in the benefits of international exchange not only for artwork but for social

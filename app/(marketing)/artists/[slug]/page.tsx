@@ -1,11 +1,19 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Prose, ProseHero } from "@/components/ui/prose";
+import { SoftChevron, StarMark } from "@/components/brand/marks";
+import { HairlineRule } from "@/components/ui/hairline-rule";
+import { Prose } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 import { reader } from "@/lib/content/reader";
 import { MarkdocContent } from "@/lib/content/render-markdoc";
 
 type Params = { slug: string };
+
+// Keystatic's image field already includes the publicPath prefix on the
+// returned string. The previous version of this page double-prefixed it
+// ("/content/artists//content/artists/foo.jpg") which broke any artist
+// that had a real headshot uploaded. Now matches the /artists list page
+// pattern: pass entry.headshot through to next/image as-is.
 
 export async function generateStaticParams() {
   const slugs = await reader.collections.artists.list();
@@ -16,13 +24,27 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
   const { slug } = await params;
   const entry = await reader.collections.artists.read(slug);
   if (!entry) return { title: "Artist" };
-
-  // Use the proper-case name from the frontmatter; the slug is kebab-lowercase
-  // ASCII for URL hygiene and is the wrong thing to surface to humans.
   return {
     title: entry.name || slug,
     description: entry.headline || `Artist profile: ${entry.name || slug}`,
   };
+}
+
+function ArtistInitials({ name }: { name: string }) {
+  const initials = name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  return (
+    <div
+      aria-hidden="true"
+      className="flex h-full w-full items-center justify-center bg-[var(--color-brand-soft)] text-6xl text-[var(--color-brand-deep)] font-[family-name:var(--font-display)] font-semibold"
+    >
+      {initials}
+    </div>
+  );
 }
 
 export default async function ArtistPage({ params }: { params: Promise<Params> }) {
@@ -31,35 +53,52 @@ export default async function ArtistPage({ params }: { params: Promise<Params> }
   if (!entry) notFound();
 
   const bio = await entry.bio();
+  const name = entry.name || slug;
 
   return (
     <Section>
-      <div className="grid items-start gap-12 md:grid-cols-[1fr_2fr]">
-        {entry.headshot ? (
-          <div className="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-rule)]">
+      <div className="grid items-start gap-12 md:grid-cols-[2fr_3fr]">
+        {/* Portrait column. 4:5 vertical aspect — the editorial standard
+            for arts-org artist portraits (Jacob's Pillow, NY Live Arts,
+            Gibney all use this ratio). Border + soft shadow gives it a
+            "tipped-in print" feel even when the source is a phone photo. */}
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-rule)]">
+          {entry.headshot ? (
             <Image
-              src={`/content/artists/${entry.headshot}`}
-              alt={entry.name || slug}
-              width={600}
-              height={750}
-              className="h-auto w-full"
+              src={entry.headshot}
+              alt={name}
+              fill
+              sizes="(max-width: 768px) 100vw, 40vw"
+              className="object-cover"
+              priority
             />
-          </div>
-        ) : null}
+          ) : (
+            <ArtistInitials name={name} />
+          )}
+        </div>
 
         <div>
-          <ProseHero
-            eyebrow={entry.location ? `Artist · ${entry.location}` : "Artist"}
-            title={entry.name || slug}
-            {...(entry.headline ? { lead: entry.headline } : {})}
-          />
+          <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-accent-ink)]">
+            artist{entry.location ? ` · ${entry.location}` : ""}
+          </p>
+          <h1 className="mt-3 font-[family-name:var(--font-display)] text-4xl leading-[1.05] tracking-tight md:text-5xl">
+            {name}
+          </h1>
+          {entry.pronouns ? (
+            <p className="mt-2 text-sm text-[var(--color-ink-muted)]">{entry.pronouns}</p>
+          ) : null}
+          {entry.headline ? (
+            <p className="mt-6 max-w-[40ch] text-xl leading-snug text-[var(--color-ink)]">
+              {entry.headline}
+            </p>
+          ) : null}
 
           {entry.disciplines && entry.disciplines.length > 0 ? (
-            <ul className="mb-8 flex flex-wrap gap-2">
+            <ul className="mt-6 flex flex-wrap gap-2">
               {entry.disciplines.map((d: string) => (
                 <li
                   key={d}
-                  className="rounded-[var(--radius-pill)] border border-[var(--color-rule)] bg-[var(--color-paper-warm)] px-3 py-1 text-xs uppercase tracking-[0.15em] text-[var(--color-ink-muted)]"
+                  className="lowercase rounded-[var(--radius-pill)] border border-[var(--color-rule)] bg-[var(--color-paper-warm)] px-3 py-1 text-xs tracking-[0.14em] text-[var(--color-ink-muted)]"
                 >
                   {d}
                 </li>
@@ -67,29 +106,44 @@ export default async function ArtistPage({ params }: { params: Promise<Params> }
             </ul>
           ) : null}
 
+          <HairlineRule variant="short" className="my-8 border-[var(--color-brand)]" />
+
           <Prose>
             <MarkdocContent node={bio} />
           </Prose>
 
           {entry.links && entry.links.length > 0 ? (
-            <ul className="mt-8 flex flex-wrap gap-3 text-sm">
-              {entry.links.map((link) =>
-                link.url ? (
-                  <li key={link.url}>
-                    <a
-                      href={link.url}
-                      rel="noopener"
-                      target="_blank"
-                      className="underline decoration-[var(--color-brand-deep)] underline-offset-4"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ) : null,
-              )}
-            </ul>
+            <>
+              <p className="mt-12 lowercase text-xs tracking-[0.18em] text-[var(--color-ink-muted)]">
+                elsewhere
+              </p>
+              <ul className="mt-3 flex flex-col gap-2 text-sm">
+                {entry.links.map((link) =>
+                  link.url ? (
+                    <li key={link.url}>
+                      <a
+                        href={link.url}
+                        rel="noopener"
+                        target="_blank"
+                        className="inline-flex items-baseline gap-2 text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+                      >
+                        {link.label}
+                        <SoftChevron size={11} className="text-[var(--color-brand-deep)]" />
+                      </a>
+                    </li>
+                  ) : null,
+                )}
+              </ul>
+            </>
           ) : null}
         </div>
+      </div>
+
+      {/* End glyph — the audit's "second-layer reward" detail. Same
+          treatment used on /about/vision so the punctuation feels
+          consistent across long editorial pages. */}
+      <div className="mt-16 flex justify-center">
+        <StarMark size={20} className="text-[var(--color-brand-deep)]" />
       </div>
     </Section>
   );

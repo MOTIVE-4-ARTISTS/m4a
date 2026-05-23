@@ -83,13 +83,27 @@ export function ComplianceFooter() {
               </li>
               <li>
                 <Link href="/donate" className="underline-offset-4 hover:underline">
-                  Donate
+                  Support
                 </Link>
               </li>
               <li>
                 <Link href="/connect" className="underline-offset-4 hover:underline">
                   Connect
                 </Link>
+              </li>
+              <li>
+                {/* MOtiVE Brooklyn (LLC) is the studio-rental sibling. We
+                    link it from the footer rather than the top nav so an
+                    artist looking for nonprofit programming isn't routed
+                    to a studio-rental landing page by mistake (audit §6). */}
+                <a
+                  href="https://www.motivebrooklyn.com"
+                  rel="noopener"
+                  target="_blank"
+                  className="underline-offset-4 hover:underline"
+                >
+                  Studio rental (LLC) ↗
+                </a>
               </li>
             </ul>
           </nav>

@@ -31,6 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/programs/discounted-space",
     "/programs/pedagogies",
     "/artists",
+    "/opportunities",
+    "/opportunities/submit",
     "/events",
     "/press",
     "/connect",
@@ -61,7 +63,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${base}${route}`,
       lastModified: now,
       changeFrequency: (route === "" ? "weekly" : "monthly") as "weekly" | "monthly",
-      priority: route === "" ? 1.0 : route.startsWith("/programs") ? 0.8 : 0.6,
+      priority:
+        route === ""
+          ? 1.0
+          : route === "/opportunities"
+            ? 0.9
+            : route.startsWith("/programs")
+              ? 0.8
+              : 0.6,
     })),
     ...artistSlugs.map((slug) => ({
       url: `${base}/artists/${slug}`,

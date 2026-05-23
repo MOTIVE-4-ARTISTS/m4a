@@ -1,3 +1,4 @@
+import { HairlineRule } from "@/components/ui/hairline-rule";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 
@@ -15,9 +16,10 @@ export default function AccessibilityPage() {
     <Section>
       <ProseHero
         eyebrow="Accessibility"
-        title="We want everyone to be able to use this site."
-        lead="If you find a barrier, please tell us — we will fix it."
+        title="we want everyone to be able to use this site."
+        lead="if you find a barrier, please tell us — we will fix it."
       />
+      <HairlineRule variant="short" className="mb-12 border-[var(--color-brand)]" />
       <Prose>
         <h2>Commitment</h2>
         <p>

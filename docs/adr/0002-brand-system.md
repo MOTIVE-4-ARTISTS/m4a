@@ -41,15 +41,17 @@ Every place that uses the logo imports from here. Hard-coded `/brand/...` paths 
 
 ### 4. Five derivatives, all auto-discovered by Next.js or imported from `BRAND_ASSETS`
 
-| Path | Use | Convention |
-|---|---|---|
-| `public/brand/logo-wordmark.png` | Header, hero, in-page mark | imported via `BRAND_ASSETS.wordmark` |
-| `public/brand/logo-square.png` | Square in-page surfaces (rare) | imported via `BRAND_ASSETS.square` |
-| `app/icon.png` | Favicon | Next.js `app/icon.*` convention |
-| `app/apple-icon.png` | iOS home-screen icon | Next.js `app/apple-icon.*` convention |
-| `app/opengraph-image.png` | OG fallback | Next.js `app/opengraph-image.*` convention |
+| Path | Use | Cut from | Convention |
+|---|---|---|---|
+| `public/brand/logo-wordmark.png` | Header, hero, in-page mark | `logo-YYYY-MM.png` master | imported via `BRAND_ASSETS.wordmark` |
+| `public/brand/logo-square.png` | Square in-page surfaces (rare) | wordmark, padded brand-yellow | imported via `BRAND_ASSETS.square` |
+| `app/icon.png` | Favicon | **`glyph-YYYY-MM.png`** master (since 2026-05-23) | Next.js `app/icon.*` convention |
+| `app/apple-icon.png` | iOS home-screen icon | **`glyph-YYYY-MM.png`** master (since 2026-05-23) | Next.js `app/apple-icon.*` convention |
+| `app/opengraph-image.png` | OG fallback | wordmark, padded brand-yellow | Next.js `app/opengraph-image.*` convention |
 
 Per-route OG images land in Phase 2 via `@vercel/og`; until then this fallback is universal.
+
+**Why favicons use the glyph master instead of the wordmark:** the lowercase letters in "MOtiVE 4 ARTists" become illegible mush at 16-32px. The glyph alone — the sail-triangle that sits between the two words in the full wordmark — remains crisp at every favicon size. The glyph master is extracted by cropping the relevant region of the wordmark master (see the recipe in `brand/source/REGENERATE.txt`).
 
 ### 5. Color discipline
 
@@ -84,3 +86,4 @@ A future Cursor session asking "where is the logo defined?" should land in one o
 ## Change log
 
 - 2026-05-22 — Replaced first-iteration square wordmark (`#f4b414`, "MOtiVE 4 ARTists" text) with landscape wordmark (`#e4a315`, triangle glyph). Reason: the triangle glyph reads as movement / "the sail" and distinguishes the nonprofit from the LLC's text-only mark. First master: `brand/source/logo-2026-05.png`.
+- 2026-05-23 — Removed Gemini AI sparkle watermark from `logo-2026-05.png` (visible in all five derived brand surfaces — wordmark, square, favicon, Apple touch icon, OG card). Discovered during the May 2026 design audit ([docs/research/design-audit-2026-05.md](../research/design-audit-2026-05.md) §2). Patched in place by painting `#e4a315` over the bottom-right `(880, 640)-(1024, 725)` region of the master. Added a new glyph master at `brand/source/glyph-2026-05.png` (cropped from the wordmark center) — used for `app/icon.png` and `app/apple-icon.png` so the favicon is no longer illegible mush at 16-32px. Re-derived every brand surface from the cleaned masters via the Python recipe now documented in `brand/source/REGENERATE.txt`. Added a verification step + AI-watermark guidance to the regeneration recipe; future AI-generated artwork must pass the [asset playbook §4](../checklists/asset-generation.md) watermark check before becoming a master.

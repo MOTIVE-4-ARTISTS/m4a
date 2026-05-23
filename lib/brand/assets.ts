@@ -37,6 +37,9 @@ export const BRAND_HEX = {
   brandSoft: "#fbe9b8",
   ink: "#1a1a1a",
   paper: "#fafaf7",
+  // 5th color — editorial accent. See app/globals.css comment for use
+  // rules. Mirrored here so OG image templates can paint with it.
+  accentInk: "#1a2a3c",
 } as const;
 
 // Aspect ratio of the official wordmark, locked to the master artwork.

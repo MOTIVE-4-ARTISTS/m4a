@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { CycleStatus } from "@/components/programs/cycle-status";
 import { Button } from "@/components/ui/button";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
+import { PROGRAMS } from "@/lib/programs";
 
 export const metadata = {
   title: "Artist in Residency",
@@ -9,14 +11,17 @@ export const metadata = {
     "A co-designed residency built around the artist's actual project, supported by the Harkness Foundation for Dance.",
 };
 
+const PROGRAM = PROGRAMS.find((p) => p.id === "residency");
+
 export default function ResidencyPage() {
   return (
     <Section>
       <ProseHero
         eyebrow="Programs · Artist in Residency"
-        title="A tailored residency, designed with the resident."
-        lead="We first meet with the artist and discuss their dreams and needs. Then we build a structure and timeline together that includes the supportive services for the residency."
+        title="a tailored residency, designed with the resident."
+        lead="we first meet with the artist and discuss their dreams and needs. then we build a structure and timeline together that includes the supportive services for the residency."
       />
+      {PROGRAM ? <CycleStatus program={PROGRAM} /> : null}
       <Prose>
         <p>
           Services within a residency might include production support, dramaturgy, mentorship,

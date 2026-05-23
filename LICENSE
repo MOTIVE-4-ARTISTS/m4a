@@ -1,21 +1,37 @@
-MIT License
+All Rights Reserved.
 
-Copyright (c) 2026 MOTIVE 4 ARTISTS INC.
+Copyright © 2026 MOTIVE 4 ARTISTS INC. (the "Organization"), a New York
+nonprofit corporation. EIN pending publication. NTEE A60. Foundation
+classification §509(a)(1) / §170(b)(1)(A)(vi).
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This repository contains the source code, designs, content, brand assets,
+and supporting documents for the Organization's website at
+motive4artists.org. It is proprietary work product of the Organization.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+No license — express, implied, or otherwise — is granted to any third
+party to copy, modify, distribute, sublicense, host, or create derivative
+works from this codebase, in whole or in part, except with the prior
+written consent of the Organization's board.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+The above includes (but is not limited to):
+  - the brand identity, wordmark, glyph, color tokens, and the asset
+    pipeline that generates them
+  - the typography and layout system
+  - the editorial copy of every page
+  - any artist bio, photograph, headshot, or related personal data
+  - the application form schemas and the resulting applicant data
+  - the donation flow, receipt templates, and donor data
+  - the curated /opportunities dataset and the AI-extraction pipeline
+
+Pull requests from the Organization's contributors operating under
+the AGENTS.md charter are explicitly permitted; this notice does not
+restrict internal collaboration.
+
+If you are reading this and believe you have a legitimate need to use
+some portion of this codebase (research, journalism, peer nonprofit
+re-use of a specific pattern), email hello@motive4artists.org. The
+Organization may carve out a per-request license in writing.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY
+AND FITNESS FOR A PARTICULAR PURPOSE.

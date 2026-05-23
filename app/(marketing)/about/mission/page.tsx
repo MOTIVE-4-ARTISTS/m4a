@@ -1,3 +1,4 @@
+import { HairlineRule } from "@/components/ui/hairline-rule";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 
@@ -5,6 +6,14 @@ import { Section } from "@/components/ui/section";
 // same voice, but reframed around nonprofit programming rather than a single
 // physical studio space. Changes to legally significant wording should be
 // run by Lilach (artistic director) and Eran (treasurer).
+//
+// Voice pass May 2026 — dropped the grant-boilerplate opener ("MOtiVE 4
+// Artists is a New York-incorporated nonprofit corporation supporting
+// interdisciplinary movement-based artists through performances, artistic
+// development, community engagement, and educational programming.") for
+// warmer copy. The legal description still lives in the compliance footer
+// + the /transparency page; it doesn't need to be the first sentence the
+// artist reads.
 export const metadata = {
   title: "Mission",
   description:
@@ -16,25 +25,25 @@ export default function MissionPage() {
     <Section>
       <ProseHero
         eyebrow="Mission"
-        title="A community-oriented nonprofit providing tailored artist services for movement-based practitioners."
+        title="a community-oriented nonprofit offering tailored artist services for movement-based practitioners."
       />
+      <HairlineRule variant="short" className="mb-12 border-[var(--color-brand)]" />
       <Prose>
         <p>
-          MOtiVE 4 Artists is a New York-incorporated nonprofit corporation supporting
-          interdisciplinary movement-based artists through performances, artistic development,
-          community engagement, and educational programming.
+          we support movement-based artists — dancers, choreographers, theatre makers, actors, and
+          the creative thinkers working between those forms — through residencies, exchanges,
+          subsidized space, and the kind of conversation that happens before any of it begins.
         </p>
         <p>
-          We value, connect, and support artists using moving forms of engagement and
-          experimentation. Our community welcomes dancers, theatre makers, actors, choreographers,
-          and creative thinkers. In building relationships with artists, we create an accessible
-          network of professionals who collectively imagine and initiate flexible structures for
-          artistic assistance.
+          our community welcomes artists at every career stage. we build relationships first and
+          structure programs around what each artist actually needs. the goal is not a polished
+          program catalog; it's an accessible network of professionals who imagine and initiate
+          flexible support for each other's work.
         </p>
         <p>
-          Our programs are uniquely designed to propose services and partnerships that enhance the
-          art-making experience. We invite individuals and communities near and far to join us in
-          this creative exchange.
+          our programs propose services and partnerships that enhance the art-making experience —
+          not a fixed institutional template the artist has to fit themselves into. we invite
+          individuals and communities near and far to join us in this exchange.
         </p>
       </Prose>
     </Section>

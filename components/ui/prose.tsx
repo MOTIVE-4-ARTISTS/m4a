@@ -17,9 +17,14 @@ export function Prose({ children, className }: { children: ReactNode; className?
         // headings
         "[&_h2]:font-[family-name:var(--font-display)] [&_h2]:text-3xl [&_h2]:tracking-tight [&_h2]:mt-12 [&_h2]:mb-4",
         "[&_h3]:font-[family-name:var(--font-display)] [&_h3]:text-xl [&_h3]:tracking-tight [&_h3]:mt-8 [&_h3]:mb-3",
-        // paragraphs and lists
+        // paragraphs and lists. Marker color is brand-deep so the small
+        // dot/digit at the start of each item carries a quiet brand
+        // signal — the "made by a person" detail per audit §11 item 7.
+        // The motif kit (components/brand/marks.tsx) sits behind a richer
+        // future replacement of these markers; this CSS-only pass ships
+        // the systemic treatment today.
         "[&_p]:my-4 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6",
-        "[&_li]:my-1",
+        "[&_li]:my-1 [&_li]:marker:text-[var(--color-brand-deep)]",
         // emphasis
         "[&_strong]:font-medium [&_strong]:text-[var(--color-ink)]",
         "[&_em]:italic",
@@ -50,7 +55,13 @@ export function ProseHero({
   return (
     <header className="mb-12">
       {eyebrow ? (
-        <p className="mb-3 text-sm uppercase tracking-[0.22em] text-[var(--color-ink-muted)]">
+        // Lowercase eyebrow per the May 2026 design audit (recommendation
+        // §11 item 5 — voice pass). CSS-driven lowercase lets call sites
+        // keep PascalCase strings ("About", "Mission") for readability
+        // while rendering as "about", "mission" in the warm-paper register.
+        // Tracking dialed back from 0.22em (right for uppercase) to 0.18em
+        // (right for lowercase) so the eyebrow doesn't look spaced-out.
+        <p className="mb-3 text-sm lowercase tracking-[0.18em] text-[var(--color-ink-muted)]">
           {eyebrow}
         </p>
       ) : null}

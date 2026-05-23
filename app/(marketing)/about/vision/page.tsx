@@ -1,4 +1,7 @@
+import { StarMark } from "@/components/brand/marks";
+import { HairlineRule } from "@/components/ui/hairline-rule";
 import { Prose, ProseHero } from "@/components/ui/prose";
+import { PullQuote } from "@/components/ui/pull-quote";
 import { Section } from "@/components/ui/section";
 
 // Vision copy carries over MOtiVE Brooklyn's narrative — same team, same
@@ -15,9 +18,10 @@ export default function VisionPage() {
     <Section>
       <ProseHero
         eyebrow="Vision"
-        title="One day — a dance house with a theater, work studios, a café, and a place to lay your head."
-        lead="That's the dream."
+        title="one day — a dance house with a theater, work studios, a café, and a place to lay your head."
+        lead="that's the dream."
       />
+      <HairlineRule variant="short" className="mb-12 border-[var(--color-brand)]" />
       <Prose>
         <p>
           To have a bigger space, of course, so we can do more for artists. The dream space has a
@@ -30,11 +34,15 @@ export default function VisionPage() {
           run-thru of a dear friend, or in the apartment having a late-night discussion on how their
           artwork can impact social change in their local community.
         </p>
+      </Prose>
+
+      <PullQuote>the artist comes first.</PullQuote>
+
+      <Prose>
         <p>
-          <strong>Our motto: the artist comes first.</strong> We imagine MOtiVE 4 Artists as a place
-          of adaptability and accessibility to the dreams and needs of the artist. We wish to
-          connect artists to a growing and inclusive network of professionals who seek to build
-          relationships that support each other's work.
+          We imagine MOtiVE 4 Artists as a place of adaptability and accessibility to the dreams and
+          needs of the artist. We wish to connect artists to a growing and inclusive network of
+          professionals who seek to build relationships that support each other's work.
         </p>
         <p>
           We will prioritize residency programs through international and local exchanges where
@@ -63,6 +71,12 @@ export default function VisionPage() {
           dream.
         </p>
       </Prose>
+      {/* End-of-page glyph — a small typographic punctuation that says
+          "this piece is done." Audit §5 craft moves; used sparingly so
+          its rarity carries weight. Centered, brand-deep, ~24px. */}
+      <div className="mt-16 flex justify-center">
+        <StarMark size={24} className="text-[var(--color-brand-deep)]" />
+      </div>
     </Section>
   );
 }

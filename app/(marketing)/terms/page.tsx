@@ -1,3 +1,4 @@
+import { HairlineRule } from "@/components/ui/hairline-rule";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 import { ORG } from "@/lib/org";
@@ -12,9 +13,10 @@ export default function TermsPage() {
     <Section>
       <ProseHero
         eyebrow="Terms"
-        title="Terms of use."
-        lead="These are the terms under which you use motive4artists.org. We've kept them short and plain."
+        title="terms of use."
+        lead="these are the terms under which you use motive4artists.org. we've kept them short and plain."
       />
+      <HairlineRule variant="short" className="mb-12 border-[var(--color-brand)]" />
       <Prose>
         <h2>Who we are</h2>
         <p>

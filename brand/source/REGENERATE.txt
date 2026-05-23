@@ -8,45 +8,114 @@ DERIVED from these files. Never edit the derivatives by hand.
 Conventions
 -----------
 - Master files are named `logo-YYYY-MM.<ext>` so we always know which
-  version a derivative was cut from.
+  version a derivative was cut from. The glyph master is named
+  `glyph-YYYY-MM.<ext>`.
 - Keep every historical master in this folder. Cheap insurance against
   "what did the logo look like before X?".
 - Sampled brand color from the current master is mirrored in
   `lib/brand/assets.ts` (BRAND_HEX) and `app/globals.css` (--color-brand).
 
-Current master
---------------
+Current masters
+---------------
   logo-2026-05.png   1024 × 725, JPEG-in-PNG, dominant color #e4a315
+  glyph-2026-05.png   210 × 210, square crop of the sail/triangle glyph
+                      from the wordmark center — used for favicons and any
+                      square mark where the full wordmark would be illegible.
+
+Anti-watermark guidance
+-----------------------
+The 2026-05 master was originally generated with Google Gemini's image
+model and shipped with a small Gemini sparkle watermark in the bottom-
+right corner. This was discovered during the May 2026 design audit
+(docs/research/design-audit-2026-05.md §2) and removed by painting the
+brand-yellow color over the watermark region.
+
+When generating any future brand artwork via an AI image model:
+1. Include `"NO sparkle, NO watermark, NO signature, NO AI artifacts"`
+   in the prompt — even if the provider claims no watermark.
+2. Run the watermark-verification step from
+   `docs/checklists/asset-generation.md` §4 BEFORE saving the master.
+3. If a watermark is found, paint over it with the brand color (see the
+   Python recipe below) BEFORE running the derivation pipeline.
 
 To regenerate all derivatives from a NEW master
 -----------------------------------------------
-Assumes macOS `sips` (preinstalled). Run from the repo root.
+The recipe below is reproducible Python (Pillow) — the original `sips`
+version of this file relied on macOS-specific tooling and could not paint
+over watermarks. Run from the repo root.
 
-  SRC=brand/source/logo-2026-05.png           # ← swap to new master
-  YELLOW=e4a315                                # ← swap if brand color changed
+  python3 - <<'EOF'
+  from PIL import Image
+  import os
 
-  # Landscape wordmark used in header / hero / footer
-  sips -s format png "$SRC" --out public/brand/logo-wordmark.png
+  SRC_WORDMARK = 'brand/source/logo-2026-05.png'           # ← swap to new master
+  SRC_GLYPH    = 'brand/source/glyph-2026-05.png'          # ← see step 1 below
+  BRAND_YELLOW = (228, 163, 21)                            # ← #e4a315
 
-  # Square (padded with brand yellow) used wherever a square is needed
-  sips -s format png --padToHeightWidth 1024 1024 --padColor "$YELLOW" \
-    "$SRC" --out public/brand/logo-square.png
+  # Step 0 (only if needed): paint over any AI-watermark in the master.
+  # See docs/checklists/asset-generation.md §4 for the verification check.
+  # Example: cover the bottom-right 144x85 region:
+  #   img = Image.open(SRC_WORDMARK).convert('RGB')
+  #   from PIL import ImageDraw
+  #   draw = ImageDraw.Draw(img)
+  #   w, h = img.size
+  #   draw.rectangle([(w-144, h-85), (w, h)], fill=BRAND_YELLOW)
+  #   img.save(SRC_WORDMARK, optimize=True)
 
-  # Next.js auto-discovered icons (app/icon.png, app/apple-icon.png)
-  sips -s format png -Z 512 public/brand/logo-square.png --out app/icon.png
-  sips -s format png -Z 180 public/brand/logo-square.png --out app/apple-icon.png
+  def make_square(img, size, bg=BRAND_YELLOW):
+      """Centered square on a brand-yellow canvas, with 8% breathing room."""
+      w, h = img.size
+      scale = min(size / w, size / h) * 0.92
+      new_w, new_h = int(w * scale), int(h * scale)
+      resized = img.resize((new_w, new_h), Image.LANCZOS)
+      canvas = Image.new('RGB', (size, size), bg)
+      canvas.paste(resized, ((size - new_w) // 2, (size - new_h) // 2))
+      return canvas
 
-  # OG fallback image (1200×630). Fit the wordmark to ~540px tall, then pad.
-  sips -s format png --resampleHeight 540 "$SRC" --out /tmp/og-wordmark.png
-  sips -s format png --padToHeightWidth 630 1200 --padColor "$YELLOW" \
-    /tmp/og-wordmark.png --out app/opengraph-image.png
+  # Step 1: extract the glyph from the master (one-time, or re-do when the
+  # master changes shape). Crop bbox below was verified clean for the
+  # 2026-05 master. If the wordmark composition changes, re-find the bbox
+  # by inspecting where the lowercase letters end.
+  master = Image.open(SRC_WORDMARK).convert('RGB')
+  if not os.path.exists(SRC_GLYPH):
+      glyph = master.crop((417, 269, 627, 479))
+      glyph.save(SRC_GLYPH, optimize=True)
+  else:
+      glyph = Image.open(SRC_GLYPH).convert('RGB')
+
+  # Step 2: landscape wordmark — used in header / hero / footer
+  master.save('public/brand/logo-wordmark.png', optimize=True)
+
+  # Step 3: square wordmark — used wherever a square is needed (Stripe etc)
+  make_square(master, 1024).save('public/brand/logo-square.png', optimize=True)
+
+  # Step 4: favicons — from the GLYPH not the wordmark, because the full
+  # wordmark becomes illegible mush at 16-32px (the lowercase 'ists'
+  # disappears). The glyph alone is the icon at small sizes.
+  make_square(glyph, 512).save('app/icon.png', optimize=True)
+  make_square(glyph, 180).save('app/apple-icon.png', optimize=True)
+
+  # Step 5: OG fallback (1200x630) — the wordmark fit to ~540px tall,
+  # padded with brand yellow.
+  og = Image.new('RGB', (1200, 630), BRAND_YELLOW)
+  mw, mh = master.size
+  scale = 540 / mh
+  mr = master.resize((int(mw * scale), 540), Image.LANCZOS)
+  og.paste(mr, ((1200 - mr.size[0]) // 2, (630 - mr.size[1]) // 2))
+  og.save('app/opengraph-image.png', optimize=True)
+
+  print('All brand surfaces regenerated.')
+  EOF
 
 After regenerating
 ------------------
 1. Update `lib/brand/assets.ts` if the brand hex or wordmark aspect ratio
    changed (BRAND_HEX, WORDMARK_ASPECT).
 2. Update `app/globals.css` brand color tokens if the hex moved.
-3. Add an entry to `docs/adr/0002-brand-system.md` (date + reason).
-4. Skim every page with a brand surface (home hero, header, donate CTA,
+3. Add an entry to `docs/adr/0002-brand-system.md` change log (date + reason).
+4. Inspect each derivative visually at 100% AND at the size it will actually
+   be used. Verify the bottom-right corner of every output for AI
+   watermarks (per docs/checklists/asset-generation.md §4).
+5. Skim every page with a brand surface (home hero, header, donate CTA,
    compliance footer) to make sure the new color still passes AAA on
    --color-ink. https://webaim.org/resources/contrastchecker/

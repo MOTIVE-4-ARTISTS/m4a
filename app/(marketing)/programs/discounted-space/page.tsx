@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { CycleStatus } from "@/components/programs/cycle-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardEyebrow, CardTitle } from "@/components/ui/card";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
+import { PROGRAMS } from "@/lib/programs";
 
 export const metadata = {
   title: "Discounted Space Subsidy",
@@ -21,14 +23,17 @@ const TIERS = [
   { hours: 10, ratePerHour: 12, note: "Project-specific commitment" },
 ] as const;
 
+const PROGRAM = PROGRAMS.find((p) => p.id === "discounted_space");
+
 export default function DiscountedSpacePage() {
   return (
     <Section>
       <ProseHero
         eyebrow="Programs · Discounted Space Subsidy"
-        title="Affordable studio hours for working artists."
-        lead="A nonprofit subsidy program that underwrites the difference between full-rate studio rental and what artists can actually pay."
+        title="affordable studio hours for working artists."
+        lead="a nonprofit subsidy program that underwrites the difference between full-rate studio rental and what artists can actually pay."
       />
+      {PROGRAM ? <CycleStatus program={PROGRAM} /> : null}
       <Prose>
         <p>
           <strong>How the program works.</strong> MOtiVE 4 Artists awards monthly subsidized

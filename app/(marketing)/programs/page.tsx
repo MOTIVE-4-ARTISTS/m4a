@@ -55,8 +55,8 @@ export default function ProgramsPage() {
     <Section>
       <ProseHero
         eyebrow="Programs"
-        title="The work we do is the relationship."
-        lead="Every program starts from one question: what does the artist in front of us actually need?"
+        title="three programs, one principle."
+        lead="every program starts from the same question: what does the artist in front of us actually need?"
       />
 
       <ul className="mt-8 grid gap-5 md:grid-cols-2">

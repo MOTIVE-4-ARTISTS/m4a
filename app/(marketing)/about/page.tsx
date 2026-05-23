@@ -51,8 +51,8 @@ export default function AboutPage() {
     <Section>
       <ProseHero
         eyebrow="About"
-        title="A small New York nonprofit, made by and for movement-based artists."
-        lead="The work is the relationship. Programs are how we hold it."
+        title="a small New York nonprofit, made by and for movement-based artists."
+        lead="the work is the relationship. programs are how we hold it."
       />
       <ul className="mt-8 grid gap-5 md:grid-cols-2">
         {CHILDREN.map((c) => (

@@ -34,6 +34,16 @@
   --color-ink: #1a1a1a;
   --color-ink-muted: #56544b;
 
+  /* Editorial accent — Prussian-blue-adjacent. Per the May 2026 design
+   * audit (recommendation §11 item 9), this 5th color exists ONLY for
+   * editorial moments: featured-artist eyebrows, callout headers, and the
+   * occasional "what's open right now" / "tax-deductible" status label.
+   * Its rarity is the point — using it everywhere defeats the purpose.
+   * Contrast against --color-paper measures ≈10:1 (AAA for body copy);
+   * against --color-paper-warm ≈9:1 (also AAA).
+   */
+  --color-accent-ink: #1a2a3c;
+
   --color-paper: #fafaf7;
   --color-paper-warm: #f3ede0;
   --color-rule: #e3ded1;
