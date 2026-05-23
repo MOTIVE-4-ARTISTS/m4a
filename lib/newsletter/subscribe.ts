@@ -3,25 +3,26 @@
 import "server-only";
 import { z } from "zod";
 import { serverEnv } from "@/lib/env/server";
+import { actionError, err, ok, type Result } from "@/lib/result";
 
-// Newsletter subscribe Server Action.
-//
-// Until RESEND_API_KEY and the Supabase `subscribers` table are wired up
-// (Phase 4 lands the Supabase clients, Phase 7 wires Resend Broadcasts),
-// this action degrades gracefully:
-//  - validates input
-//  - reports "queued" success to the user
-//  - logs the address server-side for later batch import
-//
-// The contract returned here doesn't change when the real implementation
-// lands, so the <NewsletterForm> client doesn't need to change either.
+// Degrades gracefully until Phase 4 lands the Supabase `subscribers` table
+// and Phase 7 wires Resend Broadcasts: the action validates input, logs the
+// address server-side for later manual import, and reports "queued" so the
+// form is useful pre-launch. The Result<T, E> contract is final — the
+// happy-path payload won't change when Resend/Supabase are wired.
 
 const schema = z.object({
-  email: z.string().email("Please enter a valid email"),
+  // The message lives on every clause so Zod's first-error wins regardless
+  // of how the input degrades (missing, wrong type, malformed).
+  email: z
+    .string({ message: "Please enter a valid email" })
+    .min(1, "Please enter a valid email")
+    .email("Please enter a valid email"),
   source: z.string().max(64).optional(),
 });
 
-export type SubscribeResult = { ok: true; message: string } | { ok: false; message: string };
+export type SubscribeOk = { readonly message: string };
+export type SubscribeResult = Result<SubscribeOk>;
 
 export async function subscribe(
   _prev: SubscribeResult | null,
@@ -34,30 +35,21 @@ export async function subscribe(
 
   if (!parsed.success) {
     const first = parsed.error.issues[0];
-    return {
-      ok: false,
-      message: first?.message ?? "That email doesn't look right.",
-    };
+    return err(actionError("invalid_input", first?.message ?? "That email doesn't look right."));
   }
 
   const hasResend = Boolean(serverEnv.RESEND_API_KEY);
 
-  // Once Supabase + Resend are wired, this branch posts to Supabase and
-  // sends a double-opt-in confirmation via Resend. Until then we accept
-  // the address so the form remains useful during the pre-launch window;
-  // the server log gives us a manual import path.
   if (!hasResend) {
     console.warn(`[newsletter] subscribe queued (Resend not configured): ${parsed.data.email}`);
-    return {
-      ok: true,
+    return ok({
       message:
         "Thanks — we've got your email. You'll hear from us once we send our first dispatch.",
-    };
+    });
   }
 
-  // TODO(phase-7, 2026-Q3): write to Supabase subscribers + send Resend confirmation.
-  return {
-    ok: true,
+  // TODO(eran, 2026-Q3): write to Supabase subscribers + send Resend confirmation.
+  return ok({
     message: "Thanks for subscribing. Check your inbox for a confirmation link.",
-  };
+  });
 }

@@ -5,8 +5,10 @@ on:
     branches: [main]
   pull_request:
 
-# Cancel in-flight runs when a new commit lands on the same ref;
-# saves CI minutes during rapid PR iteration.
+# Cancel in-flight runs when a new commit lands on the same ref; saves CI
+# minutes during rapid PR iteration. Deploy workflows (when they land in
+# Tier 2) should set cancel-in-progress: false instead so a deploy is never
+# half-aborted.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -36,11 +38,51 @@ jobs:
         run: pnpm typecheck
 
       - name: Unit tests
-        run: pnpm test --reporter=verbose
-        continue-on-error: true # remove once we have tests
+        run: pnpm test
 
       - name: Next.js build
         run: pnpm build
         env:
-          # Build must succeed without secrets; runtime keys are validated at request time.
+          # Build must succeed without secrets; runtime keys are validated at
+          # request time, so a clean Vercel preview build doesn't require any
+          # third-party provisioning.
           NEXT_PUBLIC_SITE_URL: https://motive4artists.org
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+
+      - name: Playwright (a11y + compliance smoke)
+        run: pnpm test:e2e
+        env:
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

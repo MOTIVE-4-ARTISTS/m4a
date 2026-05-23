@@ -21,8 +21,11 @@ const NAV = [
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-rule)] bg-[var(--color-paper)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-paper)]/80">
-      <div className="mx-auto flex max-w-[var(--container-page)] items-center justify-between gap-6 px-6 py-4">
-        <BrandLockup />
+      <div className="mx-auto flex max-w-[var(--container-page)] items-center justify-between gap-6 px-6 py-3">
+        {/* Width chosen so the wordmark sits ~48px tall (landscape aspect
+            ~1.41:1). Priority because the header logo is the LCP element on
+            most pages. */}
+        <BrandLockup width={168} priority />
 
         {/* Desktop nav */}
         <nav aria-label="Primary" className="hidden md:block">

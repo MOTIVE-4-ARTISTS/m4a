@@ -1,24 +1,35 @@
 @import "tailwindcss";
 
-/* Brand tokens anchored to the MOtiVE 4 Artists logo (see public/brand/logo.png).
+/* Brand tokens anchored to the MOtiVE 4 Artists logo.
+ *
+ * SINGLE SOURCE OF TRUTH for brand assets and hex values:
+ *   - lib/brand/assets.ts       (paths, dimensions, BRAND_HEX mirror)
+ *   - brand/source/REGENERATE.txt (how to cut new icons/OG from a master)
+ *   - docs/adr/0002-brand-system.md (why the brand looks the way it does)
+ * If any of those drift from the values below, the brand will look broken
+ * in subtle places (Stripe Checkout theming, email templates, OG image).
  *
  * Color discipline:
- *  - --color-brand is the warm yellow from the logo, used as our signature accent
- *    (logomark surface, primary CTAs, focus ring, occasional callout blocks).
- *  - White text on --color-brand is ~2:1 contrast, which FAILS WCAG even for
- *    large text. White-on-brand is therefore reserved for the logomark as art;
- *    any *functional* copy on a brand-yellow surface uses --color-ink (~10:1).
- *  - The default surface is --color-paper (warm cream). Default text is --color-ink.
+ *  - --color-brand is the warm yellow sampled directly from the wordmark
+ *    artwork (#e4a315). Used as our signature accent: primary CTAs, focus
+ *    ring, occasional callout blocks. The logo itself supplies its own
+ *    background so we rarely paint large surfaces in this color.
+ *  - White text on --color-brand is ~2.4:1 contrast, which FAILS WCAG even
+ *    for large text. White-on-brand is therefore reserved for the wordmark
+ *    artwork; any *functional* copy on a brand-yellow surface uses
+ *    --color-ink (≈8:1, AAA for body copy).
+ *  - The default surface is --color-paper (warm cream). Default text is
+ *    --color-ink.
  *
  * Typography:
- *  - --font-display (Quicksand) loaded via next/font in app/layout.tsx; mirrors
- *    the rounded, lowercase-aware letterforms of the logo.
+ *  - --font-display (Quicksand) loaded via next/font in app/layout.tsx;
+ *    mirrors the rounded, lowercase-aware letterforms of the logo.
  *  - --font-body (Inter) is the quiet, highly legible body type.
  */
 @theme {
-  --color-brand: #f4b414;
-  --color-brand-deep: #d99a05;
-  --color-brand-soft: #fef2c8;
+  --color-brand: #e4a315;
+  --color-brand-deep: #c08609;
+  --color-brand-soft: #fbe9b8;
 
   --color-ink: #1a1a1a;
   --color-ink-muted: #56544b;
@@ -60,9 +71,9 @@ body {
 }
 
 /* Visible focus ring — never let designers strip this without replacing it.
- * Required by WCAG 2.2 AA (success criterion 2.4.13). The brand yellow on a
- * dark element clears AAA contrast easily; on light surfaces we add a ring
- * offset so the keyboard path is always traceable.
+ * Required by WCAG 2.2 AA (success criterion 2.4.13). --color-brand-deep on
+ * --color-paper measures ≈4.5:1, which passes AA for non-text UI components
+ * (1.4.11). The offset keeps the ring visible against any background.
  */
 :focus-visible {
   outline: 2px solid var(--color-brand-deep);

@@ -8,6 +8,10 @@ import { ein, ORG } from "@/lib/org";
 //   - WCAG 2.2 accessibility statement linkage
 //   - Privacy / Terms surfacing for state consumer-privacy laws
 //
+// The footer names the fiscal sponsor in `taxLine` but does NOT render the
+// full <FiscalSponsorBlock /> with the earmark clause — that lives only on
+// donation surfaces (today /donate). See AGENTS.md > Compliance.
+//
 // Wording in `taxLine` is legally significant. Treasurer (Eran) reviews
 // any change before merge per .cursor/rules/060-compliance.mdc.
 export function ComplianceFooter() {

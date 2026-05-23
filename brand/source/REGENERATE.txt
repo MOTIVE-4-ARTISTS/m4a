@@ -1,0 +1,52 @@
+MOtiVE 4 Artists — brand asset regeneration recipe
+====================================================
+
+This folder is the source-of-truth for the master logo artwork. Web
+deliverables (favicons, OG image, the wordmark used in components) are
+DERIVED from these files. Never edit the derivatives by hand.
+
+Conventions
+-----------
+- Master files are named `logo-YYYY-MM.<ext>` so we always know which
+  version a derivative was cut from.
+- Keep every historical master in this folder. Cheap insurance against
+  "what did the logo look like before X?".
+- Sampled brand color from the current master is mirrored in
+  `lib/brand/assets.ts` (BRAND_HEX) and `app/globals.css` (--color-brand).
+
+Current master
+--------------
+  logo-2026-05.png   1024 × 725, JPEG-in-PNG, dominant color #e4a315
+
+To regenerate all derivatives from a NEW master
+-----------------------------------------------
+Assumes macOS `sips` (preinstalled). Run from the repo root.
+
+  SRC=brand/source/logo-2026-05.png           # ← swap to new master
+  YELLOW=e4a315                                # ← swap if brand color changed
+
+  # Landscape wordmark used in header / hero / footer
+  sips -s format png "$SRC" --out public/brand/logo-wordmark.png
+
+  # Square (padded with brand yellow) used wherever a square is needed
+  sips -s format png --padToHeightWidth 1024 1024 --padColor "$YELLOW" \
+    "$SRC" --out public/brand/logo-square.png
+
+  # Next.js auto-discovered icons (app/icon.png, app/apple-icon.png)
+  sips -s format png -Z 512 public/brand/logo-square.png --out app/icon.png
+  sips -s format png -Z 180 public/brand/logo-square.png --out app/apple-icon.png
+
+  # OG fallback image (1200×630). Fit the wordmark to ~540px tall, then pad.
+  sips -s format png --resampleHeight 540 "$SRC" --out /tmp/og-wordmark.png
+  sips -s format png --padToHeightWidth 630 1200 --padColor "$YELLOW" \
+    /tmp/og-wordmark.png --out app/opengraph-image.png
+
+After regenerating
+------------------
+1. Update `lib/brand/assets.ts` if the brand hex or wordmark aspect ratio
+   changed (BRAND_HEX, WORDMARK_ASPECT).
+2. Update `app/globals.css` brand color tokens if the hex moved.
+3. Add an entry to `docs/adr/0002-brand-system.md` (date + reason).
+4. Skim every page with a brand surface (home hero, header, donate CTA,
+   compliance footer) to make sure the new color still passes AAA on
+   --color-ink. https://webaim.org/resources/contrastchecker/

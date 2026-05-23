@@ -23,8 +23,11 @@ const inter = Inter({
 });
 
 // Site-wide metadata. Per-page metadata overrides surface via the Metadata
-// API on each route. The OG fallback image is the canonical logomark at
-// app/opengraph-image.png; route-specific OGs land in Phase 1.
+// API on each route. The favicon (app/icon.png), Apple touch icon
+// (app/apple-icon.png), and OG fallback (app/opengraph-image.png) are
+// auto-discovered by Next.js' file-based metadata convention. All three
+// are cut from the master artwork — see lib/brand/assets.ts and
+// brand/source/REGENERATE.txt before swapping any of them by hand.
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.NEXT_PUBLIC_SITE_URL),
   title: {

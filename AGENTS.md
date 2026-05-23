@@ -30,6 +30,10 @@ Plan B (Cloudflare Pages + Turso + R2 + Auth.js, ~$15/yr) is a documented escape
 
 Carry MOtiVE Brooklyn's voice: "the artist comes first," "we first meet with the artist and discuss their dreams and needs," lowercase headers when stylistically intentional. Do **not** carry over LLC rental pricing copy.
 
+## Brand
+
+Single source of truth for the logo, color, and typography lives in **`lib/brand/assets.ts`** and the React components in **`components/brand/logo.tsx`**. Master artwork sits in **`brand/source/`** with a `REGENERATE.txt` recipe that cuts the favicon, Apple touch icon, and OG fallback from a new master in one shell block. Full decision record + change log in **`docs/adr/0002-brand-system.md`**; agent-facing rules in **`.cursor/rules/080-brand.mdc`**. Never hard-code `/brand/...` paths — import from `BRAND_ASSETS`.
+
 ## Operating rules
 
 - **Comments over docs.** Explain *why*, never *what*. No "// loops through events." A comment justifying `revalidate = 3600` is gold. A comment narrating a `for` loop gets rejected by the comment-quality hook.
@@ -46,23 +50,24 @@ Carry MOtiVE Brooklyn's voice: "the artist comes first," "we first meet with the
 Every page footer must surface, via `<ComplianceFooter />`:
 - Legal name "MOTIVE 4 ARTISTS INC." + dba "MOtiVE 4 Artists"
 - EIN (env: `NEXT_PUBLIC_EIN`)
-- Tax-status line (pre-determination: "501(c)(3) status pending"; post-determination: "Donations are tax-deductible under §501(c)(3)")
+- Tax-status line that names the fiscal sponsor while §501(c)(3) is pending; post-determination it flips to "Donations are tax-deductible under §501(c)(3)"
 - NY Charities Bureau §174-B disclosure language
-- Fiscal-sponsor block (The Field) while applicable
 - Accessibility statement link
 - Privacy + Terms links
+
+The full `<FiscalSponsorBlock />` (verbatim from The Field, with the earmark clause) renders on **donation/giving surfaces** — `/donate` today, the future Every.org/Stripe widgets when they land — not in the global footer. Rendering it on every page would crowd unrelated routes (e.g. `/team`, `/privacy`) without adding legal protection.
 
 These live in `components/compliance/`. Changing legal text touches one file.
 
 ## Directory map
 
 ```
-app/                Next.js App Router routes
-components/         ui primitives, layout, content, compliance, donations, forms
+app/                Next.js App Router routes (+ icon.png, apple-icon.png, opengraph-image.png conventions)
+brand/source/       master logo artwork + REGENERATE.txt pipeline (single source of truth for the mark)
+components/         ui primitives, brand, layout, content, compliance, donations, forms
 content/            Keystatic-managed MDX/YAML (artists, cohorts, programs, pages, press, partners)
-lib/                content readers, supabase clients, stripe, email, validation, env
-public/             static assets (logos, OG fallbacks)
-styles/             globals.css with Tailwind v4 theme tokens
+lib/                content readers, supabase clients, stripe, email, validation, env, brand asset registry
+public/brand/       derived logo files (wordmark, square) — generated, never authored
 supabase/migrations/ source-of-truth SQL
 tests/              e2e Playwright; unit tests colocated *.test.ts
 docs/research/      external research audit trail

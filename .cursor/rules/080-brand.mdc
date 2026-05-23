@@ -1,0 +1,34 @@
+---
+description: Brand system — logo, color, typography (where to look, what not to do)
+globs: "{app,components,lib/brand,brand}/**/*.{ts,tsx,css}"
+alwaysApply: false
+---
+
+# Brand system
+
+The MOtiVE 4 Artists visual identity has a single source of truth. Read it once, then trust it.
+
+## Where the brand lives
+
+- **`lib/brand/assets.ts`** — paths, dimensions, and `BRAND_HEX` for every brand asset. Import from here. Never hard-code `/brand/...` paths.
+- **`components/brand/logo.tsx`** — React components: `<Wordmark>`, `<LogomarkSquare>`, `<BrandLockup>`. All take from `BRAND_ASSETS`.
+- **`brand/source/`** — master artwork files, named `logo-YYYY-MM.<ext>`. Never edit derivatives by hand.
+- **`brand/source/REGENERATE.txt`** — shell recipe (macOS `sips`) that regenerates every web deliverable from a master.
+- **`app/globals.css`** — `--color-brand`, `--color-brand-deep`, `--color-brand-soft`. Mirror values of `BRAND_HEX`.
+- **`docs/adr/0002-brand-system.md`** — full decision record and change log.
+
+## Hard rules
+
+1. **The logo IS the wordmark.** It already says "MOtiVE 4 Artists" in artwork form. Do not put "MOtiVE 4 Artists" text next to it. (Legal copy in footers / receipts uses `ORG.displayName` from `lib/org.ts` — that is a string, not a brand mark.)
+
+2. **No hard-coded asset paths.** Every `Image` that references the logo must come through `BRAND_ASSETS` or a component that does. If you find a literal `/brand/logo-*.png` outside `lib/brand/assets.ts`, replace it.
+
+3. **No white-on-brand functional text.** The white-on-yellow inside the wordmark is *art*. Body copy, headings, button labels, link text on a brand-yellow surface use `--color-ink` (≈8:1 contrast). White-on-yellow is ~2.4:1 and fails WCAG even for large text.
+
+4. **Yellow is rare on purpose.** The brand color appears on the wordmark itself and on the primary CTA. That is normally the entire budget for a given page. If a third use of yellow is creeping in, justify it.
+
+5. **Favicons and OG fallback are derivative files**, not separately-authored assets. `app/icon.png`, `app/apple-icon.png`, and `app/opengraph-image.png` are cut from the master via `brand/source/REGENERATE.txt`. Don't replace them in isolation — you'll drift from the master.
+
+## When the logo changes
+
+Follow the procedure in `docs/adr/0002-brand-system.md` section "How to swap the logo." Append a one-line entry to its change log. Commit as `feat(brand): swap wordmark to <version>`.

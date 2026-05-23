@@ -1,32 +1,33 @@
 import Link from "next/link";
-import { Logomark } from "@/components/brand/logo";
+import { Wordmark } from "@/components/brand/logo";
 
 // Phase 0 landing page. The proper home (cohort spotlight, program trio,
 // latest-event teaser, fiscal-sponsor disclosure block) lands in Phase 2.
 //
 // Design intent here:
-//  - The brand yellow appears in exactly TWO places — the logomark on the
-//    right and the primary "Support our work" CTA. Everything else is the
-//    calm warm-paper / charcoal base. This is the visual restraint rule for
-//    the whole site: yellow earns attention by being rare.
+//  - The brand yellow appears in exactly TWO places — the wordmark and the
+//    primary "Support our work" CTA. Everything else is the calm warm-paper
+//    / charcoal base. This is the visual restraint rule for the whole site:
+//    yellow earns attention by being rare.
 //  - "A space to move" is the carried-over voice from MOtiVE Brooklyn.
 //  - The pendency line is required by IRS substantiation framing while the
 //    1023-EZ is in review; ComplianceFooter handles the legal footer line.
 export default function HomePage() {
   return (
     <article className="mx-auto max-w-[var(--container-page)] px-6 py-16 md:py-24">
-      <div className="grid items-center gap-10 md:grid-cols-[1.4fr_1fr]">
+      <div className="grid items-center gap-12 md:grid-cols-[1.1fr_1fr]">
         <div>
           <p className="text-sm uppercase tracking-[0.22em] text-[var(--color-ink-muted)]">
             A space to move
           </p>
 
-          <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-[1.05] tracking-tight md:text-6xl">
-            <span className="text-[var(--color-ink)]">MOtiVE </span>
-            <span className="text-[var(--color-brand-deep)]">4</span>
-            <span className="text-[var(--color-ink)]"> Artists</span>{" "}
-            <span className="text-[var(--color-ink-muted)]">supports</span> movement-based artists
-            through residencies, education, and public presentation.
+          <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
+            <span className="text-[var(--color-ink)]">
+              MOtiVE 4 Artists supports movement-based artists
+            </span>{" "}
+            <span className="text-[var(--color-ink-muted)]">
+              through residencies, education, and public presentation.
+            </span>
           </h1>
 
           <p className="mt-6 max-w-xl text-lg text-[var(--color-ink-muted)]">
@@ -51,12 +52,15 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Logomark used at hero scale, framed in its own card with a hairline
-            rule so it reads as "the mark," not a background wash. */}
+        {/* Hero wordmark — the artwork already includes the brand yellow
+            surface, so we don't wrap it in another colored card. The thin
+            rule + soft shadow lets it sit on warm paper without floating. */}
         <div className="justify-self-center md:justify-self-end">
-          <div className="rounded-[1rem] border border-[var(--color-rule)] bg-[var(--color-paper)] p-3 shadow-sm">
-            <Logomark size="xl" priority className="rounded-[0.75rem]" />
-          </div>
+          <Wordmark
+            width={420}
+            priority
+            className="h-auto rounded-[var(--radius-card)] border border-[var(--color-rule)] shadow-sm"
+          />
         </div>
       </div>
 

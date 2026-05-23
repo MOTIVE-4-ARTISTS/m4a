@@ -1,62 +1,91 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BRAND_ASSETS, WORDMARK_ASPECT } from "@/lib/brand/assets";
 
-// Canonical logomark. The PNG lives at public/brand/logo.png (1024x1024 square,
-// yellow surface with white wordmark). Used here as a raster mark; a future
-// SVG redraw is tracked in docs/adr/ — see Phase 1 design pass.
+// MOtiVE 4 Artists logo system.
 //
-// IMPORTANT contrast rule: the white-on-yellow inside the logomark is brand
-// art, not functional text. Do not stretch this treatment to any other UI
-// surface — functional copy on the brand yellow must use --color-ink.
+// The official mark is a horizontal wordmark — "MOtiVE / △ / ARTists" on
+// the brand yellow surface. Because the artwork already contains the full
+// brand name, we never pair it with separate "MOtiVE 4 Artists" text in
+// the UI; that would duplicate the wordmark and look like a knock-off.
+//
+// All paths and dimensions live in `lib/brand/assets.ts` — DO NOT add new
+// places that reference `/brand/...` directly. If you need a new size or
+// crop, add it to BRAND_ASSETS so future swaps stay surgical.
+//
+// Contrast rule (carried from globals.css): the white-on-yellow inside the
+// artwork is brand art, not functional text. Any *functional* copy on a
+// brand-yellow surface must use --color-ink.
 
-type Size = "xs" | "sm" | "md" | "lg" | "xl";
-
-const SIZE_PX: Record<Size, number> = {
-  xs: 24,
-  sm: 32,
-  md: 48,
-  lg: 80,
-  xl: 160,
+type WordmarkProps = {
+  // Rendered width in CSS pixels. Height derives from the locked aspect
+  // ratio in WORDMARK_ASPECT so the wordmark never stretches.
+  width: number;
+  className?: string;
+  // Pass `priority` on the LCP wordmark (header + hero on the home page).
+  // Leave undefined for incidental uses (footer, marketing pages below
+  // the fold) so we don't fight Next.js' preload budget.
+  priority?: boolean | undefined;
 };
 
-export function Logomark({
-  size = "sm",
-  className,
-  priority,
-}: {
-  size?: Size;
-  className?: string;
-  priority?: boolean;
-}) {
-  const px = SIZE_PX[size];
+export function Wordmark({ width, className, priority }: WordmarkProps) {
+  const height = Math.round((width * WORDMARK_ASPECT.height) / WORDMARK_ASPECT.width);
   return (
     <Image
-      src="/brand/logo.png"
-      alt="MOtiVE 4 Artists"
-      width={px}
-      height={px}
+      src={BRAND_ASSETS.wordmark.src}
+      alt={BRAND_ASSETS.wordmark.alt}
+      width={width}
+      height={height}
       priority={priority ?? false}
       className={className}
     />
   );
 }
 
-// Header / footer composition: small logomark beside a text wordmark so that
-// the alt text + visual mark both convey the brand to assistive tech readers
-// and visual readers respectively. The wordmark itself is decorative (hidden
-// from screen readers because <Logomark>'s alt already announces the brand).
-export function BrandLockup({ className, size = "sm" }: { className?: string; size?: Size }) {
+// Square treatment of the same mark — only for genuinely-square surfaces
+// (avatars, social profile images, square OG variants). For the favicon /
+// apple-touch / OG fallback, prefer the files in `app/` which Next.js
+// auto-discovers; this component is for in-page usage.
+type SquareProps = {
+  size: number;
+  className?: string | undefined;
+  priority?: boolean | undefined;
+};
+
+export function LogomarkSquare({ size, className, priority }: SquareProps) {
   return (
-    <Link href="/" aria-label="MOtiVE 4 Artists — home" className={className}>
-      <span className="inline-flex items-center gap-3">
-        <Logomark size={size} className="rounded-[var(--radius-card)] shadow-sm" />
-        <span
-          aria-hidden
-          className="font-[family-name:var(--font-display)] text-lg leading-none tracking-tight text-[var(--color-ink)]"
-        >
-          MOtiVE <span className="text-[var(--color-brand-deep)]">4</span> Artists
-        </span>
-      </span>
+    <Image
+      src={BRAND_ASSETS.square.src}
+      alt={BRAND_ASSETS.square.alt}
+      width={size}
+      height={size}
+      priority={priority ?? false}
+      className={className}
+    />
+  );
+}
+
+// Header / footer "click the logo to go home" treatment. The wordmark
+// itself carries the alt text, so the <Link> gets `aria-label` for AT
+// users and the image is the sole visual.
+export function BrandLockup({
+  width = 168,
+  className,
+  priority,
+}: {
+  width?: number;
+  className?: string | undefined;
+  priority?: boolean | undefined;
+}) {
+  return (
+    <Link
+      href="/"
+      aria-label="MOtiVE 4 Artists — home"
+      className={className}
+      // The wordmark already includes generous padding inside the artwork,
+      // so we don't add extra spacing on the link itself.
+    >
+      <Wordmark width={width} priority={priority} className="block h-auto" />
     </Link>
   );
 }

@@ -4,15 +4,18 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { type SubscribeResult, subscribe } from "@/lib/newsletter/subscribe";
 
-// Newsletter form. Uses React's useActionState for progressive enhancement:
-// works without JS, but with JS we get the optimistic / pending UI.
-// Single visible <label> per input (WCAG 1.3.1) and an aria-live region for
-// the result message so screen readers announce success/failure.
+// useActionState gives us progressive enhancement (works without JS) plus
+// optimistic / pending UI when JS is available. Result<T, E> from the action
+// is rendered through one branch so a screen reader announces the same
+// content the visual user sees. See .cursor/rules/050-accessibility.mdc.
 export function NewsletterForm({ source }: { source?: string }) {
   const [state, formAction, isPending] = useActionState<SubscribeResult | null, FormData>(
     subscribe,
     null,
   );
+
+  const message = state == null ? null : state.ok ? state.value.message : state.error.message;
+  const isError = state != null && !state.ok;
 
   return (
     <form action={formAction} className="space-y-3" aria-describedby="newsletter-status">
@@ -39,10 +42,10 @@ export function NewsletterForm({ source }: { source?: string }) {
         id="newsletter-status"
         aria-live="polite"
         className={`min-h-[1.5em] text-sm ${
-          state?.ok === false ? "text-[var(--color-brand-deep)]" : "text-[var(--color-ink-muted)]"
+          isError ? "text-[var(--color-brand-deep)]" : "text-[var(--color-ink-muted)]"
         }`}
       >
-        {state?.message ?? null}
+        {message ?? null}
       </p>
     </form>
   );
