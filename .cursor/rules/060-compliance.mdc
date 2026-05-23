@@ -1,0 +1,27 @@
+---
+description: Legal compliance (501(c)(3), NY Charities Bureau, IRS substantiation)
+globs: "{app/(donate|transparency),components/compliance,components/donations}/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Compliance — do not modify casually
+
+Wording on the donate page, the receipt email, and the compliance footer is legally constrained. Changes need treasurer (Eran) review before merging.
+
+## Required disclosures on every donation surface
+
+- Legal name "MOTIVE 4 ARTISTS INC." (uppercase, as filed with NY DOS).
+- EIN.
+- Tax-deductibility line. Pre-determination: **"Tax-exempt status pending — IRS Form 1023-EZ submitted [date]."** Post-determination: **"Donations are tax-deductible under §501(c)(3)."**
+- NY Charities Bureau §174-B disclosure with link to NY AG charities registration once filed (CHAR410, CHAR500).
+- Fiscal sponsor block (The Field / Performance Zone) **while applicable** — remove the day we get our own determination letter.
+
+## IRS substantiation rules
+
+- Any single gift ≥ $250 requires a written acknowledgment with: amount, date, "no goods or services were received in exchange" line, and the org's name/EIN. Generated automatically by the receipt template.
+- Quid-pro-quo gifts > $75 (e.g., gala tickets with a meal) require a fair-market-value statement.
+- Year-end consolidated receipts go out by January 31.
+
+## What goes in `<ComplianceFooter />`
+
+A single reusable component used in `app/layout.tsx`. Don't render its pieces individually elsewhere.

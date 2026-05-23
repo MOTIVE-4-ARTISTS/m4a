@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* Brand tokens carry over MOtiVE Brooklyn's editorial calm: warm neutrals,
+ * one accent for actionable language, no gradients, no shadows by default.
+ * These are placeholders — Phase 1 design pass refines them with Lilach. */
+@theme {
+  --color-ink: oklch(0.18 0.01 60);
+  --color-ink-muted: oklch(0.45 0.01 60);
+  --color-paper: oklch(0.985 0.005 80);
+  --color-paper-warm: oklch(0.96 0.01 80);
+  --color-rule: oklch(0.88 0.01 80);
+  --color-accent: oklch(0.55 0.14 30);
+
+  --font-display: ui-serif, Georgia, "Times New Roman", serif;
+  --font-body: ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+
+  --radius-card: 0.5rem;
+
+  --container-page: 72rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  font-family: var(--font-body);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Visible focus ring — never let designers strip this without replacing it.
+ * Required by WCAG 2.2 AA (success criterion 2.4.13). */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms;
+    transition-duration: 0.001ms;
+    scroll-behavior: auto;
+  }
+}

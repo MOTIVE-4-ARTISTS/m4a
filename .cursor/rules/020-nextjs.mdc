@@ -1,0 +1,22 @@
+---
+description: Next.js App Router patterns
+globs: "{app,components}/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Next.js (App Router)
+
+- **Server-first.** Every component is a Server Component until proven otherwise. Add `"use client"` only when you actually need: state, effects, browser APIs, or event handlers.
+- **Mutations = Server Actions.** Route Handlers (`app/api/*/route.ts`) are reserved for inbound third-party webhooks (Stripe, Resend).
+- **Caching is explicit.** Next.js 15+ defaults to uncached `fetch`. Always declare intent:
+
+```ts
+// Donation impact totals change daily, not per-request
+const res = await fetch(url, { next: { revalidate: 86400 } });
+```
+
+- **Metadata API.** Every route exports `metadata` (static) or `generateMetadata` (dynamic). No `<Head>` tags.
+- **Streaming + Suspense.** Use `loading.tsx` per route segment. Wrap slow data sources in `<Suspense>`.
+- **Error boundaries.** `error.tsx` + `not-found.tsx` at the segment level. Errors thrown in Server Components fall through to the nearest boundary.
+- **Forms.** Native `<form action={serverAction}>` first, `useActionState` for progressive enhancement, only reach for libraries if a form actually needs them.
+- **Images.** `next/image` always. No raw `<img>` except inside Markdown rendered from Keystatic content.

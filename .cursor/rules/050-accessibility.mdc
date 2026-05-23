@@ -1,0 +1,19 @@
+---
+description: Accessibility (WCAG 2.2 AA)
+globs: "{app,components}/**/*.tsx"
+alwaysApply: false
+---
+
+# Accessibility
+
+The site supports artists with disabilities. Every PR with UI must pass axe-core in CI and a manual screen-reader check on the changed routes.
+
+- **Semantic HTML first.** `<button>` for actions, `<a>` for navigation. No `<div onClick>`.
+- **One `<h1>` per page.** Heading levels descend without skipping.
+- **All images need alt text.** Decorative images use `alt=""`. Keystatic enforces this in the schema for artist headshots.
+- **Color contrast ≥ 4.5:1** for body text, ≥ 3:1 for large text. Verified in Storybook-equivalent `/dev/playground`.
+- **Keyboard reachable.** Every interactive element has a visible focus ring. Use `:focus-visible` not `:focus`.
+- **Forms have labels.** Every `<input>` has an associated `<label>` (not placeholder-as-label).
+- **Live regions** for form submission feedback (`aria-live="polite"`).
+- **Reduced motion.** Wrap animations in `@media (prefers-reduced-motion: no-preference)`.
+- **Accessibility statement** at `/accessibility` is required by NY law for public-facing nonprofit sites; do not delete it.

@@ -1,0 +1,24 @@
+---
+description: Supabase and database access patterns
+globs: "{lib/supabase,supabase}/**/*.{ts,tsx,sql}"
+alwaysApply: false
+---
+
+# Supabase
+
+- **Two clients.** `lib/supabase/server.ts` (cookies, used in Server Components and Server Actions) and `lib/supabase/client.ts` (anon key, browser only). Never import the server client from a Client Component.
+- **Service-role key** (`SUPABASE_SERVICE_ROLE_KEY`) is for cron/webhook contexts only and lives in `lib/supabase/admin.ts`. Never expose it to the browser bundle. Audit every import.
+- **RLS everywhere.** Every table has Row-Level Security enabled and at least one policy. A new table without an RLS policy must not ship. The migration tests verify this.
+- **Migrations are source of truth.** Schema changes go in `supabase/migrations/NNNN_slug.sql`. Never use the Supabase dashboard to alter schema in production.
+- **Generated types.** Run `pnpm supabase gen types typescript --linked > lib/supabase/database.types.ts` after every migration. Commit the types.
+
+```ts
+// GOOD
+import type { Database } from "@/lib/supabase/database.types";
+const supabase = createClient<Database>();
+
+// BAD — losing column-level types
+const supabase = createClient();
+```
+
+- **Webhooks** verify Supabase's signing secret before trusting payload.

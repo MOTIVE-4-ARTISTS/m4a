@@ -1,0 +1,12 @@
+{
+  "$schema": "https://cursor.com/schemas/environment.json",
+  "install": "corepack enable && pnpm install --frozen-lockfile",
+  "start": "pnpm dev",
+  "terminals": [
+    {
+      "name": "next-dev",
+      "command": "pnpm dev",
+      "description": "Next.js dev server on http://localhost:3000"
+    }
+  ]
+}

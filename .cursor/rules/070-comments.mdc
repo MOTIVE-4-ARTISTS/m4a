@@ -1,0 +1,37 @@
+---
+description: Code comments — explain why, never what
+alwaysApply: true
+---
+
+# Comments
+
+Comments document *intent*, *trade-offs*, *constraints*. They never narrate code.
+
+```ts
+// BAD — narrates the code
+let i = 0;
+// Increment i
+i += 1;
+
+// BAD — restates the obvious
+// Get the user from supabase
+const user = await supabase.auth.getUser();
+
+// GOOD — explains why we chose a value
+// 24h matches the donor-portal refresh cadence; we deliberately do not invalidate
+// on every donation to avoid hammering Supabase during fundraising spikes.
+export const revalidate = 86400;
+
+// GOOD — flags a constraint the reader can't see in code
+// Stripe's webhook can deliver the same event twice within minutes;
+// we de-dupe on stripe_event_id at the DB layer (unique index).
+await db.donations.upsert({ where: { stripe_event_id }, ... });
+```
+
+Rules:
+
+- If you can delete the comment without losing information that's not already in the code, delete it.
+- If the comment says *what* the code does, delete or rewrite it.
+- If you need to explain a Stripe quirk, an IRS rule, an accessibility constraint, or a chosen-vs-rejected design path — that's a comment worth keeping.
+- Architectural decisions go in `docs/adr/NNNN-<slug>.md`, not in floating comments.
+- TODOs include an owner and a tracking issue or date: `// TODO(eran, 2026-06-01): replace fiscal sponsor block once determination letter arrives.`

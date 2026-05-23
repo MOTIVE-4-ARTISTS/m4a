@@ -1,0 +1,14 @@
+---
+description: Keystatic content conventions
+globs: "{content,keystatic.config.ts}/**/*"
+alwaysApply: false
+---
+
+# Content (Keystatic)
+
+- **Two-layer model.** Keystatic for editorial content (pages, artists, cohorts, programs, partners, press, team). Supabase for date-driven / transactional / private content (events, donations, applications, subscribers).
+- **Slugs are URLs.** Once a file is named `content/artists/lilach-orenstein.mdx`, that becomes `/artists/lilach-orenstein` and we don't rename it without a redirect in `next.config.ts`.
+- **Images live next to content** in `content/<collection>/_images/`. Keystatic moves them; do not hand-edit paths.
+- **Frontmatter is structured.** Use the Keystatic schema — never invent ad-hoc fields. Add fields to `keystatic.config.ts` first, migrate existing entries second.
+- **Cohorts reference artists.** A cohort entry holds a list of artist slugs; the artist page is the canonical bio. Avoid duplicating bios.
+- **Past-program archive** preserves history exactly as it was — including misspellings in original artist names from motivebrooklyn.com — and adds a `[sic]` comment in the source MDX where intentional.
