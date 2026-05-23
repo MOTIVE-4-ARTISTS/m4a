@@ -3,10 +3,18 @@ import { expect, test } from "@playwright/test";
 
 // Routes scanned must include the highest-stakes surfaces: home (the page
 // most search-arrivals see), the two pages that handle money/applications,
+// the public opportunities surface (the largest interactive route in v1),
 // and the accessibility statement itself (where a screen-reader user is
 // most likely to land first). Rule set is WCAG 2.2 AA, matching
 // .cursor/rules/050-accessibility.mdc.
-const ROUTES = ["/", "/donate", "/apply", "/accessibility"] as const;
+const ROUTES = [
+  "/",
+  "/donate",
+  "/apply",
+  "/opportunities",
+  "/opportunities/submit",
+  "/accessibility",
+] as const;
 
 for (const route of ROUTES) {
   test(`${route} has no WCAG 2.2 AA violations`, async ({ page }) => {

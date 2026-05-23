@@ -1,7 +1,7 @@
 -- Phase 4 of the /opportunities feature.
 --
 -- See:
---   - docs/adr/0004-opportunities-data-model.md  (the canonical decision)
+--   - docs/adr/0005-opportunities-data-model.md  (the canonical decision)
 --   - docs/research/grant-source-inventory.md    (where the taxonomy comes from)
 --
 -- Three tables land here:

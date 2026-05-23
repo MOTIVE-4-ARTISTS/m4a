@@ -9,25 +9,33 @@
 import "server-only";
 import { z } from "zod";
 
+// Empty strings in .env files are a common gotcha — dotenv reads `KEY=` as
+// `process.env.KEY === ""`, but our `.optional()` fields want either a real
+// value or `undefined`. This preprocessor maps `""` → `undefined` so a
+// blank line in `.env.local` behaves like a missing key. Apply to every
+// optional string field below.
+const optionalString = (inner: z.ZodString = z.string().min(1)) =>
+  z.preprocess((v) => (v === "" ? undefined : v), inner.optional());
+
 const schema = z.object({
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
-  STRIPE_SECRET_KEY: z.string().min(1).optional(),
-  STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
-  RESEND_API_KEY: z.string().min(1).optional(),
+  SUPABASE_SERVICE_ROLE_KEY: optionalString(),
+  STRIPE_SECRET_KEY: optionalString(),
+  STRIPE_WEBHOOK_SECRET: optionalString(),
+  RESEND_API_KEY: optionalString(),
   RESEND_FROM_EMAIL: z.string().email().default("hello@motive4artists.org"),
-  TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
-  SENTRY_DSN: z.string().url().optional(),
-  SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
-  SENTRY_ORG: z.string().min(1).optional(),
-  SENTRY_PROJECT: z.string().min(1).optional(),
+  TURNSTILE_SECRET_KEY: optionalString(),
+  SENTRY_DSN: optionalString(z.string().url()),
+  SENTRY_AUTH_TOKEN: optionalString(),
+  SENTRY_ORG: optionalString(),
+  SENTRY_PROJECT: optionalString(),
 
   // /opportunities. All three start optional so the scaffold keeps building
   // before the ingest pipeline and the AI integration are provisioned. The
   // call sites surface a typed `dependency_unavailable` Result error when the
   // key they need is missing, instead of crashing the request.
-  GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1).optional(),
-  CRON_SECRET: z.string().min(1).optional(),
-  OPPORTUNITIES_INBOX_WEBHOOK_SECRET: z.string().min(1).optional(),
+  GOOGLE_GENERATIVE_AI_API_KEY: optionalString(),
+  CRON_SECRET: optionalString(),
+  OPPORTUNITIES_INBOX_WEBHOOK_SECRET: optionalString(),
 });
 
 export const serverEnv = schema.parse({

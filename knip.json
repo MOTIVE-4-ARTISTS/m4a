@@ -4,7 +4,8 @@
     "app/**/{page,layout,loading,not-found,error,template,default}.{ts,tsx}",
     "app/**/route.ts",
     "app/**/{opengraph,twitter}-image.tsx",
-    "keystatic.config.ts"
+    "keystatic.config.ts",
+    "scripts/*.ts"
   ],
   "project": ["**/*.{ts,tsx}"],
   "ignoreDependencies": [
@@ -18,6 +19,9 @@
     "lib/brand/assets.ts",
     "lib/applications/schemas.ts",
     "lib/env/public.ts",
-    "lib/env/server.ts"
+    "lib/env/server.ts",
+    "lib/supabase/types.ts",
+    "lib/opportunities/schema.ts",
+    "components/brand/marks.tsx"
   ]
 }

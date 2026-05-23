@@ -1,7 +1,7 @@
-# ADR 0004 — Opportunities data model: Supabase (not Keystatic), canonical-key dedup, pgvector reserved for v2
+# ADR 0005 — Opportunities data model: Supabase (not Keystatic), canonical-key dedup, pgvector live
 
 - Status: Accepted
-- Date: 2026-05-22
+- Date: 2026-05-22 (renumbered from 0004 on 2026-05-23 — see Change log)
 - Deciders: Eran Nussinovitch (Treasurer / engineer)
 
 ## Context
@@ -19,7 +19,7 @@ Opportunities are unambiguously the Supabase shape: deadlines drive most queries
 
 ### 1. Schema (Supabase, `supabase/migrations/0003_opportunities.sql`)
 
-Three tables, plus a vector column on the main table held in reserve for v2 semantic features.
+Three tables, plus a vector column on the main table for cosine-similarity dedup.
 
 #### `opportunities` (the canonical record)
 
@@ -39,7 +39,7 @@ Three tables, plus a vector column on the main table held in reserve for v2 sema
 - `application_platform text null` — `submittable | direct_email | org_portal | other`.
 - `is_archived boolean not null default false` + `archived_reason text null` — `deadline_passed | source_404 | editor_removed`. Archived rows hide from default view but remain queryable at `/opportunities/closed` for reference.
 - `last_verified_at timestamptz not null default now()` + `verified_by text not null` — `system_http_check | editor:<name> | scrape:<source>` traces who or what last confirmed the row is live.
-- `embedding vector(768) null` — `pgvector` column added now, used in v2 only (semantic search across descriptions, and a third pass on dedup for near-twins that survive Levenshtein). Wiring is intentionally deferred to keep v1 simple.
+- `embedding vector(768) null` — populated at ingest time via Gemini's `gemini-embedding-001` (see [lib/ai/embed.ts](../../lib/ai/embed.ts)). Used by the cosine-similarity pass of the dedup matcher (third tier of the score cascade in [lib/ingest/dedupe.ts](../../lib/ingest/dedupe.ts)). The HNSW index + `find_similar_opportunities(...)` RPC live in [supabase/migrations/0004_opportunity_similarity.sql](../../supabase/migrations/0004_opportunity_similarity.sql). Same column is reserved for future semantic search across descriptions.
 - `created_at timestamptz not null default now()` + `updated_at timestamptz not null default now()` with the existing `set_updated_at()` trigger pattern from migration 0001.
 
 #### `opportunity_sources` (one-to-many: an opportunity can be observed from N sources)
@@ -75,10 +75,11 @@ Slugs are produced by `lib/opportunities/slug.ts`: lowercase, strip leading "the
 **Match scoring** (`lib/ingest/dedupe.ts`) is a layered cascade:
 
 1. Exact match on `canonical_key` → score = 1.0 → auto-merge.
-2. Levenshtein < 3 on `funder_slug + program_slug` → score = 0.85.
-3. Same hostname in `source_url` AND deadline within ±7 days → +0.1 supporting signal.
-4. Same `amount_min_cents` AND same `funder_slug` → +0.05 supporting signal.
-5. (V2) Cosine similarity > 0.92 on `embedding` → score = 0.95.
+2. Cosine similarity ≥ 0.92 on `embedding` → score = 0.95 → auto-merge (catches the cross-funder near-twins Levenshtein can't see).
+3. Levenshtein < 3 on `funder_slug + program_slug` → score = 0.85.
+4. Same hostname in `source_url` AND deadline within ±7 days → +0.1 supporting signal.
+5. Cosine similarity 0.80–0.92 (sub-merge band) → lift score by +0.1 from a floor of 0.7.
+6. Same `amount_min_cents` AND same `funder_slug` → +0.05 supporting signal.
 
 Outcomes:
 
@@ -99,11 +100,12 @@ Outcomes:
 - `opportunities_discipline_gin_idx` on `gin(discipline_tags)` — discipline filter (multi-valued).
 - `opportunities_equity_gin_idx` on `gin(equity_tags)` — equity filter (rare but high-value).
 - `opportunities_canonical_key_idx` on `(canonical_key)` — dedup fast path (also unique constraint).
+- `opportunities_embedding_hnsw_idx` on `hnsw(embedding vector_cosine_ops)` — cosine nearest-neighbor for the dedup pass (added in migration 0004).
 - `opportunity_sources_opportunity_id_idx` on `(opportunity_id)` — load all sources for one opportunity.
 
 ### 5. Extensions
 
-Enable `vector` (`pgvector`) alongside the existing `pgcrypto`. The column is null in v1; the extension being present means we don't need a follow-up migration to wire semantic features.
+Enable `vector` (`pgvector`) alongside the existing `pgcrypto`.
 
 ## Why not Keystatic
 
@@ -111,15 +113,14 @@ Enable `vector` (`pgvector`) alongside the existing `pgcrypto`. The column is nu
 - Keystatic has no equivalent to `gin(discipline_tags)` or `(deadline asc) where not is_archived`. Filtering would be in-memory in the Node process, which doesn't scale past a few thousand rows.
 - Keystatic edits require a person at a CMS UI. Ingestion is fundamentally programmatic and needs the service-role pattern Supabase gives us.
 
-## Why pgvector now, semantic search later
+## pgvector: dedup now, semantic search later
 
-- The column is cheap to allocate and dirty-cheap to backfill later (we can re-embed everything in a single batch when we flip it on).
-- Adding the column post-hoc would require a migration *and* a backfill at the time of v2, which is fine but introduces a brief window of inconsistency.
-- We do not enable semantic search in v1 because (a) deadline-first sort and 5 surface filters are sufficient for ≤500 opportunities, (b) embeddings would add a per-ingest cost and a per-query latency we don't need yet, and (c) the Vercel AI SDK's embedding interface is well-documented enough that v2 wiring will be straightforward.
+- Dedup is the cheap, high-value embedding pass and is **on from day one**: every ingested opportunity gets an embedding via `gemini-embedding-001` (768 dims), the HNSW-indexed `embedding` column powers cosine nearest-neighbor lookup against the existing rows, and the matcher in `lib/ingest/dedupe.ts` uses that signal as a third tier of its cascade. Cost is negligible — at projected volumes (≤1k inserts/week) we're well inside Gemini's free tier.
+- Semantic search across descriptions (artist-facing "show me opportunities like *this* one") is the natural v2 extension and reuses the same column + RPC. We did not build it in v1 because the surface UX (deadline-first sort + 5 filter chips) is sufficient for ≤500 opportunities and adding a second axis of discovery before we see real usage would be premature.
 
 ## Consequences
 
-- One new migration: `supabase/migrations/0003_opportunities.sql`. After applying, run `pnpm supabase gen types typescript --linked > lib/supabase/database.types.ts` per `.cursor/rules/030-supabase.mdc`.
+- Two new migrations: `supabase/migrations/0003_opportunities.sql` + `supabase/migrations/0004_opportunity_similarity.sql`. After applying, run `pnpm supabase gen types typescript --linked > lib/supabase/database.types.ts` per `.cursor/rules/030-supabase.mdc`.
 - New module boundary: `lib/opportunities/` owns the Zod schemas, slug logic, dedup, ICS, copy, and Server Actions. `lib/ingest/` owns per-source adapters and the cron entry. `lib/ai/` owns the LLM client and prompts.
 - The `opportunity_submissions` review surface is intentionally light in v1 — a weekly digest email of pending submissions with signed approve/reject links. The full admin UI lands later when the broader admin dashboard does.
 - Future migration is reserved for an `opportunity_clusters` table (manual editorial merges of near-duplicates the dedup score put in the 0.6–0.8 band) once we see the actual rate of edge cases.
@@ -127,3 +128,5 @@ Enable `vector` (`pgvector`) alongside the existing `pgcrypto`. The column is nu
 ## Change log
 
 - 2026-05-22 — Initial decision.
+- 2026-05-23 — Enabled pgvector dedup pass in v1 (was originally deferred to v2). Added [supabase/migrations/0004_opportunity_similarity.sql](../../supabase/migrations/0004_opportunity_similarity.sql) (HNSW index + `find_similar_opportunities` RPC), wired `gemini-embedding-001` via [lib/ai/embed.ts](../../lib/ai/embed.ts), and extended the score cascade in [lib/ingest/dedupe.ts](../../lib/ingest/dedupe.ts) with cosine-similarity tiers.
+- 2026-05-23 — Renumbered from `0004-opportunities-data-model.md` to `0005-opportunities-data-model.md` to clear a numbering collision with `0003-observability.md` (Sentry / PostHog / CSP, which landed in parallel and pushed `0003-ai-provider.md` to `0004-ai-provider.md`).

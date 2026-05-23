@@ -49,7 +49,7 @@ export interface Subscriber {
 }
 
 // /opportunities — see supabase/migrations/0003_opportunities.sql and
-// docs/adr/0004-opportunities-data-model.md. Kept structurally aligned with
+// docs/adr/0005-opportunities-data-model.md. Kept structurally aligned with
 // the SQL; any drift will surface at the first query call site.
 
 export type OpportunityType = "grant" | "residency" | "fellowship" | "call";

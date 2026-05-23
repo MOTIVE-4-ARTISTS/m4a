@@ -1,12 +1,12 @@
-# ADR 0005 — Public no-login save: URL hash + localStorage + ICS export, no accounts in v1
+# ADR 0006 — Public no-login save: URL hash + localStorage + ICS export, no accounts in v1
 
 - Status: Accepted
-- Date: 2026-05-22
+- Date: 2026-05-22 (renumbered from 0005 on 2026-05-23 — see Change log)
 - Deciders: Eran Nussinovitch (Treasurer / engineer)
 
 ## Context
 
-The `/opportunities` page (see ADR 0004) is intentionally a public, no-login surface. Artists in the NYC dance world should be able to land on the page from an Instagram link at 11pm between rehearsals, filter to what's relevant, save the three grants they want to come back to, and walk away — without ever creating an account or handing over an email.
+The `/opportunities` page (see ADR 0005) is intentionally a public, no-login surface. Artists in the NYC dance world should be able to land on the page from an Instagram link at 11pm between rehearsals, filter to what's relevant, save the three grants they want to come back to, and walk away — without ever creating an account or handing over an email.
 
 But "no account" cannot mean "no persistence." If the artist closes the tab and reopens the page tomorrow, the saved set should still be there. If she texts the link to a collaborator, that collaborator should see the same saved set. If she wants the deadlines in her calendar, she should be able to export without signing up for anything.
 
@@ -49,7 +49,7 @@ The filter state is mirrored similarly under `m4a:opps:filters` so a return visi
 
 Two endpoints, both Route Handlers serving `Content-Type: text/calendar; charset=utf-8`:
 
-- **`/opportunities/[slug]/event.ics`** — single `VEVENT` for one opportunity. Linked from each card's "add to calendar" action.
+- **`/opportunities/[id]/event.ics`** — single `VEVENT` for one opportunity. Linked from each card's "add to calendar" action.
 - **`/opportunities/export.ics?ids=op_abc,op_def,…`** — bulk export of an arbitrary set of IDs (typically the saved set, but the artist can pass the current filtered set too). The artist's calendar app reads the file and adds N events at once.
 
 Each `VEVENT` carries:
@@ -92,3 +92,4 @@ The shape of v2 accounts would be Supabase Auth magic-link, a single `users` tab
 ## Change log
 
 - 2026-05-22 — Initial decision.
+- 2026-05-23 — Renumbered from `0005-public-no-login-save.md` to `0006-public-no-login-save.md` to clear a numbering collision with `0003-observability.md` (Sentry / PostHog / CSP, which landed in parallel).

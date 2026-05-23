@@ -38,6 +38,12 @@ export const VALIDATION_LIMITS = {
   // Postgres index bloat or routing oddities.
   SLUG_MAX: 64,
   SLUG_REGEX: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+
+  // Free-text artist self-description fed to the /opportunities AI input.
+  // 500 chars is comfortably above "1–3 sentences" (the prompt instructs
+  // the artist) and well below the LLM context budget, so the prompt
+  // cost stays predictable. See docs/adr/0004-ai-provider.md §privacy.
+  ARTIST_DESCRIPTION_MAX: 500,
 } as const;
 
 // Friendly default messages are baked into the shared schemas so every form

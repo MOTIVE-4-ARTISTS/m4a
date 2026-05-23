@@ -7,7 +7,7 @@ import { z } from "zod";
 //
 // See:
 //   - supabase/migrations/0003_opportunities.sql  (the source of truth)
-//   - docs/adr/0004-opportunities-data-model.md   (why it looks this way)
+//   - docs/adr/0005-opportunities-data-model.md   (why it looks this way)
 //   - docs/checklists/server-action.md            (how this composes with
 //     action-specific schemas)
 
@@ -131,7 +131,13 @@ export const opportunityDraftSchema = z.object({
   verified_by: z.string().min(1).max(80),
 });
 
+// `OpportunityDraft` is the OUTPUT shape (defaults applied, every array
+// present, no undefineds on optional booleans). Use this when handling the
+// post-parse object. For authoring shapes — seed entries, ingest adapters
+// writing minimal payloads — use `OpportunityDraftInput`, which mirrors the
+// shape *before* Zod fills in defaults.
 export type OpportunityDraft = z.infer<typeof opportunityDraftSchema>;
+export type OpportunityDraftInput = z.input<typeof opportunityDraftSchema>;
 
 // At least one of deadline / is_rolling=true / application_window must be
 // present, mirroring the DB CHECK constraint. We attach this as a refine
@@ -167,12 +173,23 @@ export const validatedOpportunityDraftSchema = opportunityDraftSchema.superRefin
 //
 // `null` on a field means "the AI didn't have an opinion"; the page leaves
 // the corresponding filter at its default rather than forcing a choice.
+// `deadline_window` is a STRING enum (not the numeric 7/30/90 we keep
+// in the URL) because Gemini's structured-output API only accepts
+// string enums. The mapping back to days happens in
+// components/opportunities/ai-input.tsx::presetToFilters via
+// DEADLINE_WINDOW_DAYS below.
+export const DEADLINE_WINDOWS = ["this_week", "this_month", "next_3_months"] as const;
+export type DeadlineWindow = (typeof DEADLINE_WINDOWS)[number];
+
+export const DEADLINE_WINDOW_DAYS: Record<DeadlineWindow, 7 | 30 | 90> = {
+  this_week: 7,
+  this_month: 30,
+  next_3_months: 90,
+};
+
 export const filterPresetSchema = z.object({
   types: z.array(opportunityTypeSchema).nullable().default(null),
-  deadline_window_days: z
-    .union([z.literal(7), z.literal(30), z.literal(90)])
-    .nullable()
-    .default(null),
+  deadline_window: z.enum(DEADLINE_WINDOWS).nullable().default(null),
   include_rolling: z.boolean().nullable().default(null),
   eligibility: z
     .array(z.enum(["individual", "fiscal_sponsor", "501c3"]))

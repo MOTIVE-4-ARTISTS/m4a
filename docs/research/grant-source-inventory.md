@@ -1,7 +1,7 @@
 # Grant source inventory for NYC dance artists
 
 - Research date: May 2026
-- Used by: ADR 0004 (data model), `lib/ingest/sources/*` (adapters), `docs/checklists/ingest-source.md` (procedure for adding a source).
+- Used by: ADR 0005 (data model), `lib/ingest/sources/*` (adapters), `docs/checklists/ingest-source.md` (procedure for adding a source).
 
 This is the audit-trail record of every grant / residency / fellowship source we evaluated for the `/opportunities` feature. For each source we capture: canonical URL, update cadence, machine-readable signals, mailing list options, `robots.txt` posture, what we can legally republish, recommended ingestion strategy, coverage overlap with other sources, and notable gotchas. The end of the document ranks v1 vs. v2 sources and lists the newsletters worth subscribing to from day one.
 

@@ -1,7 +1,7 @@
 # Opportunities page — UX research synthesis
 
 - Research date: May 2026
-- Used by: ADR 0005 (no-login save), `app/opportunities/*`, `components/opportunities/*`, `lib/opportunities/copy.ts` (brand-voice strings).
+- Used by: ADR 0006 (no-login save), `app/opportunities/*`, `components/opportunities/*`, `lib/opportunities/copy.ts` (brand-voice strings).
 
 This is the audit-trail record of the UX research that shaped the `/opportunities` page IA, the AI scope, the no-login save mechanisms, and the brand-voice copy patterns. We studied 14+ analogous products in arts, accelerators, and adjacent industries (Airbnb, Perplexity), and pulled the patterns worth stealing plus the anti-patterns worth consciously avoiding.
 

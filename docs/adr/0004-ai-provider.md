@@ -1,12 +1,12 @@
-# ADR 0003 — AI provider: Google Gemini Flash via the Vercel AI SDK, OpenAI social-impact credits as fallback
+# ADR 0004 — AI provider: Google Gemini Flash via the Vercel AI SDK, OpenAI social-impact credits as fallback
 
 - Status: Accepted
-- Date: 2026-05-22
+- Date: 2026-05-22 (renumbered from 0003 on 2026-05-23 — see Change log)
 - Deciders: Eran Nussinovitch (Treasurer / engineer), Lilach Orenstein (President)
 
 ## Context
 
-The `/opportunities` feature (see ADR 0004) needs an LLM for two narrow jobs:
+The `/opportunities` feature (see ADR 0005) needs an LLM for two narrow jobs:
 
 1. **At ingest time** — extract a normalized opportunity (funder, deadline, amount, eligibility, etc.) from scraped HTML and newsletter prose. Volume estimate: ≤ ~1,000 calls/week as the dataset grows, dominated by Dance/NYC daily scrape and NYFA weekly scrape.
 2. **At request time** — translate a 1–3 sentence artist self-description into a pre-configured filter set ("Brooklyn choreographer, no fiscal sponsor, looking for stipended residencies" → `type=grant+residency, eligibility=individual, location=nyc+national`). Volume estimate: ≤ ~1,000 calls/week through the first 6 months.
@@ -19,9 +19,9 @@ Cost matters: year-1 receipts are projected under $50k and recurring SaaS is int
 
 ### Plan A — Google Gemini Flash (`gemini-2.5-flash`) via Vercel AI SDK (chosen)
 
-- Free tier on `gemini-2.5-flash` covers our v1 volume comfortably (rate limits well above the ~2k weekly calls we project across both jobs combined).
+- Free tier on `gemini-2.5-flash` is 5 req/min — covers v1 cron volume with `MAX_PER_INVOCATION=4` and one hourly invocation. Paid tier lifts that ceiling for ~$0 at our shape.
 - Paid tier is the cheapest in market — roughly `$0.075/M` input tokens and `$0.30/M` output tokens (May 2026). At our token shapes (≤2k input + ≤500 output per call), 1,000 calls is well under $1.
-- Structured-output (`responseSchema`) mode lets us pass our Zod-derived JSON schema and get back validated JSON. We never have to parse free-text JSON. This is the trust contract: bad shape → SDK throws → we surface a `Result` error.
+- Structured-output (`responseSchema`) mode lets us pass our Zod-derived JSON schema and get back validated JSON. We never have to parse free-text JSON. **Constraint we hit:** Gemini's structured-output only accepts enum on STRINGS, not numbers, and doesn't honor `format: date`. We adapt by using string-enum tokens (`"this_week" | "this_month" | "next_3_months"`) mapped back to ints on our side, and validating ISO date shape post-parse. Documented in `lib/opportunities/schema.ts` and `lib/ai/extract-opportunity.ts`.
 - Google for Nonprofits is already configured for the org (Workspace for Nonprofits at $0/user/mo with Gemini app + NotebookLM included). API usage is separate from the Workspace freebie but the verified-nonprofit status is on file.
 - Routed through `@ai-sdk/google` (Vercel AI SDK provider) so the call sites stay provider-agnostic. Swapping providers later means changing one file (`lib/ai/client.ts`), not 30.
 
@@ -61,3 +61,5 @@ Revisit this ADR when any of the following become true:
 ## Change log
 
 - 2026-05-22 — Initial decision. Provider: `gemini-2.5-flash` via `@ai-sdk/google`. Free-tier covers v1.
+- 2026-05-23 — Renumbered from `0003-ai-provider.md` to `0004-ai-provider.md` to clear a numbering collision with `0003-observability.md` (Sentry / PostHog / CSP, which landed in parallel).
+- 2026-05-23 — Added a note on Gemini structured-output constraints (string-only enums; no `format: date`) and the schema adaptations we made.

@@ -15,6 +15,11 @@
 
 const NOISE_PREFIX = /^(?:the\s+)/i;
 
+// Legal-entity boilerplate that funders include in their official name and
+// that variants drop ("Mertz Gilmore" vs "Mertz Gilmore Foundation").
+// Intentionally NOT included: "fund" (frequently the program name itself —
+// "Brooklyn Choreographer Fund", "Dance Advancement Fund") and
+// "organization" (too generic; rarely a real funder suffix).
 const NOISE_SUFFIX_WORDS = new Set([
   "inc",
   "incorporated",
@@ -22,9 +27,7 @@ const NOISE_SUFFIX_WORDS = new Set([
   "corp",
   "corporation",
   "foundation",
-  "fund",
   "trust",
-  "organization",
 ]);
 
 export function slugify(input: string): string {

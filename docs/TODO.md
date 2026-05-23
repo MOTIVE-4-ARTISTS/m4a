@@ -80,6 +80,7 @@ These come from the "When the data layer lands" tier of prior work — gated on 
 - [ ] **Year-of-cohort retrospective UX** (Spotify-wrapped-style)
 - [ ] **i18n** with hreflang per [`docs/research/`](research/) SEO notes — Spanish first per artist community
 - [ ] **Upstash Ratelimit** when application-spam becomes real (honeypot is enough for now). Update [`docs/adr/0003-observability.md`](adr/0003-observability.md) with the install ADR.
+- [ ] **Design audit 2026-05 v2 ship list** — items 9–10 from [`docs/research/design-audit-2026-05.md`](research/design-audit-2026-05.md): photography commission (one 2-hour shoot of 1–3 dancers at MOtiVE Brooklyn) + display-typeface swap (test Canela Deck / Lyon / Freight Display vs Quicksand on a feature branch). Items 1–8 ship in the immediate agent-mode follow-up.
 
 ### Tier C — Nice-to-haves
 
@@ -124,9 +125,17 @@ Both unblock the moment `RESEND_API_KEY` is set.
 | Doc | Purpose |
 | --- | --- |
 | [`AGENTS.md`](../AGENTS.md) | Repo charter — first thing any AI agent or new engineer reads |
+| [`docs/feature-map.md`](feature-map.md) | What every feature does and what state it's in — start here to answer "is X live?" |
 | [`.cursor/plans/m4a_website_build_f01a21fc.plan.md`](../.cursor/plans/m4a_website_build_f01a21fc.plan.md) | Original 6-phase build plan, every phase shipped |
+| [`.cursor/plans/opportunities_ai_feature_744bf371.plan.md`](../.cursor/plans/opportunities_ai_feature_744bf371.plan.md) | 10-phase /opportunities feature plan, every phase shipped |
 | [`docs/adr/0001-stack-choice.md`](adr/0001-stack-choice.md) | Vercel + Supabase (Plan A) vs Cloudflare Pages + Turso (Plan B). Flip triggers documented. |
 | [`docs/adr/0002-brand-system.md`](adr/0002-brand-system.md) | Logo / brand asset registry. The exact procedure for the next logo swap. |
 | [`docs/adr/0003-observability.md`](adr/0003-observability.md) | Sentry / PostHog / CSP / rate-limit decisions and remaining action items |
+| [`docs/adr/0004-ai-provider.md`](adr/0004-ai-provider.md) | Google Gemini Flash via the Vercel AI SDK. Flip triggers + cost ceiling. |
+| [`docs/adr/0005-opportunities-data-model.md`](adr/0005-opportunities-data-model.md) | Supabase schema for opportunities, canonical-key dedup, live pgvector cosine pass. |
+| [`docs/adr/0006-public-no-login-save.md`](adr/0006-public-no-login-save.md) | URL-hash + localStorage + ICS export. Why no accounts in v1; triggers to revisit. |
 | [`docs/checklists/server-action.md`](checklists/server-action.md) | The 8-step Server Action contract — read before writing one |
-| [`docs/research/`](research/) | Pre-build research (peer benchmarking, studio-booking landscape). Audit trail, not active reading. |
+| [`docs/checklists/ingest-source.md`](checklists/ingest-source.md) | Procedure for adding a new /opportunities ingest source — read before writing one |
+| [`docs/checklists/asset-generation.md`](checklists/asset-generation.md) | Procedure for adding any new visual asset — craft-fidelity ladder + watermark verification |
+| [`docs/research/design-audit-2026-05.md`](research/design-audit-2026-05.md) | Senior-designer-grade UI/UX audit (May 2026). Diagnosis, prioritised 10-item ship list. Read before any design work. |
+| [`docs/research/`](research/) | Pre-build research (peer benchmarking, studio booking, grant sources, opportunities UX, design audit). Audit trail. |
