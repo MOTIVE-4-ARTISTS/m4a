@@ -31,11 +31,18 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # These steps mirror `pnpm qa` (lint && typecheck && knip && test &&
+      # build) one-to-one, kept granular so a failure names the exact stage.
+      # If you add a stage to `qa`, add it here too — the pre-push hook runs
+      # `pnpm qa`, and CI must not be weaker than the local gate.
       - name: Biome lint + format check
         run: pnpm lint
 
       - name: TypeScript
         run: pnpm typecheck
+
+      - name: Knip (unused files / exports / dependencies)
+        run: pnpm knip
 
       - name: Unit tests
         run: pnpm test
