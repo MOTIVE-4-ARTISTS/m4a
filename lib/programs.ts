@@ -30,6 +30,40 @@ export type Program = {
   blurb: string;
 };
 
+// Cohort taxonomy. The `cohorts` collection tags each cohort with one of
+// these program values; `exchanges` carry the International Exchange instead.
+// Kept separate from the application PROGRAMS list above on purpose: PROGRAMS
+// drives the apply forms + the home "three programs" trio (only the three
+// live application programs belong there), whereas these values also cover
+// historical, non-application program families (Artist Support) that we
+// surface in the archive/browse but never put an "apply" button on.
+export type CohortProgram = "air" | "support" | "subsidy" | "international";
+
+export const COHORT_PROGRAM_LABEL: Record<CohortProgram, string> = {
+  air: "Artist in Residency",
+  support: "Artist Support",
+  subsidy: "Discounted Space Subsidy",
+  international: "International Exchange",
+};
+
+// Where a cohort program family has a public program page. Artist Support has
+// no standing page (it ran once, in 2025) — it lives in the grouped browse.
+export const COHORT_PROGRAM_HREF: Partial<Record<CohortProgram, string>> = {
+  air: "/programs/residency",
+  subsidy: "/programs/discounted-space",
+  international: "/programs/international-exchange",
+};
+
+/**
+ * The inverse link a program page uses to pull its own cohorts by year.
+ * @public — intentional registry export; the program-page cohort listing
+ * that consumes it is in-flight (cohort-migration work).
+ */
+export const PROGRAM_COHORT: Partial<Record<ProgramId, CohortProgram>> = {
+  residency: "air",
+  discounted_space: "subsidy",
+};
+
 export const PROGRAMS: readonly Program[] = [
   {
     id: "residency",

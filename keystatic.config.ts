@@ -155,6 +155,55 @@ export default config({
         excerpt: fields.text({ label: "Excerpt", multiline: true }),
       },
     }),
+
+    // International Exchange is bilateral and partner-anchored, NOT a yearly
+    // cohort — a MOtiVE artist goes abroad while a partner-org artist comes
+    // to NY, tied to a specific partner and date window. Modelling it as its
+    // own collection (rather than reusing `cohorts`) is what lets a page say
+    // "Mirte Bogaert came to NY while Neva Guido went to Bergen, 2023." See
+    // docs/research/legacy-content-inventory-2026-06.md + the IA plan.
+    exchanges: collection({
+      label: "International Exchanges",
+      slugField: "slug",
+      path: "content/exchanges/*",
+      format: { contentField: "intro" },
+      schema: {
+        slug: fields.slug({
+          name: {
+            label: "Slug",
+            description: 'Form: "bergen-2023"',
+            validation: { isRequired: true },
+          },
+        }),
+        title: fields.text({ label: "Title", validation: { isRequired: true } }),
+        year: fields.integer({
+          label: "Year",
+          validation: { isRequired: true, min: 2020, max: 2099 },
+        }),
+        dates: fields.text({
+          label: "Dates (free-form)",
+          description: "e.g. 'March 27 – April 9, 2023'",
+        }),
+        partner: fields.relationship({ label: "Partner organization", collection: "partners" }),
+        incomingArtists: fields.array(
+          fields.relationship({ label: "Incoming artist (to NY)", collection: "artists" }),
+          { label: "Incoming artists (to NY)", itemLabel: (props) => props.value ?? "" },
+        ),
+        outgoingArtists: fields.array(
+          fields.relationship({ label: "Outgoing artist (abroad)", collection: "artists" }),
+          { label: "Outgoing artists (abroad)", itemLabel: (props) => props.value ?? "" },
+        ),
+        support: fields.text({
+          label: "Support / funder (optional)",
+          description: 'e.g. "Creative Scotland"',
+        }),
+        work: fields.text({
+          label: "Work / project (optional)",
+          description: 'e.g. "TwinLight Zone"',
+        }),
+        intro: fields.markdoc({ label: "Intro" }),
+      },
+    }),
   },
 
   singletons: {
