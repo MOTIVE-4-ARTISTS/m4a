@@ -75,7 +75,13 @@ These come from the "When the data layer lands" tier of prior work — gated on 
 
 - [ ] **Newsletter automation** via Resend Broadcasts + archive UI at `/newsletter/archive`
   - unblocks: `lib/newsletter/subscribe.ts:47` in-code TODO
-- [ ] **Event ticketing** (same Stripe pattern as donations, Supabase `events` table)
+- [x] **Events** — Supabase `events` table + `/admin/events` CRUD + public `/events` + `/events/[slug]` + per-event ICS. Shipped Phase 7; see [`docs/adr/0007-events-data-model.md`](adr/0007-events-data-model.md).
+  - **Verified so far (2026-06-22):** the public fallback path end-to-end (listing upcoming/past split, detail page, per-event `.ics` with correct timed UTC `DTSTART`/`DTEND`, unknown-slug 404, sitemap entries, graceful `/admin/events` "not configured" state), plus 136 unit tests + `pnpm qa` green. All via the no-Supabase fallback — see ADR 0007 "Verification status".
+  - [ ] 🔴 **Events live-path round-trip** (needs Docker running): `supabase start` → `supabase db reset` (applies `0005_events.sql`) → `pnpm seed:events` → add your email to `admin_users` → at `/admin/events` create + publish + edit + unpublish + delete an event; confirm RLS blocks an anon write. Confirms the half of the feature the fallback can't exercise (real rows + admin CRUD writes).
+  - [ ] 🔴 **Events admin timezone round-trip** (the one v1 simplification, ADR 0007 §6): in `/admin/events`, create an event at 7:00 PM ET; confirm `/events` displays "7:00 PM" and the `.ics` shows `DTSTART:...T230000Z`. If authoring from a non-NYC machine becomes common, promote the tz-aware picker from v2 → now.
+  - [ ] 🟢 **Per-event OG image** — confirm `/events/[slug]/opengraph-image` renders as `image/png` at runtime (build compiles it; only curled the hashed route, not visually verified).
+  - [ ] 🟢 **Events e2e in CI** — `tests/e2e/events.spec.ts` + the two `/events*` a11y routes are written but were only confirmed green via curl locally (the Playwright run latched onto a stray dev server before `reuseExistingServer: false` landed). Confirm they pass in CI / against a clean `pnpm build && pnpm start`.
+- [ ] **Event RSVP + ticketing (events v2)** — native RSVP (name/email → `event_rsvps` table, capacity cap, confirmation email) unblocks with `RESEND_API_KEY`; paid tickets reuse the donations Stripe checkout pattern. v1 ships external RSVP links only. See ADR 0007 "Triggers to revisit".
 - [ ] **Donor portal** (login → history → update payment method)
 - [ ] **Year-of-cohort retrospective UX** (Spotify-wrapped-style)
 - [ ] **i18n** with hreflang per [`docs/research/`](research/) SEO notes — Spanish first per artist community
@@ -85,6 +91,7 @@ These come from the "When the data layer lands" tier of prior work — gated on 
 ### Tier C — Nice-to-haves
 
 - [x] `knip` for unused exports/files — wired into `pnpm qa`
+- [ ] **Migrations + live-smoke CI job** — add a `migrations` job (`supabase/setup-cli` → `supabase start` → `supabase db reset`, optional seed + RLS smoke) so a broken migration or RLS policy fails CI automatically instead of in manual testing. Ready-to-enable sketch in [`docs/checklists/pre-merge.md`](checklists/pre-merge.md) "Recommended next CI enhancement". Would have auto-caught the `/events` live-path gap.
 - [ ] `@next/bundle-analyzer` on a manual `workflow_dispatch` to keep CI green
 - [x] `detect-secrets` pre-commit hook — landed as `secretlint` in `lefthook.yml`
 - [ ] **Content-contract test** — assert every Keystatic entry parses against the schema. Deferred until `content/` has material entries beyond the four seed files.
@@ -134,8 +141,10 @@ Both unblock the moment `RESEND_API_KEY` is set.
 | [`docs/adr/0004-ai-provider.md`](adr/0004-ai-provider.md) | Google Gemini Flash via the Vercel AI SDK. Flip triggers + cost ceiling. |
 | [`docs/adr/0005-opportunities-data-model.md`](adr/0005-opportunities-data-model.md) | Supabase schema for opportunities, canonical-key dedup, live pgvector cosine pass. |
 | [`docs/adr/0006-public-no-login-save.md`](adr/0006-public-no-login-save.md) | URL-hash + localStorage + ICS export. Why no accounts in v1; triggers to revisit. |
+| [`docs/adr/0007-events-data-model.md`](adr/0007-events-data-model.md) | Supabase `events` table, admin CRUD, timed ICS, external-RSVP v1; v2 triggers. |
 | [`docs/checklists/server-action.md`](checklists/server-action.md) | The 8-step Server Action contract — read before writing one |
 | [`docs/checklists/ingest-source.md`](checklists/ingest-source.md) | Procedure for adding a new /opportunities ingest source — read before writing one |
 | [`docs/checklists/asset-generation.md`](checklists/asset-generation.md) | Procedure for adding any new visual asset — craft-fidelity ladder + watermark verification |
+| [`docs/checklists/pre-merge.md`](checklists/pre-merge.md) | The canonical pre-merge / pre-publish review — read before approving or merging |
 | [`docs/research/design-audit-2026-05.md`](research/design-audit-2026-05.md) | Senior-designer-grade UI/UX audit (May 2026). Diagnosis, prioritised 10-item ship list. Read before any design work. |
 | [`docs/research/`](research/) | Pre-build research (peer benchmarking, studio booking, grant sources, opportunities UX, design audit). Audit trail. |

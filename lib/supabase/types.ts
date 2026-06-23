@@ -134,6 +134,37 @@ export interface OpportunitySubmission {
   updated_at: string;
 }
 
+// /events — see supabase/migrations/0005_events.sql and
+// docs/adr/0007-events-data-model.md. Named `EventRecord` (not `Event`)
+// because the bare `Event` collides with the DOM global.
+
+export type EventType = "sharing" | "gathering" | "workshop" | "performance" | "talk";
+
+export interface EventRecord {
+  id: string;
+  slug: string;
+  title: string;
+  event_type: EventType;
+  starts_at: string;
+  ends_at: string | null;
+  timezone: string;
+  location_name: string | null;
+  location_address: string | null;
+  is_online: boolean;
+  online_url: string | null;
+  summary: string;
+  description: string | null;
+  cohort_slug: string | null;
+  program_id: string | null;
+  rsvp_url: string | null;
+  rsvp_label: string | null;
+  image_path: string | null;
+  is_published: boolean;
+  is_cancelled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // Database shape passed to Supabase clients. Once `supabase gen types
 // typescript --linked` is wired in CI, this becomes the auto-generated
 // `Database` type instead — the structural shape stays the same.
@@ -196,6 +227,15 @@ export interface Database {
         Update: Partial<OpportunitySubmission>;
         Relationships: [];
       };
+      events: {
+        Row: EventRecord;
+        // Narrowed insert mirrors the SQL: NOT NULL columns without a
+        // default must be present at compile time.
+        Insert: Partial<EventRecord> &
+          Pick<EventRecord, "slug" | "title" | "starts_at" | "summary">;
+        Update: Partial<EventRecord>;
+        Relationships: [];
+      };
     };
     Views: Record<never, never>;
     Functions: Record<never, never>;
@@ -203,6 +243,7 @@ export interface Database {
       opportunity_type: OpportunityType;
       location_requirement: LocationRequirement;
       submission_status: SubmissionStatus;
+      event_type: EventType;
     };
     CompositeTypes: Record<never, never>;
   };

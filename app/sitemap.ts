@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next";
 import { reader } from "@/lib/content/reader";
 import { publicEnv } from "@/lib/env/public";
+import { listEvents } from "@/lib/events/read";
 
 // Sitemap covers:
 //  - the marketing routes (static)
 //  - dynamic /artists/[slug] from Keystatic
 //  - dynamic /cohorts/[slug] from Keystatic
+//  - dynamic /events/[slug] from Supabase (published only)
 //
 // Excluded by design (handled in robots.ts): /admin/*, /apply/* deep
 // state, /keystatic (admin UI).
@@ -58,6 +60,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // ignored — content not yet present
   }
 
+  // Published events from Supabase. Degrades to the static fallback when
+  // Supabase isn't configured (listEvents handles that), so the build
+  // never crashes pre-provision.
+  const { upcoming, past } = await listEvents();
+  const eventSlugs = [...upcoming, ...past].map((e) => e.slug);
+
   return [
     ...staticRoutes.map((route) => ({
       url: `${base}${route}`,
@@ -83,6 +91,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "yearly" as const,
       priority: 0.7,
+    })),
+    ...eventSlugs.map((slug) => ({
+      url: `${base}/events/${slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
     })),
   ];
 }

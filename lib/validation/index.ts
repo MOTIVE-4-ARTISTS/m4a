@@ -44,6 +44,16 @@ export const VALIDATION_LIMITS = {
   // the artist) and well below the LLM context budget, so the prompt
   // cost stays predictable. See docs/adr/0004-ai-provider.md §privacy.
   ARTIST_DESCRIPTION_MAX: 500,
+
+  // Events (admin-authored). Title is a headline; summary is the card
+  // blurb; description is the long-form body. Bounded so a single row
+  // can't blow past Supabase limits or break card layouts.
+  EVENT_TITLE_MAX: 160,
+  EVENT_SUMMARY_MAX: 400,
+  EVENT_DESCRIPTION_MAX: 8_000,
+  // Display fields on the event (venue name + address, RSVP button label).
+  EVENT_LOCATION_MAX: 200,
+  EVENT_RSVP_LABEL_MAX: 60,
 } as const;
 
 // Friendly default messages are baked into the shared schemas so every form

@@ -20,6 +20,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "seed:opportunities": "pnpm dlx tsx --require ./scripts/_tsx-bootstrap.cjs scripts/seed-opportunities.ts",
+    "seed:events": "pnpm dlx tsx --require ./scripts/_tsx-bootstrap.cjs scripts/seed-events.ts",
     "knip": "knip",
     "secrets": "secretlint '**/*'",
     "qa": "pnpm lint && pnpm typecheck && pnpm knip && pnpm test && pnpm build",

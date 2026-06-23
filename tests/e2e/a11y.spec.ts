@@ -13,6 +13,8 @@ const ROUTES = [
   "/apply",
   "/opportunities",
   "/opportunities/submit",
+  "/events",
+  "/events/2026-air-sharing",
   "/accessibility",
 ] as const;
 
