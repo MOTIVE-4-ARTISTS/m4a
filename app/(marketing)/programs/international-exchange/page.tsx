@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { CycleStatus } from "@/components/programs/cycle-status";
 import { Button } from "@/components/ui/button";
+import { HairlineRule } from "@/components/ui/hairline-rule";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
+import { listArtists, listExchanges, listPartners } from "@/lib/content/reader";
 import { PROGRAMS } from "@/lib/programs";
 
 export const metadata = {
@@ -13,7 +15,36 @@ export const metadata = {
 
 const PROGRAM = PROGRAMS.find((p) => p.id === "international");
 
-export default function InternationalExchangePage() {
+export default async function InternationalExchangePage() {
+  const [exchanges, artists, partners] = await Promise.all([
+    listExchanges(),
+    listArtists(),
+    listPartners(),
+  ]);
+
+  const artistName = new Map(artists.map((a) => [a.slug, a.entry.name || a.slug]));
+  const partnerName = new Map(partners.map((p) => [p.slug, p.entry.name]));
+
+  const orderedExchanges = [...exchanges].sort((a, b) => b.entry.year - a.entry.year);
+
+  const ArtistLinks = ({ slugs }: { slugs: readonly (string | null)[] | undefined }) => (
+    <>
+      {(slugs ?? [])
+        .filter((s): s is string => Boolean(s))
+        .map((s, i, arr) => (
+          <span key={s}>
+            <Link
+              href={`/artists/${s}`}
+              className="text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+            >
+              {artistName.get(s) ?? s}
+            </Link>
+            {i < arr.length - 1 ? ", " : ""}
+          </span>
+        ))}
+    </>
+  );
+
   return (
     <Section>
       <ProseHero
@@ -29,15 +60,64 @@ export default function InternationalExchangePage() {
           work, and we host the artists who travel here. Creating long-lasting relationships is
           important to us.
         </p>
+      </Prose>
 
-        <h2>Current exchanges</h2>
-        <p>
-          Past and current partnerships include exchanges with artists in Norway, Belgium, Scotland,
-          and Hong Kong. The full archive of residencies — Sara Røisland Torsvik, Leah Wilks, Brita
-          Grov, Mirte Bogaert, Neva Guido, Sharron Devine, Abby Man-Yee Chan, and others — lives in
-          the artists directory.
-        </p>
+      {orderedExchanges.length > 0 ? (
+        <div className="mt-12">
+          <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
+            the exchanges
+          </p>
+          <HairlineRule variant="short" className="mt-4 mb-8 border-[var(--color-brand)]" />
+          <ul className="flex flex-col gap-8">
+            {orderedExchanges.map(({ slug, entry }) => (
+              <li key={slug} className="grid gap-2 md:grid-cols-[auto_1fr] md:gap-8">
+                <div className="font-[family-name:var(--font-display)] text-2xl text-[var(--color-accent-ink)]">
+                  {entry.year}
+                </div>
+                <div>
+                  <h2 className="font-[family-name:var(--font-display)] text-xl tracking-tight">
+                    {entry.partner ? (partnerName.get(entry.partner) ?? entry.title) : entry.title}
+                  </h2>
+                  {entry.dates ? (
+                    <p className="mt-1 text-sm text-[var(--color-ink-muted)]">{entry.dates}</p>
+                  ) : null}
+                  <dl className="mt-3 grid gap-1 text-sm">
+                    {(entry.incomingArtists ?? []).filter(Boolean).length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        <dt className="lowercase tracking-[0.14em] text-[var(--color-ink-muted)]">
+                          to nyc:
+                        </dt>
+                        <dd>
+                          <ArtistLinks slugs={entry.incomingArtists} />
+                        </dd>
+                      </div>
+                    ) : null}
+                    {(entry.outgoingArtists ?? []).filter(Boolean).length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        <dt className="lowercase tracking-[0.14em] text-[var(--color-ink-muted)]">
+                          abroad:
+                        </dt>
+                        <dd>
+                          <ArtistLinks slugs={entry.outgoingArtists} />
+                        </dd>
+                      </div>
+                    ) : null}
+                  </dl>
+                  {entry.work || entry.support ? (
+                    <p className="mt-2 text-sm text-[var(--color-ink-muted)]">
+                      {entry.work ? <em>{entry.work}</em> : null}
+                      {entry.work && entry.support ? " · " : null}
+                      {entry.support ? `supported by ${entry.support}` : null}
+                    </p>
+                  ) : null}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
+      <Prose className="mt-12">
         <h2>If you're an organization interested in partnering</h2>
         <p>
           Email <Link href="/connect">hello@motive4artists.org</Link>. We're a small team and we

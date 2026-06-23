@@ -1,11 +1,13 @@
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SoftChevron, StarMark } from "@/components/brand/marks";
 import { HairlineRule } from "@/components/ui/hairline-rule";
 import { Prose } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
-import { reader } from "@/lib/content/reader";
+import { listCohortsForArtist, listExchangesForArtist, reader } from "@/lib/content/reader";
 import { MarkdocContent } from "@/lib/content/render-markdoc";
+import { COHORT_PROGRAM_LABEL, type CohortProgram } from "@/lib/programs";
 
 type Params = { slug: string };
 
@@ -54,6 +56,28 @@ export default async function ArtistPage({ params }: { params: Promise<Params> }
 
   const bio = await entry.bio();
   const name = entry.name || slug;
+
+  // Backlinks: which cohort(s) + exchange(s) this artist took part in. Derived
+  // from the rosters (the artist schema doesn't store membership) so the
+  // profile shows the artist's history without a second source of truth.
+  const [memberCohorts, memberExchanges] = await Promise.all([
+    listCohortsForArtist(slug),
+    listExchangesForArtist(slug),
+  ]);
+  const appearances = [
+    ...memberCohorts.map((c) => ({
+      key: `c-${c.slug}`,
+      href: `/cohorts/${c.slug}`,
+      year: c.entry.year,
+      label: COHORT_PROGRAM_LABEL[c.entry.program as CohortProgram] ?? c.entry.program,
+    })),
+    ...memberExchanges.map((e) => ({
+      key: `e-${e.slug}`,
+      href: "/programs/international-exchange",
+      year: e.entry.year,
+      label: "International Exchange",
+    })),
+  ].sort((a, b) => b.year - a.year);
 
   return (
     <Section>
@@ -133,6 +157,28 @@ export default async function ArtistPage({ params }: { params: Promise<Params> }
                     </li>
                   ) : null,
                 )}
+              </ul>
+            </>
+          ) : null}
+
+          {appearances.length > 0 ? (
+            <>
+              <p className="mt-12 lowercase text-xs tracking-[0.18em] text-[var(--color-ink-muted)]">
+                appeared in
+              </p>
+              <ul className="mt-3 flex flex-col gap-2 text-sm">
+                {appearances.map((ap) => (
+                  <li key={ap.key}>
+                    <Link
+                      href={ap.href}
+                      className="inline-flex items-baseline gap-2 text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+                    >
+                      <span className="text-[var(--color-accent-ink)]">{ap.year}</span>
+                      <span className="lowercase">{ap.label}</span>
+                      <SoftChevron size={11} className="text-[var(--color-brand-deep)]" />
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </>
           ) : null}
