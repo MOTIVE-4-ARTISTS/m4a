@@ -38,3 +38,15 @@ yarn-error.log*
 !.vscode/extensions.json
 
 storybook-static
+
+# Raw legacy source dumps (Instagram export, motivebrooklyn.com crawl).
+# Never committed: per docs/checklists/asset-generation.md §3 raw material
+# stays in a scratch area; only curated, processed assets land in public/content.
+_source-archive/
+
+# Sensitive founding-record data (bank account numbers, director home
+# addresses + personal contact, banker contact, scan locations). Kept local
+# only until a secure vault (TechSoup-sourced 1Password / Google Drive
+# "Founding Docs") is chosen. The committed docs/governance/*.md files carry
+# the redacted index and point here. secretlint catches keys, not these.
+*.secret.md
