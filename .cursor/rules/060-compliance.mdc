@@ -12,9 +12,8 @@ Wording on the donate page, the receipt email, and the compliance footer is lega
 
 - Legal name "MOTIVE 4 ARTISTS INC." (uppercase, as filed with NY DOS).
 - EIN.
-- Tax-deductibility line. Pre-determination: **"Tax-exempt status pending — IRS Form 1023-EZ submitted [date]."** Post-determination: **"Donations are tax-deductible under §501(c)(3)."**
+- Tax-deductibility line: **"Donations are tax-deductible under §501(c)(3)."** (We hold our own determination, effective March 2, 2026 — there is no longer a fiscal sponsor or pending-status wording.)
 - NY Charities Bureau §174-B disclosure with link to NY AG charities registration once filed (CHAR410, CHAR500).
-- Fiscal sponsor block (The Field / Performance Zone) **while applicable** — remove the day we get our own determination letter.
 
 ## IRS substantiation rules
 
@@ -24,4 +23,11 @@ Wording on the donate page, the receipt email, and the compliance footer is lega
 
 ## What goes in `<ComplianceFooter />`
 
-A single reusable component used in `app/layout.tsx`. Don't render its pieces individually elsewhere.
+A single reusable component used in the marketing layout. It carries the **lean** set only: legal name + EIN (one-line trust signal), the accessibility/privacy/terms link cluster, contact, social, and newsletter. Peer best practice (`docs/research/peer-website-benchmarking.md` §4.6) — no peer surfaces tax-status or §174-B in a global footer, and doing so crowds the footer without adding legal protection.
+
+The legally-binding disclosures render on **solicitation surfaces** instead:
+
+- The §501(c)(3) tax-deductibility line → `/donate` and the receipt email.
+- `<CharitiesDisclosure />` (NY §174-B) → `/donate` and `/transparency`. Not gated on `irsStatus` — it must remain wherever we solicit.
+
+Each piece of legal text lives in exactly one component under `components/compliance/`. Don't inline the wording anywhere else.

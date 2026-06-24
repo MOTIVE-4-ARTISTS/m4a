@@ -50,10 +50,9 @@ export default function TermsPage() {
 
         <h2>Donations</h2>
         <p>
-          Donations made through this site (or through our fiscal sponsor while §501(c)(3)
-          determination is pending) are non-refundable except in cases of clear error (duplicate
-          charge, wrong amount). To request a refund or correction, email us within 60 days of the
-          gift.
+          Donations made through this site are non-refundable except in cases of clear error
+          (duplicate charge, wrong amount). To request a refund or correction, email us within 60
+          days of the gift.
         </p>
 
         <h2>Links to other sites</h2>

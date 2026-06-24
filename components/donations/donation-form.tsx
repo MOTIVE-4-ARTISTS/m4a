@@ -75,8 +75,8 @@ export function DonationForm() {
   if (!pk) {
     return (
       <div className="rounded-[var(--radius-card)] border border-[var(--color-rule)] bg-[var(--color-paper-warm)] p-5 text-sm text-[var(--color-ink-muted)]">
-        <strong className="text-[var(--color-ink)]">Stripe is in test mode setup.</strong> Until
-        configured, please use the fiscal-sponsor link on this page.
+        <strong className="text-[var(--color-ink)]">Online card giving is coming soon.</strong> In
+        the meantime, please use the email or check options on this page.
       </div>
     );
   }

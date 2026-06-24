@@ -1,25 +1,22 @@
 import Link from "next/link";
+import { NewsletterForm } from "@/components/forms/newsletter-form";
+import { SocialLinks } from "@/components/layout/social-links";
 import { ein, ORG } from "@/lib/org";
 
-// The compliance footer is the legal anchor of every page. Disclosures
-// surfaced here satisfy:
-//   - IRS substantiation framing (501(c)(3) line; pending vs. approved)
-//   - NY Exec. Law §174-B charitable solicitation disclosure
-//   - WCAG 2.2 accessibility statement linkage
-//   - Privacy / Terms surfacing for state consumer-privacy laws
+// Footer scope follows peer best practice (docs/research/peer-website-
+// benchmarking.md §4.6): nav, contact, social, newsletter, the legal-link
+// cluster (accessibility/privacy/terms), and a one-line legal identity.
 //
-// The footer names the fiscal sponsor in `taxLine` but does NOT render the
-// full <FiscalSponsorBlock /> with the earmark clause — that lives only on
-// donation surfaces (today /donate). See AGENTS.md > Compliance.
+// What deliberately does NOT live here: the NY §174-B charities disclosure.
+// The hard legal requirement attaches to *solicitation* surfaces, not every
+// page — so it renders on /donate (via <CharitiesDisclosure />) and on
+// /transparency. No peer surfaces it in a global footer; doing so crowds the
+// footer's actual job without adding legal protection. See AGENTS.md > Compliance.
 //
-// Wording in `taxLine` is legally significant. Treasurer (Eran) reviews
-// any change before merge per .cursor/rules/060-compliance.mdc.
+// The legal name + EIN line below is a low-cost trust signal (kept per the
+// research §7.1). Treasurer (Eran) reviews legal-text changes before merge
+// per .cursor/rules/060-compliance.mdc.
 export function ComplianceFooter() {
-  const taxLine =
-    ORG.irsStatus === "approved"
-      ? "Donations are tax-deductible under §501(c)(3)."
-      : `Federal 501(c)(3) tax-exempt status pending — IRS Form 1023-EZ submitted May 2026. Gifts during pendency flow through our fiscal sponsor, ${ORG.fiscalSponsor.name}.`;
-
   return (
     <footer className="mt-auto border-t border-[var(--color-rule)] bg-[var(--color-paper-warm)] text-sm text-[var(--color-ink-muted)]">
       <div className="mx-auto max-w-[var(--container-page)] space-y-6 px-6 py-10">
@@ -130,18 +127,27 @@ export function ComplianceFooter() {
           </nav>
         </div>
 
-        <div className="space-y-2 border-t border-[var(--color-rule)] pt-6 text-xs">
+        <div className="flex flex-col gap-8 border-t border-[var(--color-rule)] pt-8 sm:flex-row sm:items-end sm:justify-between sm:gap-12">
+          <div className="w-full max-w-xs">
+            <p className="mb-3 text-xs lowercase tracking-[0.18em] text-[var(--color-accent-ink)]">
+              stay in touch
+            </p>
+            <NewsletterForm source="footer" variant="inline" />
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-xs lowercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+              follow
+            </span>
+            <SocialLinks />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1 border-t border-[var(--color-rule)] pt-6 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <p>
-            {ORG.legalName} · EIN: {ein()} · NTEE {ORG.ntee} · §{ORG.foundationClassification}
+            {ORG.legalName} · EIN: {ein()}
           </p>
-          <p>{taxLine}</p>
           <p>
-            Registered in {ORG.legalCounty}. New York State residents may obtain a copy of our
-            latest annual report by writing to the NY Attorney General's Charities Bureau, 120
-            Broadway, New York, NY 10271.
-          </p>
-          <p>
-            © {new Date().getFullYear()} {ORG.legalName}. All rights reserved.
+            © {new Date().getFullYear()} {ORG.legalName}
           </p>
         </div>
       </div>

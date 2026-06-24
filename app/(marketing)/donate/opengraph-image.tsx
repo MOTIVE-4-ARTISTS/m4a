@@ -41,7 +41,7 @@ export default function DonateOgImage() {
           every dollar goes to artists.
         </div>
         <div style={{ fontSize: 28, lineHeight: 1.3, opacity: 0.7 }}>
-          tax-deductible gifts via The Field while our 501(c)(3) is pending.
+          every gift is tax-deductible — we're a 501(c)(3) nonprofit.
         </div>
       </div>
       <div

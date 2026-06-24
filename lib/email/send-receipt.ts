@@ -64,11 +64,7 @@ export async function sendDonationReceipt(args: Args) {
   <p>${ORG.legalName}<br>
   ${ORG.address.street}, ${ORG.address.city}, ${ORG.address.state} ${ORG.address.postal}<br>
   EIN: ${ein()}<br>
-  ${
-    ORG.irsStatus === "approved"
-      ? "Donations are tax-deductible under §501(c)(3)."
-      : "Federal 501(c)(3) tax-exempt status pending — IRS Form 1023-EZ submitted May 2026. While pending, gifts are routed through our fiscal sponsor The Field; this receipt confirms the earmarked contribution."
-  }</p>
+  Donations are tax-deductible under §501(c)(3).</p>
 
   <hr style="border: 0; border-top: 1px solid #e3ded1; margin: 32px 0;">
 

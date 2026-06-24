@@ -23,10 +23,9 @@ export default function PrivacyPage() {
         <h2>What we collect</h2>
         <ul>
           <li>
-            <strong>Donations.</strong> When you donate, our payment processor (Stripe or — until
-            501(c)(3) determination — our fiscal sponsor The Field) receives your name, email,
-            billing address, and payment method. We store the donation amount, your email, and
-            (optionally) your mailing address for receipt purposes.
+            <strong>Donations.</strong> When you donate, our payment processor (Stripe) receives
+            your name, email, billing address, and payment method. We store the donation amount,
+            your email, and (optionally) your mailing address for receipt purposes.
           </li>
           <li>
             <strong>Newsletter.</strong> If you subscribe, we store your email in Supabase. We don't
@@ -55,7 +54,6 @@ export default function PrivacyPage() {
         <ul>
           <li>Supabase (Postgres, SOC 2 Type II)</li>
           <li>Stripe (payments, PCI-DSS Level 1)</li>
-          <li>The Field (current fiscal sponsor; pending determination)</li>
           <li>Resend (transactional email)</li>
           <li>Vercel (hosting + CDN)</li>
         </ul>

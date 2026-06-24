@@ -13,15 +13,14 @@ import { getStripe } from "@/lib/stripe/server";
 //   - "one_time" creates a single PaymentIntent
 //   - "monthly"  creates a Subscription with $X recurring monthly
 //
-// Until 501(c)(3) determination lands, the *primary* donate path on the
-// site links out to The Field's fiscal-sponsor page; this Server Action is
-// staged in test mode and the embedded UI surfaces a "test mode" notice
-// (see <DonationCheckout /> client component). The day the determination
-// letter arrives:
-//   1. Apply for Stripe nonprofit rate (2.2% + $0.30)
-//   2. Flip ORG.irsStatus -> "approved" in lib/org.ts
-//   3. Remove the fiscal-sponsor primary CTA from /donate
-//   4. This action becomes the primary path
+// We are a determined 501(c)(3). Until the production Stripe nonprofit
+// account is verified, ORG.onlineGivingLive is false and /donate routes
+// donors through the interim email/check ask; this action stays staged so
+// we can validate end-to-end. To go live:
+//   1. Confirm the Stripe nonprofit rate (2.2% + $0.30) is applied
+//   2. Verify the production publishable + secret keys are set
+//   3. Flip ORG.onlineGivingLive -> true in lib/org.ts
+//   4. This action becomes the primary donate path
 
 const schema = z.object({
   mode: z.enum(["one_time", "monthly"]).default("one_time"),
@@ -54,7 +53,7 @@ export async function createCheckout(input: z.infer<typeof schema>): Promise<Cre
     return {
       ok: false,
       message:
-        "Donations are not yet configured — please use the fiscal-sponsor link on this page.",
+        "Online card giving isn't configured yet — please use the email or check options on this page.",
     };
   }
 

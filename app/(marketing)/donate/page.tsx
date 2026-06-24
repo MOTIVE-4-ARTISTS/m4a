@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CalloutMark } from "@/components/brand/marks";
-import { FiscalSponsorBlock } from "@/components/compliance/fiscal-sponsor-block";
+import { CharitiesDisclosure } from "@/components/compliance/charities-disclosure";
 import { DonationForm } from "@/components/donations/donation-form";
 import { OtherWaysToGive } from "@/components/donations/other-ways";
 import { Button } from "@/components/ui/button";
@@ -13,24 +13,20 @@ import { ORG } from "@/lib/org";
 export const metadata = {
   title: "Donate",
   description:
-    "Tax-deductible gifts to MOtiVE 4 Artists — Stripe checkout when our nonprofit account is live, fiscal-sponsor link while our 501(c)(3) determination is pending.",
+    "Tax-deductible gifts to MOtiVE 4 Artists, a 501(c)(3) nonprofit. Every dollar subsidizes studio time, residency stipends, and travel for movement-based artists.",
 };
 
-// Donate page. Composition is the SAME for pre- and post-501(c)(3)
-// determination — only the primary CTA changes. Today, while irsStatus is
-// "pending", the primary path is the fiscal-sponsor link. The Stripe
-// embedded checkout is also wired in test mode so we can validate end-to-
-// end. The day determination lands:
-//   1. ORG.irsStatus -> "approved" (lib/org.ts)
-//   2. The primary card flips to <DonationForm />
-//   3. The fiscal-sponsor card collapses to a footnote
+// Donate page. We are a determined 501(c)(3); every gift is tax-deductible.
+// The primary CTA keys off ORG.onlineGivingLive: while the production Stripe
+// account is still being verified we route donors through an interim
+// email/check ask (gifts go directly to MOtiVE 4 Artists Inc., not a third
+// party). The day the live checkout is confirmed:
+//   1. ORG.onlineGivingLive -> true (lib/org.ts)
+//   2. The primary card flips to the embedded <DonationForm />
 //
-// Round 6 design pass: the "where the money goes" list was lifted out of
-// the Prose block at the bottom into a paper-warm callout with the
-// CalloutMark glyph next to each item, mirroring the transparency
-// year-one-commitments treatment. The callout sits above the FiscalSponsor
-// block so the math justification reads adjacent to the give CTAs without
-// burying it below the legal disclosure.
+// The "where the money goes" callout sits adjacent to the give CTAs so the
+// math justification reads next to the ask, mirroring the transparency
+// year-one-commitments treatment.
 
 const FUND_USES: Array<{ headline: string; detail: string }> = [
   {
@@ -51,8 +47,6 @@ const FUND_USES: Array<{ headline: string; detail: string }> = [
 ];
 
 export default function DonatePage() {
-  const pendingDetermination = ORG.irsStatus !== "approved";
-
   return (
     <Section>
       <ProseHero
@@ -63,50 +57,43 @@ export default function DonatePage() {
       <HairlineRule variant="short" className="mb-12 border-[var(--color-brand)]" />
 
       <div className="mt-2 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        {pendingDetermination ? (
+        {ORG.onlineGivingLive ? (
+          <Card className="space-y-5">
+            <CardEyebrow>tax-deductible</CardEyebrow>
+            <CardTitle>give now</CardTitle>
+            <DonationForm />
+          </Card>
+        ) : (
           <Card tone="brand" className="space-y-5">
             <CardEyebrow className="!text-[var(--color-accent-ink)]">
-              tax-deductible · via our fiscal sponsor
+              tax-deductible · 501(c)(3)
             </CardEyebrow>
             <CardTitle>give now</CardTitle>
             <p className="text-sm text-[var(--color-ink)]">
-              while our 501(c)(3) determination is pending (IRS Form 1023-EZ submitted May 2026),
-              tax-deductible gifts flow through <strong>The Field (Performance Zone Inc)</strong>, a
-              §501(c)(3) that serves the performing arts community.
+              {ORG.displayName} is a federally recognized 501(c)(3) nonprofit, so every gift is
+              tax-deductible to the extent allowed by law. online card giving is coming soon — in
+              the meantime, the fastest way to give today is by email or check, made directly to{" "}
+              <strong>{ORG.legalName}</strong>.
             </p>
             <div className="flex flex-wrap gap-3">
               <Button
                 as="a"
-                href="https://www.thefield.org/sponsorship"
-                rel="noopener"
-                target="_blank"
+                href={`mailto:${ORG.contact.email}?subject=Donation%20to%20${encodeURIComponent(
+                  ORG.displayName,
+                )}`}
                 intent="brand"
                 size="lg"
               >
-                give through The Field
+                give by email
               </Button>
               <Button as={Link} href="/transparency" intent="ink" size="lg">
                 see the receipts
               </Button>
             </div>
             <p className="text-xs text-[var(--color-ink-muted)]">
-              contributions earmarked for {ORG.displayName} are tax-deductible to the extent allowed
-              by law. you'll receive an IRS-compliant acknowledgment from The Field.
+              prefer a check? see “other ways to give.” online card giving via Stripe is coming
+              soon.
             </p>
-            <details className="mt-2 text-sm">
-              <summary className="cursor-pointer text-[var(--color-ink)]">
-                or use the direct Stripe checkout (test mode while we wait for determination)
-              </summary>
-              <div className="mt-4">
-                <DonationForm />
-              </div>
-            </details>
-          </Card>
-        ) : (
-          <Card className="space-y-5">
-            <CardEyebrow>tax-deductible</CardEyebrow>
-            <CardTitle>give now</CardTitle>
-            <DonationForm />
           </Card>
         )}
 
@@ -146,8 +133,11 @@ export default function DonatePage() {
         </ul>
       </section>
 
-      <div className="mt-12">
-        <FiscalSponsorBlock />
+      <div className="mt-12 space-y-6">
+        {/* §174-B disclosure on the solicitation surface — required wherever
+            we solicit, independent of tax-exempt status. See
+            components/compliance/charities-disclosure.tsx. */}
+        <CharitiesDisclosure />
       </div>
     </Section>
   );

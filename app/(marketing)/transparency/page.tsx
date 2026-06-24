@@ -1,4 +1,5 @@
 import { CalloutMark } from "@/components/brand/marks";
+import { CharitiesDisclosure } from "@/components/compliance/charities-disclosure";
 import { Card, CardEyebrow, CardTitle } from "@/components/ui/card";
 import { HairlineRule } from "@/components/ui/hairline-rule";
 import { Prose, ProseHero } from "@/components/ui/prose";
@@ -8,14 +9,13 @@ import { ein, ORG } from "@/lib/org";
 export const metadata = {
   title: "Transparency",
   description:
-    "Legal status, board, fiscal sponsorship, year-one commitments, and (forthcoming) financials — the public-record disclosures of MOtiVE 4 Artists Inc.",
+    "Legal status, board, governance, year-one commitments, and (forthcoming) financials — the public-record disclosures of MOtiVE 4 Artists Inc.",
 };
 
-// Transparency page is the one-stop public record. Required to keep
-// current while the 1023-EZ is pending and as the org publishes its
-// first 990s. Day the IRS determination letter arrives: the status block
-// here AND the irsStatus flag in lib/org.ts both flip; touching one
-// without the other lands a half-truth on the public record.
+// Transparency page is the one-stop public record. Keep current as the org
+// publishes its first 990s. The legal-status block here mirrors the
+// irsStatus flag in lib/org.ts; touching one without the other lands a
+// half-truth on the public record.
 //
 // The "year-one commitments" block was added per the May 2026 design
 // audit (recommendation §10 — the Chashama "name what you'll publish"
@@ -39,10 +39,6 @@ const YEAR_ONE_COMMITMENTS: Array<{ label: string; when: string }> = [
     label: "board-approved annual report",
     when: "published here within 30 days of board adoption",
   },
-  {
-    label: "fiscal-sponsor reconciliation against contributions earmarked for M4A",
-    when: "annually, alongside the 990-N",
-  },
 ];
 
 export default function TransparencyPage() {
@@ -59,7 +55,7 @@ export default function TransparencyPage() {
         <li>
           <Card>
             <CardEyebrow>legal status</CardEyebrow>
-            <CardTitle className="mt-2">501(c)(3) pending</CardTitle>
+            <CardTitle className="mt-2">501(c)(3) tax-exempt</CardTitle>
             <dl className="mt-4 grid grid-cols-[max-content_1fr] gap-x-4 gap-y-2 text-sm">
               <dt className="text-[var(--color-ink-muted)]">Legal name</dt>
               <dd>{ORG.legalName}</dd>
@@ -73,26 +69,17 @@ export default function TransparencyPage() {
               <dd>
                 {ORG.incorporationDate}, {ORG.incorporationState}
               </dd>
+              <dt className="text-[var(--color-ink-muted)]">NY DOS ID</dt>
+              <dd>
+                {ORG.dosId} · filing {ORG.dosFilingNumber}
+              </dd>
               <dt className="text-[var(--color-ink-muted)]">Registered</dt>
               <dd>{ORG.legalCounty}</dd>
-              <dt className="text-[var(--color-ink-muted)]">IRS Form</dt>
-              <dd>1023-EZ submitted May 2026</dd>
+              <dt className="text-[var(--color-ink-muted)]">Fiscal year</dt>
+              <dd>ends {ORG.fiscalYearEnd}</dd>
+              <dt className="text-[var(--color-ink-muted)]">Federal status</dt>
+              <dd>501(c)(3) tax-exempt — effective {ORG.taxExemptEffective}</dd>
             </dl>
-          </Card>
-        </li>
-
-        <li>
-          <Card>
-            <CardEyebrow>fiscal sponsorship</CardEyebrow>
-            <CardTitle className="mt-2">The Field (Performance Zone Inc)</CardTitle>
-            <p className="mt-3 text-sm text-[var(--color-ink-muted)]">
-              while our 501(c)(3) determination is pending, tax-deductible gifts flow through our
-              fiscal sponsor.
-            </p>
-            <p className="mt-2 text-sm text-[var(--color-ink-muted)]">
-              {ORG.fiscalSponsor.address}
-            </p>
-            <p className="mt-1 text-sm text-[var(--color-ink-muted)]">{ORG.fiscalSponsor.phone}</p>
           </Card>
         </li>
 
@@ -168,11 +155,8 @@ export default function TransparencyPage() {
           publish a board-approved year-end financial summary here in plain English alongside the
           official filing.
         </p>
-        <p>
-          New York State residents may obtain a copy of our latest annual report by writing to the
-          NY Attorney General's Charities Bureau, 120 Broadway, New York, NY 10271.
-        </p>
       </Prose>
+      <CharitiesDisclosure className="mt-4 max-w-[65ch] text-sm text-[var(--color-ink-muted)]" />
     </Section>
   );
 }
