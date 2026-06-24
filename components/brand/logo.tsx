@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BRAND_ASSETS, WORDMARK_ASPECT } from "@/lib/brand/assets";
+import { BRAND_ASSETS } from "@/lib/brand/assets";
+
+type WordmarkVariant = "wordmark" | "wordmarkTight" | "wordmarkBrand";
 
 // MOtiVE 4 Artists logo system.
 //
@@ -18,22 +20,26 @@ import { BRAND_ASSETS, WORDMARK_ASPECT } from "@/lib/brand/assets";
 // brand-yellow surface must use --color-ink.
 
 type WordmarkProps = {
-  // Rendered width in CSS pixels. Height derives from the locked aspect
-  // ratio in WORDMARK_ASPECT so the wordmark never stretches.
+  // Rendered width in CSS pixels. Height derives from the chosen asset's
+  // intrinsic ratio so the wordmark never stretches.
   width: number;
   className?: string;
   // Pass `priority` on the LCP wordmark (header + hero on the home page).
   // Leave undefined for incidental uses (footer, marketing pages below
   // the fold) so we don't fight Next.js' preload budget.
   priority?: boolean | undefined;
+  // "wordmarkTight" is the padding-trimmed crop for slim placements (header);
+  // "wordmark" is the full-padding master for larger standalone use.
+  variant?: WordmarkVariant;
 };
 
-export function Wordmark({ width, className, priority }: WordmarkProps) {
-  const height = Math.round((width * WORDMARK_ASPECT.height) / WORDMARK_ASPECT.width);
+export function Wordmark({ width, className, priority, variant = "wordmark" }: WordmarkProps) {
+  const asset = BRAND_ASSETS[variant];
+  const height = Math.round((width * asset.height) / asset.width);
   return (
     <Image
-      src={BRAND_ASSETS.wordmark.src}
-      alt={BRAND_ASSETS.wordmark.alt}
+      src={asset.src}
+      alt={asset.alt}
       width={width}
       height={height}
       priority={priority ?? false}
@@ -45,24 +51,24 @@ export function Wordmark({ width, className, priority }: WordmarkProps) {
 // Header / footer "click the logo to go home" treatment. The wordmark
 // itself carries the alt text, so the <Link> gets `aria-label` for AT
 // users and the image is the sole visual.
+//
+// Default is "wordmarkBrand" — the transparent brand-yellow letterforms — so
+// the mark blends into the cream paper surface instead of sitting on a yellow
+// plate (the old "floating sticker"). See ADR 0002 change log 2026-06-23.
 export function BrandLockup({
-  width = 168,
+  width = 68,
   className,
   priority,
+  variant = "wordmarkBrand",
 }: {
   width?: number;
   className?: string | undefined;
   priority?: boolean | undefined;
+  variant?: WordmarkVariant;
 }) {
   return (
-    <Link
-      href="/"
-      aria-label="MOtiVE 4 Artists — home"
-      className={className}
-      // The wordmark already includes generous padding inside the artwork,
-      // so we don't add extra spacing on the link itself.
-    >
-      <Wordmark width={width} priority={priority} className="block h-auto" />
+    <Link href="/" aria-label="MOtiVE 4 Artists — home" className={className}>
+      <Wordmark width={width} priority={priority} variant={variant} className="block h-auto" />
     </Link>
   );
 }

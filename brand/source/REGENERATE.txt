@@ -46,6 +46,7 @@ over watermarks. Run from the repo root.
 
   python3 - <<'EOF'
   from PIL import Image
+  import numpy as np
   import os
 
   SRC_WORDMARK = 'brand/source/logo-2026-05.png'           # ← swap to new master
@@ -83,8 +84,27 @@ over watermarks. Run from the repo root.
   else:
       glyph = Image.open(SRC_GLYPH).convert('RGB')
 
-  # Step 2: landscape wordmark — used in header / hero / footer
+  # Step 2: landscape wordmark — used in hero / large standalone placements
   master.save('public/brand/logo-wordmark.png', optimize=True)
+
+  # Step 2b: transparent brand-color wordmark — the HEADER mark since
+  # 2026-06-23 (ADR 0002). The master is white letterforms (blue≈255) on brand
+  # yellow (blue≈21); key alpha off the blue channel to lift the letters off
+  # the plate, repaint them brand yellow, crop tight + 4% margin. The result
+  # sits straight on the cream paper surface with no block edge. Imported via
+  # BRAND_ASSETS.wordmarkBrand.
+  arr = np.asarray(master, dtype=np.float32)
+  a = np.clip((arr[:, :, 2] - 60) / (235 - 60), 0.0, 1.0)
+  h, w = a.shape
+  rgba = np.zeros((h, w, 4), dtype=np.uint8)
+  rgba[:, :, 0], rgba[:, :, 1], rgba[:, :, 2] = BRAND_YELLOW
+  rgba[:, :, 3] = (a * 255).astype(np.uint8)
+  mark = Image.fromarray(rgba, 'RGBA')
+  mark = mark.crop(mark.getchannel('A').getbbox())
+  pad = int(round(max(mark.size) * 0.04))
+  mark_canvas = Image.new('RGBA', (mark.size[0] + 2 * pad, mark.size[1] + 2 * pad), (0, 0, 0, 0))
+  mark_canvas.paste(mark, (pad, pad), mark)
+  mark_canvas.save('public/brand/logo-wordmark-brand.png', optimize=True)
 
   # Step 3: square wordmark — used wherever a square is needed (Stripe etc)
   make_square(master, 1024).save('public/brand/logo-square.png', optimize=True)

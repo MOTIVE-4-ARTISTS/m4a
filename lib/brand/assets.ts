@@ -55,6 +55,32 @@ export const BRAND_ASSETS = {
     height: WORDMARK_ASPECT.height,
     alt: "MOtiVE 4 Artists",
   },
+  // Header-optimized crop. The master art carries ~22% yellow padding on each
+  // axis, so at header sizes the mark reads as a tiny sticker floating in a
+  // block. This variant trims that padding (even 5% margin re-added) so the
+  // mark holds its weight in a slim nav row. Derived from logo-wordmark.png —
+  // regenerate alongside it (see brand/source/REGENERATE.txt). The full-padding
+  // wordmark is kept for any larger standalone placement.
+  wordmarkTight: {
+    src: "/brand/logo-wordmark-tight.png",
+    width: 875,
+    height: 637,
+    alt: "MOtiVE 4 Artists",
+  },
+  // Transparent brand-color wordmark — the letterforms lifted off the yellow
+  // plate (alpha keyed from the white-on-yellow master) and repainted brand
+  // yellow, so the mark sits directly on the cream paper surface with no block
+  // edge. This is the header mark since 2026-06-23 (ADR 0002 change log):
+  // a brand-yellow logotype on cream is low-contrast (~1.8:1), which is fine
+  // because WCAG 1.4.3 exempts logotypes from contrast minimums and the <Link>
+  // wrapper carries the accessible name. Derived from the master via the
+  // recipe in brand/source/REGENERATE.txt — regenerate alongside the others.
+  wordmarkBrand: {
+    src: "/brand/logo-wordmark-brand.png",
+    width: 858,
+    height: 621,
+    alt: "MOtiVE 4 Artists",
+  },
   square: {
     src: "/brand/logo-square.png",
     width: 1024,
