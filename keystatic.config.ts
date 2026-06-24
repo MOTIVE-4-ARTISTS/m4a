@@ -122,6 +122,11 @@ export default config({
         }),
         country: fields.text({ label: "Country" }),
         url: fields.url({ label: "URL" }),
+        description: fields.text({
+          label: "Description",
+          description: "One sentence on who they are. Surfaced where the partner is featured.",
+          multiline: true,
+        }),
         kind: fields.select({
           label: "Kind",
           options: [

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CycleStatus } from "@/components/programs/cycle-status";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,13 @@ import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 import { listArtists, listExchanges, listPartners } from "@/lib/content/reader";
 import { PROGRAMS } from "@/lib/programs";
+
+// The exchange is anchored to Bergen Dansesenter; their own
+// /internasjonalt-samarbeid page documents the partnership from the
+// Norwegian side (artist statements, year-by-year roster). Linking it is
+// the reciprocal-credibility move — a peer org publicly vouching for the
+// program — and it keeps us from re-hosting copy we don't own.
+const BERGEN_EXCHANGE_URL = "https://bergendansesenter.no/internasjonalt-samarbeid";
 
 export const metadata = {
   title: "International Exchange",
@@ -24,8 +32,35 @@ export default async function InternationalExchangePage() {
 
   const artistName = new Map(artists.map((a) => [a.slug, a.entry.name || a.slug]));
   const partnerName = new Map(partners.map((p) => [p.slug, p.entry.name]));
+  const partnerUrl = new Map(partners.map((p) => [p.slug, p.entry.url]));
 
   const orderedExchanges = [...exchanges].sort((a, b) => b.entry.year - a.entry.year);
+
+  // Only partners with artwork get the logo treatment; the rest are still
+  // credited inline on each exchange. Keeps the section honest as more
+  // partner logos land without code changes.
+  const featuredPartners = partners.filter((p) => Boolean(p.entry.logo));
+
+  const PartnerHeading = ({ slug, fallback }: { slug: string | null; fallback: string }) => {
+    const label = slug ? (partnerName.get(slug) ?? fallback) : fallback;
+    const href = slug ? partnerUrl.get(slug) : null;
+    return (
+      <h2 className="font-[family-name:var(--font-display)] text-xl tracking-tight">
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            className="underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+          >
+            {label}
+          </a>
+        ) : (
+          label
+        )}
+      </h2>
+    );
+  };
 
   const ArtistLinks = ({ slugs }: { slugs: readonly (string | null)[] | undefined }) => (
     <>
@@ -62,6 +97,73 @@ export default async function InternationalExchangePage() {
         </p>
       </Prose>
 
+      {featuredPartners.length > 0 ? (
+        <section aria-labelledby="partners-heading" className="mt-12">
+          <p
+            id="partners-heading"
+            className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]"
+          >
+            partner organizations
+          </p>
+          <HairlineRule variant="short" className="mt-4 mb-8 border-[var(--color-brand)]" />
+          <ul className="flex flex-col gap-6">
+            {featuredPartners.map(({ slug, entry }) => (
+              <li
+                key={slug}
+                className="grid overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-rule)] md:grid-cols-[minmax(0,17rem)_1fr]"
+              >
+                <div className="flex items-center justify-center bg-[var(--color-accent-ink)] p-8">
+                  {entry.logo ? (
+                    <Image
+                      src={entry.logo}
+                      alt={entry.name}
+                      width={1500}
+                      height={325}
+                      className="h-auto w-full max-w-[13rem] object-contain"
+                    />
+                  ) : null}
+                </div>
+                <div className="p-6">
+                  <h3 className="font-[family-name:var(--font-display)] text-xl tracking-tight">
+                    {entry.name}
+                  </h3>
+                  {entry.country ? (
+                    <p className="mt-1 text-sm text-[var(--color-ink-muted)]">{entry.country}</p>
+                  ) : null}
+                  {entry.description ? (
+                    <p className="mt-3 max-w-[55ch] text-sm text-[var(--color-ink)]">
+                      {entry.description}
+                    </p>
+                  ) : null}
+                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                    {entry.url ? (
+                      <a
+                        href={entry.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+                      >
+                        {new URL(entry.url).host.replace(/^www\./, "")} ↗
+                      </a>
+                    ) : null}
+                    {slug === "bergen-dansesenter" ? (
+                      <a
+                        href={BERGEN_EXCHANGE_URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+                      >
+                        the exchange, from their side ↗
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       {orderedExchanges.length > 0 ? (
         <div className="mt-12">
           <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
@@ -75,9 +177,7 @@ export default async function InternationalExchangePage() {
                   {entry.year}
                 </div>
                 <div>
-                  <h2 className="font-[family-name:var(--font-display)] text-xl tracking-tight">
-                    {entry.partner ? (partnerName.get(entry.partner) ?? entry.title) : entry.title}
-                  </h2>
+                  <PartnerHeading slug={entry.partner} fallback={entry.title} />
                   {entry.dates ? (
                     <p className="mt-1 text-sm text-[var(--color-ink-muted)]">{entry.dates}</p>
                   ) : null}
@@ -116,6 +216,31 @@ export default async function InternationalExchangePage() {
           </ul>
         </div>
       ) : null}
+
+      <figure className="mt-12 max-w-[60ch] border-l-2 border-[var(--color-brand)] pl-5">
+        <blockquote className="font-[family-name:var(--font-display)] text-xl leading-snug tracking-tight text-[var(--color-ink)]">
+          “I will leave residency here with not only a deeper understanding of my craft, but also a
+          wealth of connections, information, new sources of inspiration, memories and archives
+          generated across the two-week working period.”
+        </blockquote>
+        <figcaption className="mt-3 text-sm text-[var(--color-ink-muted)]">
+          <Link
+            href="/artists/neva-guido"
+            className="text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+          >
+            Neva Guido
+          </Link>
+          , MOtiVE artist in Bergen, 2023 ·{" "}
+          <a
+            href={BERGEN_EXCHANGE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+          >
+            more reflections at Bergen Dansesenter ↗
+          </a>
+        </figcaption>
+      </figure>
 
       <Prose className="mt-12">
         <h2>If you're an organization interested in partnering</h2>
