@@ -22,10 +22,19 @@ export const MODEL_ID = "gemini-2.5-flash";
 // (we request 768 in lib/ai/embed.ts to match the pgvector column).
 export const EMBEDDING_MODEL_ID = "gemini-embedding-001";
 
-export function getGeminiModel() {
+// The configured provider instance, or null when no key is set. Exposed
+// (in addition to getGeminiModel) because the web-discovery path needs both
+// the model AND the provider's Google Search grounding tool
+// (`provider.tools.googleSearch`).
+export function getGeminiProvider() {
   const apiKey = serverEnv.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!apiKey) return null;
-  const provider = createGoogleGenerativeAI({ apiKey });
+  return createGoogleGenerativeAI({ apiKey });
+}
+
+export function getGeminiModel() {
+  const provider = getGeminiProvider();
+  if (!provider) return null;
   return provider(MODEL_ID);
 }
 

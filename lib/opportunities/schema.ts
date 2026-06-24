@@ -56,6 +56,9 @@ export const OPPORTUNITY_SOURCES = [
   "nyfa_classifieds",
   "dance_nyc_newsletter",
   "creative_capital_lighthouse",
+  // Agentic open-web discovery (lib/ingest/discovery). Always review-only
+  // in lib/ingest/confidence.ts — discovered rows never auto-publish.
+  "discovery",
 ] as const;
 export const opportunitySourceSchema = z.enum(OPPORTUNITY_SOURCES);
 export type OpportunitySource = z.infer<typeof opportunitySourceSchema>;

@@ -84,6 +84,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
                 </Link>
               </li>
               <li>
+                <Link href="/admin/opportunities" className="hover:text-[var(--color-ink)]">
+                  Opportunities
+                </Link>
+              </li>
+              <li>
                 <span className="text-xs">{user.email}</span>
               </li>
             </ul>

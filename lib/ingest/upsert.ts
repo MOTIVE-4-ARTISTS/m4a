@@ -4,8 +4,8 @@ import { EmbedError, embedOpportunity } from "@/lib/ai/embed";
 import type { ExtractedOpportunity } from "@/lib/ai/extract-opportunity";
 import { canonicalKey, slugify } from "@/lib/opportunities/slug";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { Database, Opportunity } from "@/lib/supabase/types";
-
+import type { Database, Opportunity, SubmissionKind } from "@/lib/supabase/types";
+import { shouldAutoPublish } from "./confidence";
 import { type DraftWithKey, decide, type SimilarityScores } from "./dedupe";
 
 // Cosine-similarity floor for "interesting enough to consider" — same as
@@ -142,10 +142,34 @@ export async function upsertFromExtraction(
   const decision = decide(draft, candidates, sourceUrl, similarities as SimilarityScores);
 
   if (decision.kind === "review") {
-    return await writeSubmission(decision.score, draft, sourceUrl);
+    // Ambiguous duplicate (dedup score 0.6–0.8): a human decides whether
+    // it's a genuine new cycle or a re-listing of an existing row.
+    return await writeSubmission({
+      kind: "dedup_review",
+      draft,
+      sourceUrl,
+      confidence: extracted.confidence,
+      embedding,
+      notes: `possible duplicate of "${decision.into.name}" (dedup score ${decision.score.toFixed(2)})`,
+    });
   }
   if (decision.kind === "merge") {
     return await mergeIntoExisting(decision.into, decision.score, draft, sourceTag, sourceUrl);
+  }
+
+  // It's a genuinely new row. The confidence gate decides whether it's
+  // trustworthy + complete enough to publish unattended, or whether it
+  // waits for one-click human approval in /admin/opportunities.
+  const gate = shouldAutoPublish({ ...draft, confidence: extracted.confidence }, sourceTag);
+  if (!gate.autoPublish) {
+    return await writeSubmission({
+      kind: "low_confidence",
+      draft,
+      sourceUrl,
+      confidence: extracted.confidence,
+      embedding,
+      notes: gate.reason,
+    });
   }
   return await insertNew(draft, funderSlug, sourceTag, sourceUrl, embedding);
 }
@@ -264,11 +288,15 @@ async function mergeIntoExisting(
   return { kind: "merged", opportunity_id: existing.id, score };
 }
 
-async function writeSubmission(
-  score: number,
-  draft: DraftWithKey,
-  sourceUrl: string,
-): Promise<UpsertResult> {
+async function writeSubmission(opts: {
+  kind: SubmissionKind;
+  draft: DraftWithKey;
+  sourceUrl: string;
+  confidence: number | null;
+  embedding: number[] | null;
+  notes: string;
+}): Promise<UpsertResult> {
+  const { draft, sourceUrl } = opts;
   const supabase = createAdminClient();
   if (!supabase) return { kind: "skipped", reason: "supabase not configured" };
 
@@ -304,7 +332,11 @@ async function writeSubmission(
     equity_tags: draft.equity_tags,
     description_short: draft.description_short,
     source_url: sourceUrl,
-    reviewer_notes: `dedup-review score=${score.toFixed(2)}`,
+    submission_kind: opts.kind,
+    extraction_confidence: opts.confidence,
+    embedding: opts.embedding,
+    raw_payload: { extracted: draft as unknown as Record<string, unknown> },
+    reviewer_notes: opts.notes,
     status: "pending",
   };
 
@@ -312,7 +344,7 @@ async function writeSubmission(
   if (error || !data) {
     return { kind: "failed", reason: error?.message ?? "submission insert returned no row" };
   }
-  return { kind: "reviewed", submission_id: data.id, score };
+  return { kind: "reviewed", submission_id: data.id, score: opts.confidence ?? 0 };
 }
 
 async function writeProvenance(

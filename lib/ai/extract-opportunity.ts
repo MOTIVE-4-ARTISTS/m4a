@@ -68,6 +68,11 @@ const extractedSchema = z.object({
   // canonical_key. "rolling" for non-cycle programs, otherwise the
   // 4-digit year of the deadline or "fy<year>" for fiscal-year cycles.
   fiscal_year_or_window: z.string().min(1).max(20),
+  // The model's self-reported confidence (0..1) that this extraction is a
+  // correct, complete opportunity. Drives the auto-publish gate in
+  // lib/ingest/confidence.ts: low-confidence rows are held for human
+  // review instead of going live unattended.
+  confidence: z.number().min(0).max(1),
 });
 
 export type ExtractedOpportunity = z.infer<typeof extractedSchema>;
@@ -88,7 +93,8 @@ Critical rules:
 - application_fee_cents: 0 if no fee mentioned or "no fee", otherwise the fee in cents.
 - discipline_tags must be drawn from the schema enum. If the source talks about "dance" or "choreography", tag accordingly.
 - equity_tags only when the program EXPLICITLY restricts to that community (BIPOC-led, women-only, etc.). Do not infer.
-- fiscal_year_or_window: a 4-digit year ("2026"), "fy2027" for fiscal-year cycles, or "rolling" for non-cycle programs.`;
+- fiscal_year_or_window: a 4-digit year ("2026"), "fy2027" for fiscal-year cycles, or "rolling" for non-cycle programs.
+- confidence: 0..1, how sure you are this is a real, correctly-extracted opportunity. Be honest. 0.9+ only when the page is clearly an open call with an unambiguous funder, deadline/rolling status, and amount. Drop below 0.7 when you had to guess key fields, the page is ambiguous, or the deadline/amount were absent.`;
 
 export async function extractOpportunity(
   rawHtml: string,

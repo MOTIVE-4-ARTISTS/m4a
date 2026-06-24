@@ -53,6 +53,10 @@ const extractedItemSchema = z.object({
   description_short: z.string().min(1).max(200),
   source_url: z.string().url(),
   fiscal_year_or_window: z.string().min(1).max(20),
+  // Self-reported confidence (0..1) per item; feeds the auto-publish gate
+  // in lib/ingest/confidence.ts. Newsletter extractions are typically
+  // terser than a full page, so be conservative.
+  confidence: z.number().min(0).max(1),
 });
 
 const batchSchema = z.object({
@@ -73,6 +77,7 @@ Rules per item:
 - source_url MUST be the link to the funder's program page that the email points to — never a tracking link, never the newsletter archive URL, never a generic homepage. If the email body's URL is a tracker, prefer the underlying destination if visible in the text; otherwise pick the most specific landing page URL in the surrounding paragraph.
 - discipline_tags, career_stage, equity_tags use ONLY the enum values. Do not infer equity_tags unless the program explicitly restricts.
 - fiscal_year_or_window: a 4-digit year, "fy<year>", or "rolling".
+- confidence: 0..1 per item, how sure you are it's a real opportunity with the fields correct. Lower it when the newsletter blurb was thin or the deadline/amount were missing.
 
 Be conservative. If you cannot identify even the funder + program name + a source URL, skip the item rather than guess.`;
 

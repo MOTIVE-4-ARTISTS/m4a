@@ -130,8 +130,49 @@ export interface OpportunitySubmission {
   reviewer_notes: string | null;
   reviewed_at: string | null;
   reviewed_by: string | null;
+  // Added in 0007: how this row entered the review queue + the ingest
+  // pipeline's self-reported confidence, so the admin queue can sort by
+  // "most-likely-good first" and explain why each row needs a human.
+  submission_kind: SubmissionKind;
+  extraction_confidence: number | null;
+  raw_payload: Record<string, unknown>;
+  embedding: number[] | null;
   created_at: string;
   updated_at: string;
+}
+
+// How a submission landed in the review queue. `community` = the public
+// /opportunities/submit form; the rest come from the ingest pipeline.
+export type SubmissionKind = "community" | "dedup_review" | "low_confidence" | "discovery";
+
+// Operational bookkeeping tables (migrations 0006 / 0008). Service-role
+// only; never read from a public surface.
+export interface IngestRun {
+  source: string;
+  last_ran_at: string;
+  counts: Record<string, number>;
+  updated_at: string;
+}
+
+export interface DiscoverySeen {
+  url: string;
+  query: string | null;
+  first_seen_at: string;
+}
+
+// Funders / aggregators the source-discovery meta-agent proposes we track
+// (migration 0009). Admins triage; "accepting" is an engineering follow-up.
+export type ProposedSourceStatus = "pending" | "accepted" | "dismissed";
+
+export interface ProposedSource {
+  id: string;
+  name: string;
+  url: string;
+  rationale: string | null;
+  status: ProposedSourceStatus;
+  created_at: string;
+  reviewed_at: string | null;
+  reviewed_by: string | null;
 }
 
 // /events — see supabase/migrations/0005_events.sql and
@@ -225,6 +266,24 @@ export interface Database {
         Insert: Partial<OpportunitySubmission> &
           Pick<OpportunitySubmission, "name" | "funder_name" | "type" | "source_url">;
         Update: Partial<OpportunitySubmission>;
+        Relationships: [];
+      };
+      _ingest_runs: {
+        Row: IngestRun;
+        Insert: Partial<IngestRun> & Pick<IngestRun, "source">;
+        Update: Partial<IngestRun>;
+        Relationships: [];
+      };
+      _discovery_seen: {
+        Row: DiscoverySeen;
+        Insert: Partial<DiscoverySeen> & Pick<DiscoverySeen, "url">;
+        Update: Partial<DiscoverySeen>;
+        Relationships: [];
+      };
+      proposed_sources: {
+        Row: ProposedSource;
+        Insert: Partial<ProposedSource> & Pick<ProposedSource, "name" | "url">;
+        Update: Partial<ProposedSource>;
         Relationships: [];
       };
       events: {

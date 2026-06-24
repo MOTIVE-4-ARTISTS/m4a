@@ -24,7 +24,7 @@ const HTTP_TIMEOUT_MS = 8_000;
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-export async function POST(req: NextRequest) {
+async function handle(req: NextRequest) {
   const auth = req.headers.get("authorization") ?? "";
   const expected = serverEnv.CRON_SECRET ? `Bearer ${serverEnv.CRON_SECRET}` : null;
   if (!expected || auth !== expected) {
@@ -90,6 +90,9 @@ export async function POST(req: NextRequest) {
   }
   return NextResponse.json({ ok: true, counts });
 }
+
+export const GET = handle;
+export const POST = handle;
 
 async function pingUrl(url: string): Promise<"ok" | "dead" | "uncertain"> {
   const controller = new AbortController();

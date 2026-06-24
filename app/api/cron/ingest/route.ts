@@ -3,12 +3,13 @@ import { NextResponse } from "next/server";
 
 import { extractOpportunity } from "@/lib/ai/extract-opportunity";
 import { serverEnv } from "@/lib/env/server";
-import { markRan, pickDueSource } from "@/lib/ingest/cron-runner";
+import { loadLastRuns, pickDueSource, recordRun } from "@/lib/ingest/cron-runner";
 import { type UpsertResult, upsertFromExtraction } from "@/lib/ingest/upsert";
 
-// Hourly cron entrypoint. Vercel Cron POSTs here with an Authorization
-// header carrying `Bearer ${CRON_SECRET}`; we verify before doing any
-// work so a casual GET from the public internet does nothing.
+// Hourly cron entrypoint. Vercel Cron sends a GET with an Authorization
+// header carrying `Bearer ${CRON_SECRET}`; we verify before doing any work
+// so a casual hit from the public internet does nothing. POST is kept for
+// manual/local triggering (curl with the same bearer).
 //
 // One source per invocation, capped at MAX_PER_INVOCATION discoveries.
 // This is the simplest reliable shape: even if the LLM gets slow or a
@@ -24,14 +25,15 @@ const MAX_PER_INVOCATION = 4;
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-export async function POST(req: NextRequest) {
+async function handle(req: NextRequest) {
   const auth = req.headers.get("authorization") ?? "";
   const expected = serverEnv.CRON_SECRET ? `Bearer ${serverEnv.CRON_SECRET}` : null;
   if (!expected || auth !== expected) {
     return NextResponse.json({ ok: false, message: "unauthorized" }, { status: 401 });
   }
 
-  const decision = pickDueSource();
+  const lastRuns = await loadLastRuns();
+  const decision = pickDueSource(new Date(), lastRuns);
   if (decision.source == null) {
     return NextResponse.json({ ok: true, message: decision.reason });
   }
@@ -62,7 +64,7 @@ export async function POST(req: NextRequest) {
       // Polite crawl delay between fetches per source-declared cadence.
       await sleep(source.crawlDelayMs);
     }
-    markRan(source.id);
+    await recordRun(source.id, counts);
   } catch (err) {
     console.error(`[cron/ingest] ${source.id} discover failed`, err);
     return NextResponse.json(
@@ -76,6 +78,9 @@ export async function POST(req: NextRequest) {
   }
   return NextResponse.json({ ok: true, source: source.id, counts, failures: failures.slice(0, 5) });
 }
+
+export const GET = handle;
+export const POST = handle;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));

@@ -97,6 +97,32 @@ const OPPORTUNITIES: SeedEntry[] = [
     fiscal_year_or_window: "2026",
   },
   {
+    name: "Support for Artists — Choreography Commission",
+    funder_name: "New York State Council on the Arts",
+    type: "grant",
+    // FY2027 cycle deadline confirmed July 8, 2026 (arts.ny.gov, Gov.
+    // Hochul $161M announcement). Re-verify each spring when the next FY
+    // guidelines drop — NYSCA runs one annual window.
+    deadline: "2026-07-08",
+    is_rolling: false,
+    eligibility_individual: true,
+    eligibility_fiscal_sponsor: true,
+    eligibility_501c3: true,
+    location_requirement: "ny_state",
+    application_fee_cents: 0,
+    amount_min_cents: 1_000_000,
+    amount_max_cents: 1_000_000,
+    amount_display: "$10,000 commission",
+    discipline_tags: ["choreography", "dance"],
+    career_stage: ["any"],
+    description_short:
+      "$10,000 commission for NY State choreographers to create new work; applied through a NY 501(c)(3) fiscal sponsor.",
+    source_url: "https://arts.ny.gov/funding-areas/support-artists",
+    application_platform: "org_portal",
+    verified_by: "editor:seed-script",
+    fiscal_year_or_window: "fy2027",
+  },
+  {
     name: "Rauschenberg Dancer Emergency Grants",
     funder_name: "New York Foundation for the Arts",
     type: "grant",

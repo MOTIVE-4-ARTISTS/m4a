@@ -20,6 +20,14 @@ import type { OpportunityFilters } from "./schema";
 // the SSR page can render the freshness indicator + count without a
 // second query.
 
+// supabase-js retries network failures with backoff. When the backend is
+// unreachable (local stack down, or a production blip) that retry loop sums
+// to ~7s of dead time on the SSR render before failing. We cap the round-trip
+// so the page degrades to its quiet empty state fast instead of hanging the
+// request. A healthy Supabase responds in well under 500ms, so 2.5s is pure
+// headroom that only ever bites when the backend is actually down.
+const OPPORTUNITIES_QUERY_TIMEOUT_MS = 2500;
+
 export type OpportunitiesPage = {
   rows: Opportunity[];
   totalOpen: number;
@@ -48,6 +56,7 @@ export async function listOpportunities(filters: OpportunityFilters): Promise<Op
     lte: (col: string, val: unknown) => SelectChain;
     or: (clause: string) => SelectChain;
     order: (col: string, opts: { ascending: boolean; nullsFirst?: boolean }) => SelectChain;
+    abortSignal: (signal: AbortSignal) => SelectChain;
     limit: (n: number) => Promise<{
       data: Opportunity[] | null;
       error: { message: string } | null;
@@ -58,7 +67,8 @@ export async function listOpportunities(filters: OpportunityFilters): Promise<Op
   let query = table
     .select("*")
     .eq("is_archived", false)
-    .order("deadline", { ascending: true, nullsFirst: false });
+    .order("deadline", { ascending: true, nullsFirst: false })
+    .abortSignal(AbortSignal.timeout(OPPORTUNITIES_QUERY_TIMEOUT_MS));
 
   // The SQL-side filters: cheap to push down, indexed in 0003.
   if (filters.types.length > 0) {
