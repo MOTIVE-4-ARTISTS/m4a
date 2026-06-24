@@ -46,9 +46,12 @@ export default function ResidencyPage() {
         </p>
       </Prose>
 
-      <div className="mt-10 flex gap-3">
+      <div className="mt-10 flex flex-wrap gap-3">
         <Button as={Link} href="/cohorts/2026-air" intent="ink" size="md">
           View 2026 cohort
+        </Button>
+        <Button as={Link} href="/events" intent="ghost" size="md">
+          Upcoming sharings
         </Button>
         <Button as={Link} href="/apply/residency" intent="ghost" size="md">
           Application portal

@@ -41,11 +41,12 @@ test("compliance footer surfaces required legal disclosures on every page", asyn
   await expect(footer.getByRole("link", { name: /terms/i })).toBeVisible();
 });
 
-test("donate page surfaces the full fiscal-sponsor block while 501(c)(3) is pending", async ({
+test("donate page presents the 501(c)(3) give path and §174-B disclosure, no fiscal sponsor", async ({
   page,
 }) => {
   await page.goto("/donate");
-  const block = page.getByRole("complementary", { name: /fiscal sponsorship disclosure/i });
-  await expect(block).toBeVisible();
-  await expect(block).toContainText("The Field");
+  await expect(page.getByText(/501\(c\)\(3\) nonprofit/i)).toBeVisible();
+  await expect(page.getByText(/New York State Attorney General's Charities Bureau/i)).toBeVisible();
+  await expect(page.getByText(/the field/i)).toHaveCount(0);
+  await expect(page.getByText(/fiscal sponsor/i)).toHaveCount(0);
 });

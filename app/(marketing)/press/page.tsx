@@ -1,4 +1,6 @@
+import { SoftChevron } from "@/components/brand/marks";
 import { Card, CardEyebrow, CardTitle } from "@/components/ui/card";
+import { HairlineRule } from "@/components/ui/hairline-rule";
 import { ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 
@@ -16,7 +18,7 @@ const ITEMS = [
     author: "Dale Kaplan",
     href: "https://www.dumbodirect.com",
     summary:
-      "A profile of MOtiVE Brooklyn — our founding artist-services space — by Dale Kaplan for Dumbo Direct.",
+      "a profile of MOtiVE Brooklyn — our founding artist-services space — by Dale Kaplan for Dumbo Direct.",
   },
 ] as const;
 
@@ -25,11 +27,12 @@ export default function PressPage() {
     <Section>
       <ProseHero
         eyebrow="Press"
-        title="Coverage and mentions."
-        lead="If you're writing about us and need an EIN, mission statement, or a board contact, email hello@motive4artists.org."
+        title="coverage and mentions."
+        lead="if you're writing about us and need an EIN, mission statement, or a board contact, email hello@motive4artists.org."
       />
+      <HairlineRule variant="short" className="mb-10 border-[var(--color-brand)]" />
 
-      <ul className="mt-8 grid gap-5 md:grid-cols-2">
+      <ul className="grid gap-5 md:grid-cols-2">
         {ITEMS.map((item) => (
           <li key={item.title}>
             <Card>
@@ -39,9 +42,10 @@ export default function PressPage() {
                   href={item.href}
                   rel="noopener"
                   target="_blank"
-                  className="underline decoration-[var(--color-brand-deep)] underline-offset-4"
+                  className="inline-flex items-baseline gap-2 underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
                 >
                   {item.title}
+                  <SoftChevron size={12} className="shrink-0 text-[var(--color-brand-deep)]" />
                 </a>
               </CardTitle>
               <p className="mt-2 text-sm text-[var(--color-ink-muted)]">by {item.author}</p>

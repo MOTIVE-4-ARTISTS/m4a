@@ -8,6 +8,7 @@ import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 import { reader } from "@/lib/content/reader";
 import { MarkdocContent } from "@/lib/content/render-markdoc";
+import { COHORT_PROGRAM_HREF, COHORT_PROGRAM_LABEL, type CohortProgram } from "@/lib/programs";
 
 type Params = { slug: string };
 
@@ -26,12 +27,12 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
   };
 }
 
-const programLabel: Record<string, string> = {
-  air: "Artist in Residency",
-  international: "International Exchange",
-  support: "Artist Support",
-  subsidy: "Discounted Space Subsidy",
-};
+// Program label + the optional public program page for a cohort's family
+// come from the shared registry in lib/programs.ts so cohorts, programs,
+// and the apply hub stay in sync.
+function programLabelFor(program: string): string {
+  return COHORT_PROGRAM_LABEL[program as CohortProgram] ?? program;
+}
 
 function CohortArtistInitials({ name }: { name: string }) {
   const initials = name
@@ -72,10 +73,12 @@ export default async function CohortPage({ params }: { params: Promise<Params> }
   );
   const resolved = cohortArtists.filter((a) => a.entry !== null);
 
+  const programHref = COHORT_PROGRAM_HREF[entry.program as CohortProgram];
+
   return (
     <Section>
       <ProseHero
-        eyebrow={`${entry.year} · ${programLabel[entry.program] ?? entry.program}`}
+        eyebrow={`${entry.year} · ${programLabelFor(entry.program)}`}
         title={entry.title.toLowerCase()}
         {...(entry.sharingDate ? { lead: `sharing · ${entry.sharingDate}` } : {})}
       />
@@ -83,6 +86,18 @@ export default async function CohortPage({ params }: { params: Promise<Params> }
       {entry.sponsor ? (
         <p className="mb-8 lowercase text-sm tracking-[0.16em] text-[var(--color-accent-ink)]">
           supported by <span className="normal-case text-[var(--color-ink)]">{entry.sponsor}</span>
+        </p>
+      ) : null}
+
+      {programHref ? (
+        <p className="mb-8 text-sm">
+          <Link
+            href={programHref}
+            className="inline-flex items-baseline gap-2 text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+          >
+            about the {programLabelFor(entry.program)} program
+            <SoftChevron size={11} className="text-[var(--color-brand-deep)]" />
+          </Link>
         </p>
       ) : null}
 

@@ -36,11 +36,6 @@ const DEFAULT_ITEMS: PressFunderItem[] = [
     href: "https://www.motivebrooklyn.com",
     group: "in partnership with",
   },
-  {
-    name: "The Field (fiscal sponsor)",
-    href: "https://www.thefield.org",
-    group: "with thanks to",
-  },
 ];
 
 export function PressFunderStrip({ items = DEFAULT_ITEMS }: { items?: PressFunderItem[] }) {

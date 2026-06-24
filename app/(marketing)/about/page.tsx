@@ -42,7 +42,7 @@ const CHILDREN = [
     href: "/transparency",
     eyebrow: "Transparency",
     title: "Where the money goes",
-    blurb: "EIN, 501(c)(3) status, board governance, fiscal sponsorship, and (soon) financials.",
+    blurb: "EIN, 501(c)(3) status, board governance, and (soon) financials.",
   },
 ] as const;
 

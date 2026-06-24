@@ -1,21 +1,24 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Wordmark } from "@/components/brand/logo";
 import { SoftChevron } from "@/components/brand/marks";
+import { ArtistCarousel } from "@/components/content/artist-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardEyebrow, CardTitle } from "@/components/ui/card";
 import { listArtists, listCohorts } from "@/lib/content/reader";
+import { formatEventCompact, formatEventLocation } from "@/lib/events/format";
+import { listEvents } from "@/lib/events/read";
 import { listOpportunities } from "@/lib/opportunities/read";
 import { ORG } from "@/lib/org";
 import { OPEN_PROGRAMS, PROGRAMS } from "@/lib/programs";
 
 // Home page — artist-first, per the May 2026 design audit. Decisions
-// live in docs/research/design-audit-2026-05.md §6 + §11. The composition
+// live in docs/research/design-audit-2026-05.md §6 + §11; the photography
+// choices trace to docs/research/photo-mapping-2026-06.md. The composition
 // from top to bottom:
 //
-//  1. Hero. "the artist comes first." as the h1. Brand-yellow on the
-//     "browse opportunities" CTA (per ADR 0002's rare-yellow rule, now
-//     applied to the artist action). Wordmark hangs past the container
-//     edge on desktop — the intentional-misalignment beat from audit §5.
+//  1. Hero. "the artist comes first." as the h1, paired with a real photo of
+//     the 68 Jay St studio — the audit's #1 gap was "no dancer/space imagery."
+//     Brand-yellow stays reserved for the "browse opportunities" CTA.
 //  2. Application-status strip. The artist's first question is "is
 //     anything open right now?" — answer it before they scroll. Sourced
 //     from lib/programs.ts so the apply hub + home + future announcement
@@ -23,19 +26,22 @@ import { OPEN_PROGRAMS, PROGRAMS } from "@/lib/programs";
 //  3. Opportunities preview. 3 live rows from Supabase when configured;
 //     the section self-suppresses when empty so we never ship a fake
 //     placeholder.
-//  4. Cohort spotlight. Named-artist peer-proof per audit §6 + Subagent
-//     C synthesis. Today's spotlight is one cohort + one artist; the
-//     same template grows as Keystatic adds more.
-//  5. Program trio (drives from PROGRAMS — single source of truth).
-//  6. Pendency line + single demoted "support" framing.
+//  4. Cohort spotlight. Named-artist peer-proof per audit §6 — an
+//     auto-rotating carousel of the *entire* current cohort
+//     (<ArtistCarousel />), not a hand-picked sample of three.
+//  5. Next-event teaser (quiet, self-suppressing).
+//  6. Program trio (drives from PROGRAMS — single source of truth).
+//  7. Founders band. The one authentic candid (the two founders painting the
+//     studio) humanizes the page and carries the "built by artists" ethos.
+//  8. Pendency line + single demoted "support" framing.
 
 // 90-day window picks up anything urgent without dragging in every
 // rolling program when the homepage really wants to feel current.
 const HOME_OPPORTUNITY_WINDOW_DAYS = 90;
 
 export default async function HomePage() {
-  // Parallel fetch — three independent reads, ~no benefit to serializing.
-  const [opps, cohorts, artists] = await Promise.all([
+  // Parallel fetch — independent reads, ~no benefit to serializing.
+  const [opps, cohorts, artists, events] = await Promise.all([
     listOpportunities({
       types: [],
       locations: [],
@@ -49,33 +55,37 @@ export default async function HomePage() {
     }),
     listCohorts(),
     listArtists(),
+    listEvents(),
   ]);
 
   const previewRows = opps.rows.slice(0, 3);
 
-  // Cohort spotlight: pick the most recent cohort by year (desc), surface
-  // up to 3 of its artists as named tiles. Quiet-fail if either is empty.
+  // The single next upcoming event, surfaced as a quiet teaser. Renders
+  // only when there's something on the calendar.
+  const nextEvent = events.upcoming[0] ?? null;
+
+  // Cohort spotlight: pick the most recent cohort by year (desc) and surface
+  // the *whole* roster in an auto-rotating carousel — we show everyone, not a
+  // "first three" slice. Quiet-fail if either is empty.
   const spotlightCohort = [...cohorts].sort((a, b) => b.entry.year - a.entry.year)[0];
   const spotlightArtists = spotlightCohort
     ? (spotlightCohort.entry.artists ?? [])
         .map((slug) => artists.find((a) => a.slug === slug))
         .filter((a): a is (typeof artists)[number] => a !== undefined)
-        .slice(0, 3)
     : [];
 
   return (
     <>
-      {/* Hero. Asymmetric grid: type left (1.3fr), wordmark right (1fr).
-          The wordmark on md+ translates ~24-40px past the page-container
-          edge — the audit's "one element bleeds off the screen" craft
-          beat (§5 craft move #12). The artwork's own brand-yellow surface
-          handles the edge gracefully; nothing looks clipped. */}
+      {/* Hero. The brand mark already lives in the header, so the type leads;
+          the studio photo (real 68 Jay St space) does the work the empty paper
+          used to leave undone. Two columns on desktop, stacked on mobile with
+          the image first so small screens still open on a photograph. */}
       <section
         aria-labelledby="hero-title"
-        className="mx-auto max-w-[var(--container-page)] overflow-x-clip px-6 pt-16 pb-12 md:pt-24 md:pb-20"
+        className="mx-auto max-w-[var(--container-page)] px-6 pt-12 pb-12 md:pt-20 md:pb-20"
       >
-        <div className="grid items-end gap-12 md:grid-cols-[1.3fr_1fr]">
-          <div>
+        <div className="grid items-center gap-10 md:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+          <div className="order-2 md:order-1">
             <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
               for nyc's movement artists
             </p>
@@ -102,8 +112,15 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="justify-self-center md:translate-x-6 md:justify-self-end lg:translate-x-10">
-            <Wordmark width={360} priority className="h-auto" />
+          <div className="relative order-1 aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-paper-warm)] md:order-2 md:aspect-[5/4]">
+            <Image
+              src="/content/places/68jay-windows.jpg"
+              alt="MOtiVE's studio at 68 Jay Street in Dumbo, Brooklyn — wood floor, tall windows, daylight"
+              fill
+              priority
+              sizes="(min-width: 768px) 46vw, 100vw"
+              className="object-cover"
+            />
           </div>
         </div>
       </section>
@@ -229,23 +246,51 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <ul className="mt-8 grid gap-5 md:grid-cols-3">
-            {spotlightArtists.map((a) => (
-              <li key={a.slug}>
-                <Link href={`/artists/${a.slug}`} className="block h-full">
-                  <Card className="h-full hover:border-[var(--color-brand-deep)]/40">
-                    <CardEyebrow>artist · {a.entry.location || "in residence"}</CardEyebrow>
-                    <CardTitle className="mt-2">{a.entry.name}</CardTitle>
-                    {a.entry.headline ? (
-                      <p className="mt-3 text-sm text-[var(--color-ink-muted)]">
-                        {a.entry.headline}
-                      </p>
-                    ) : null}
-                  </Card>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-8">
+            <ArtistCarousel
+              ariaLabel={`${spotlightCohort.entry.title} — the cohort`}
+              artists={spotlightArtists.map((a) => ({
+                slug: a.slug,
+                name: a.entry.name,
+                headline: a.entry.headline,
+                location: a.entry.location || "in residence",
+                headshot: a.entry.headshot,
+              }))}
+            />
+          </div>
+        </section>
+      ) : null}
+
+      {/* Next event teaser. One quiet line pointing at the soonest event.
+          Self-suppresses when nothing is upcoming. */}
+      {nextEvent ? (
+        <section
+          aria-labelledby="next-event-title"
+          className="border-t border-[var(--color-rule)] bg-[var(--color-paper-warm)]"
+        >
+          <div className="mx-auto flex max-w-[var(--container-page)] flex-col gap-3 px-6 py-10 md:flex-row md:items-baseline md:justify-between md:py-12">
+            <div>
+              <p className="lowercase text-sm tracking-[0.16em] text-[var(--color-accent-ink)]">
+                next up
+              </p>
+              <h2
+                id="next-event-title"
+                className="mt-2 font-[family-name:var(--font-display)] text-2xl tracking-tight"
+              >
+                {nextEvent.title}
+              </h2>
+              <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
+                {formatEventCompact(nextEvent)} · {formatEventLocation(nextEvent)}
+              </p>
+            </div>
+            <Link
+              href={`/events/${nextEvent.slug}`}
+              className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+            >
+              details + calendar
+              <SoftChevron size={12} className="text-[var(--color-brand-deep)]" />
+            </Link>
+          </div>
         </section>
       ) : null}
 
@@ -279,15 +324,60 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Quiet pendency line + a single supporter framing. "Support our
-          work" demoted from primary hero CTA per audit §6; the legal
-          pendency disclosure stays visible while the 1023-EZ is in
-          review (IRS substantiation framing). */}
+      {/* Founders band. The single authentic candid in the archive — the two
+          founders painting the studio by hand — does more for trust than any
+          stock render. Image-led, two columns, to break the eyebrow+grid rhythm
+          the page repeats above. Copy traces to Lilach's bio + the AGENTS voice. */}
+      <section
+        aria-labelledby="who-title"
+        className="border-t border-[var(--color-rule)] bg-[var(--color-paper-warm)]"
+      >
+        <div className="mx-auto grid max-w-[var(--container-page)] items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-20 lg:gap-16">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-paper)]">
+            <Image
+              src="/content/about/founders-painting.jpg"
+              alt="MOtiVE founders Lilach Orenstein and Meredith Glisson painting the Dumbo studio by hand"
+              fill
+              sizes="(min-width: 768px) 46vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+          <div>
+            <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
+              who's behind this
+            </p>
+            <h2
+              id="who-title"
+              className="mt-3 font-[family-name:var(--font-display)] text-3xl tracking-tight md:text-4xl"
+            >
+              built by artists, for artists.
+            </h2>
+            <p className="mt-5 max-w-xl text-[var(--color-ink-muted)]">
+              MOtiVE started with two artists painting an empty Dumbo studio by hand. That hands-on
+              instinct still runs the programs — every residency begins with a one-on-one
+              conversation about what the artist actually needs.
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+              >
+                our story
+                <SoftChevron size={12} className="text-[var(--color-brand-deep)]" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quiet legal-identity line + a single supporter framing. "Support
+          our work" demoted from primary hero CTA per audit §6; the legal
+          status line stays visible as an IRS substantiation / trust signal. */}
       <section className="border-t border-[var(--color-rule)]">
         <div className="mx-auto flex max-w-[var(--container-page)] flex-col gap-6 px-6 py-12 md:flex-row md:items-center md:justify-between md:py-16">
           <p className="max-w-xl text-sm text-[var(--color-ink-muted)]">
-            {ORG.legalName} is a New York-incorporated nonprofit corporation (March 2026). Federal
-            501(c)(3) tax-exempt status is pending — IRS Form 1023-EZ submitted May 2026.
+            {ORG.legalName} is a New York-incorporated nonprofit corporation and a federally
+            recognized 501(c)(3) tax-exempt organization (effective {ORG.taxExemptEffective}).
           </p>
           <p className="text-sm text-[var(--color-ink)]">
             believe in this work?{" "}

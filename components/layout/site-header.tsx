@@ -36,10 +36,13 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-rule)] bg-[var(--color-paper)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-paper)]/80">
       <div className="mx-auto flex max-w-[var(--container-page)] items-center justify-between gap-6 px-6 py-3">
-        {/* Width chosen so the wordmark sits ~48px tall (landscape aspect
-            ~1.41:1). Priority because the header logo is the LCP element on
+        {/* Transparent brand-yellow wordmark (BrandLockup default) at 858x621
+            (~1.38:1) → width 68 lands the mark at ~49px tall, sized to the nav
+            row. The letterforms sit straight on the cream paper with no yellow
+            plate, so the mark reads as part of the page rather than a sticker
+            (ADR 0002 change log 2026-06-23). Priority: it's the LCP element on
             most pages. */}
-        <BrandLockup width={168} priority />
+        <BrandLockup width={68} priority />
 
         {/* Desktop nav */}
         <nav aria-label="Primary" className="hidden md:block">
