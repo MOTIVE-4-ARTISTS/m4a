@@ -18,7 +18,7 @@
 ## Compliance impact
 
 - [ ] No changes to `components/compliance/**`, `lib/org.ts`, or donation / application / transparency surfaces.
-- [ ] If checked above is false: legal-bearing wording reviewed against `.cursor/rules/060-compliance.mdc` and the current Form 1023-EZ / NY filings.
+- [ ] If checked above is false: legal-bearing wording reviewed against `.cursor/rules/060-compliance.mdc` and the IRS determination / NY filings.
 
 ## Checklist
 

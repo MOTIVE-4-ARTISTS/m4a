@@ -34,4 +34,4 @@ Rules:
 - If the comment says *what* the code does, delete or rewrite it.
 - If you need to explain a Stripe quirk, an IRS rule, an accessibility constraint, or a chosen-vs-rejected design path — that's a comment worth keeping.
 - Architectural decisions go in `docs/adr/NNNN-<slug>.md`, not in floating comments.
-- TODOs include an owner and a tracking issue or date: `// TODO(eran, 2026-06-01): replace fiscal sponsor block once determination letter arrives.`
+- TODOs include an owner and a tracking issue or date: `// TODO(eran, 2026-09-01): flip ORG.onlineGivingLive once the production Stripe account is verified.`

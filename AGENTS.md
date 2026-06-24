@@ -4,7 +4,7 @@ This is the only repo-wide context file. There is no README on purpose — code 
 
 ## What this repo is
 
-`motive4artists.org` — the website of **MOtiVE 4 Artists Inc.**, a New York-incorporated (March 2026) nonprofit corporation (Form 1023-EZ submitted, 501(c)(3) determination pending). EIN obtained, NTEE A60 (Performing Arts Organizations), foundation classification §509(a)(1) / §170(b)(1)(A)(vi).
+`motive4artists.org` — the website of **MOtiVE 4 Artists Inc.**, a New York-incorporated (March 2026) nonprofit corporation and a determined federal **501(c)(3) tax-exempt organization** (effective March 2, 2026). EIN obtained, NTEE A60 (Performing Arts Organizations), foundation classification §509(a)(1) / §170(b)(1)(A)(vi).
 
 Two legal entities, two sites, one brand family:
 
@@ -47,17 +47,16 @@ Single source of truth for the logo, color, and typography lives in **`lib/brand
 
 ## Compliance baked in
 
-Every page footer must surface, via `<ComplianceFooter />`:
-- Legal name "MOTIVE 4 ARTISTS INC." + dba "MOtiVE 4 Artists"
-- EIN (env: `NEXT_PUBLIC_EIN`)
-- Tax-status line that names the fiscal sponsor while §501(c)(3) is pending; post-determination it flips to "Donations are tax-deductible under §501(c)(3)"
-- NY Charities Bureau §174-B disclosure language
-- Accessibility statement link
-- Privacy + Terms links
+Footer scope follows peer best practice (`docs/research/peer-website-benchmarking.md` §4.6: no peer surfaces tax-status or §174-B in a global footer). The global `<ComplianceFooter />` carries:
+- Legal name "MOTIVE 4 ARTISTS INC." + EIN (env: `NEXT_PUBLIC_EIN`) — a one-line trust signal
+- Accessibility statement link + Privacy + Terms links (the legal-link cluster)
+- Contact, social, newsletter
 
-The full `<FiscalSponsorBlock />` (verbatim from The Field, with the earmark clause) renders on **donation/giving surfaces** — `/donate` today, the future Every.org/Stripe widgets when they land — not in the global footer. Rendering it on every page would crowd unrelated routes (e.g. `/team`, `/privacy`) without adding legal protection.
+**Solicitation surfaces** — `/donate` today, the future Every.org/Stripe widgets — carry the legally-binding disclosures, because the requirement attaches to solicitations, not every page:
+- The tax-deductibility line ("Donations are tax-deductible under §501(c)(3)") on `/donate` and in the receipt email
+- NY Executive Law §174-B charities disclosure via `<CharitiesDisclosure />` (also on `/transparency`; not gated on `irsStatus`, so it survives post-determination)
 
-These live in `components/compliance/`. Changing legal text touches one file.
+These live in `components/compliance/`. Changing legal text touches one file. Putting them on every page would crowd unrelated routes (e.g. `/team`, `/privacy`) without adding legal protection.
 
 ## Directory map
 

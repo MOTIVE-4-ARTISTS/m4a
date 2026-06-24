@@ -31,7 +31,6 @@ In scope:
 Out of scope (different organization, different repo):
 
 - `motivebrooklyn.com` — operated by MOtiVE Brooklyn LLC.
-- The Field's donation infrastructure — please report directly to The Field.
 - Stripe, Supabase, Vercel, or Cloudflare itself — report via their bug-bounty programs.
 - Findings that require a privileged position on the user's device (e.g. malicious browser extension).
 - Denial-of-service via volumetric attack on our hosting providers.

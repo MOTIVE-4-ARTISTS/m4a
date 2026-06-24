@@ -45,12 +45,11 @@ File these in parallel within 48 hours of the determination letter:
 
 After approvals land, in this repo:
 
-- [ ] **Flip `ORG.irsStatus` from `"pending"` to `"approved"`** in [`lib/org.ts`](../lib/org.ts)
-  - effect: removes `<FiscalSponsorBlock />` site-wide; flips `/donate` primary CTA from The Field link to direct Stripe; updates receipt template language
+- [x] **Flip `ORG.irsStatus` to `"approved"`** in [`lib/org.ts`](../lib/org.ts) — done (determination effective March 2, 2026). Removed `<FiscalSponsorBlock />` and all fiscal-sponsor / pending-status copy site-wide; receipt template now states §501(c)(3) deductibility.
 - [ ] **Wire `@sentry/nextjs`** in a single PR; update [`docs/adr/0003-observability.md`](adr/0003-observability.md) action-items checklist
 - [ ] **Set production `NEXT_PUBLIC_POSTHOG_KEY`** on Vercel; verify the autocapture allowlist still excludes `<input>` (it does by config)
-- [ ] **Remove the `/donate` test-mode `<details>` expander** and promote Stripe Embedded Checkout to the primary card
-  - file: [`app/donate/page.tsx`](../app/donate/page.tsx)
+- [ ] **Flip `ORG.onlineGivingLive` to `true`** once the production Stripe nonprofit account is verified — `/donate` then swaps the interim email/check ask for the embedded Stripe checkout automatically.
+  - file: [`app/(marketing)/donate/page.tsx`](<../app/(marketing)/donate/page.tsx>), flag in [`lib/org.ts`](../lib/org.ts)
 
 ---
 

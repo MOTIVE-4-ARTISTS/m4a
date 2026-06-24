@@ -2,7 +2,7 @@
   "name": "m4a",
   "version": "0.1.0",
   "private": true,
-  "description": "motive4artists.org — MOtiVE 4 Artists Inc. (NY 501(c)(3) pending). See AGENTS.md.",
+  "description": "motive4artists.org — MOtiVE 4 Artists Inc. (NY 501(c)(3), determination effective March 2, 2026). See AGENTS.md.",
   "engines": {
     "node": ">=22.0.0",
     "pnpm": ">=10.0.0"
