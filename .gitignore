@@ -32,6 +32,10 @@ yarn-error.log*
 .vercel
 .cursor/agents/
 
+# Interim static landing page — deployed separately to Cloudflare Pages
+# (project "motive4artists"), not part of the Next.js app build.
+landing/
+
 .idea
 .vscode/*
 !.vscode/settings.json
