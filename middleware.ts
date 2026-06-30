@@ -47,7 +47,7 @@ function buildCsp(nonce: string): string {
     ? `connect-src 'self' ${supabaseOrigins} ${stripeOrigins} https://api.resend.com https://us.i.posthog.com ws: wss:`
     : `connect-src 'self' ${supabaseOrigins} ${stripeOrigins} https://api.resend.com https://us.i.posthog.com`;
 
-  return [
+  const directives = [
     `default-src 'self'`,
     scriptSrc,
     `style-src 'self' 'unsafe-inline'`,
@@ -59,8 +59,18 @@ function buildCsp(nonce: string): string {
     `base-uri 'self'`,
     `form-action 'self'`,
     `frame-ancestors 'none'`,
-    `upgrade-insecure-requests`,
-  ].join("; ");
+  ];
+
+  // Only force HTTPS upgrades when the deployment is actually served over
+  // HTTPS. Under HTTP (local prod builds, Lighthouse CI on 127.0.0.1) this
+  // directive upgrades the navigation to https:// with no TLS server to answer,
+  // so the page never paints (Lighthouse NO_FCP). Production sets an https
+  // NEXT_PUBLIC_SITE_URL, so the directive still ships where it matters.
+  if ((process.env.NEXT_PUBLIC_SITE_URL ?? "").startsWith("https")) {
+    directives.push(`upgrade-insecure-requests`);
+  }
+
+  return directives.join("; ");
 }
 
 export async function middleware(req: NextRequest) {
