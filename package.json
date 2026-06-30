@@ -27,7 +27,7 @@
     "prepare": "lefthook install"
   },
   "dependencies": {
-    "@ai-sdk/google": "^3.0.79",
+    "@ai-sdk/google": "^4.0.2",
     "@keystatic/core": "^0.5.50",
     "@keystatic/next": "^5.0.4",
     "@markdoc/markdoc": "^0.5.7",
