@@ -1,0 +1,27 @@
+name: dependency-review
+
+# Gates *new* dependencies at PR time: fails the PR if it introduces a
+# dependency with a known vulnerability. Complements CodeQL (scans our own
+# code) and Dependabot (bumps existing deps) by catching a bad dep the moment
+# it's proposed. Free on public repos via the GitHub dependency graph.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
+          # License enforcement is intentionally off for now to avoid surprise
+          # friction on a transitive dep's license. Audit the tree first, then
+          # turn it on with e.g. `deny-licenses: AGPL-3.0, GPL-3.0`.

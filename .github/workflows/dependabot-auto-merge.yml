@@ -1,0 +1,38 @@
+name: dependabot-auto-merge
+
+# Removes the babysitting for low-risk dependency PRs. Once the full `ci`
+# workflow (verify + e2e) passes, patch and minor bumps — libraries and
+# GitHub Actions alike — squash-merge themselves. Majors, and anything that
+# fails CI (e.g. the Stripe SDK bump that needed an apiVersion change), still
+# wait for a human — which is exactly when a look is worth it.
+#
+# Mechanics: `gh pr merge --auto` only completes after the branch's required
+# status checks go green, so this never merges ahead of CI. It depends on:
+#   - repo setting "Allow auto-merge" (enabled), and
+#   - branch protection on main with required checks `verify` + `e2e`.
+# The workflow `permissions:` block is what grants the Dependabot-triggered
+# run write access (Dependabot runs are read-only by default).
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+
+      - name: Enable auto-merge for patch + minor
+        if: >
+          steps.meta.outputs.update-type == 'version-update:semver-patch' ||
+          steps.meta.outputs.update-type == 'version-update:semver-minor'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
