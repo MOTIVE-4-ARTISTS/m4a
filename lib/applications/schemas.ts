@@ -58,3 +58,8 @@ export const PROGRAM_TO_SCHEMA = {
 } as const;
 
 export type Program = keyof typeof PROGRAM_TO_SCHEMA;
+
+// Validates the `program` discriminator that submitApplication receives as a
+// Server Action argument (externally controlled). Derived from the schema map
+// so it can never drift from the supported set.
+export const programSchema = z.enum(Object.keys(PROGRAM_TO_SCHEMA) as [Program, ...Program[]]);

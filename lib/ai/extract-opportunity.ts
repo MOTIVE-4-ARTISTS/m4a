@@ -133,20 +133,28 @@ export async function extractOpportunity(
 }
 
 // Cheap, lossy HTML→text. Strips scripts/styles, drops tags, collapses
-// whitespace. Good enough to feed the LLM; we deliberately don't pull
-// in cheerio/jsdom for this one use site.
+// whitespace. This is NOT a security sanitizer: the output is truncated and
+// handed to the LLM as prompt text (extractOpportunity), never rendered as
+// HTML, so a tag that slips through is at worst noise in the model input. We
+// deliberately don't pull in cheerio/jsdom for this one use site.
 export function stripHtml(html: string): string {
-  return html
-    .replace(/<script[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<!--[\s\S]*?-->/g, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/\s+/g, " ")
-    .trim();
+  return (
+    html
+      .replace(/<script\b[\s\S]*?<\/script\s*>/gi, " ")
+      .replace(/<style\b[\s\S]*?<\/style\s*>/gi, " ")
+      .replace(/<!--[\s\S]*?-->/g, " ")
+      .replace(/<[^>]*>/g, " ")
+      // Decode the handful of entities we care about. Order matters: decode the
+      // named/numeric entities first and `&amp;` LAST, so an input like
+      // `&amp;lt;` resolves to the literal `&lt;` rather than being re-decoded
+      // into `<` (the double-unescaping bug class).
+      .replace(/&nbsp;/g, " ")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&amp;/g, "&")
+      .replace(/\s+/g, " ")
+      .trim()
+  );
 }

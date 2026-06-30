@@ -3,7 +3,7 @@
 import "server-only";
 import { actionError, err, ok, type Result } from "@/lib/result";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { PROGRAM_TO_SCHEMA, type Program } from "./schemas";
+import { PROGRAM_TO_SCHEMA, type Program, programSchema } from "./schemas";
 
 // Submit Server Action. Validates with the correct program schema, drops
 // the honeypot row early, persists to Supabase via the admin client (the
@@ -18,7 +18,17 @@ export type SubmitOk = {
 };
 
 export async function submitApplication(program: Program, raw: unknown): Promise<Result<SubmitOk>> {
-  const schema = PROGRAM_TO_SCHEMA[program];
+  // `program` arrives as a Server Action argument, so it's externally
+  // controlled. Validate it against the known set before using it as a schema
+  // key or in any log line — this prevents a crash on an unknown key and keeps
+  // untrusted input out of log output and format strings.
+  const programResult = programSchema.safeParse(program);
+  if (!programResult.success) {
+    return err(actionError("invalid_input", "Unknown application program."));
+  }
+  const safeProgram = programResult.data;
+
+  const schema = PROGRAM_TO_SCHEMA[safeProgram];
   const parsed = schema.safeParse(raw);
 
   if (!parsed.success) {
@@ -31,7 +41,7 @@ export async function submitApplication(program: Program, raw: unknown): Promise
   // Honeypot trip — pretend success so bots don't learn we're filtering.
   // No DB write, no email. Log so we can tune the trap.
   if ("hp_field" in parsed.data && parsed.data.hp_field) {
-    console.warn(`[application:${program}] honeypot tripped`);
+    console.warn("[application] honeypot tripped", { program: safeProgram });
     return ok({
       id: "honeypot",
       message: "Thanks — we received your submission.",
@@ -68,7 +78,7 @@ export async function submitApplication(program: Program, raw: unknown): Promise
   )
     .from("applications")
     .insert({
-      program,
+      program: safeProgram,
       applicant_email: applicantEmail,
       applicant_name: applicantName,
       payload: rest,
@@ -77,7 +87,10 @@ export async function submitApplication(program: Program, raw: unknown): Promise
     .select();
 
   if (inserted.error) {
-    console.error(`[application:${program}] insert failed`, inserted.error);
+    console.error("[application] insert failed", {
+      program: safeProgram,
+      error: inserted.error,
+    });
     return err(
       actionError(
         "submit_failed",
