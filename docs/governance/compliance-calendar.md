@@ -11,7 +11,7 @@ update the "last filed" note here rather than deleting the row.
 
 | Filing | Frequency | Next due | Notes |
 |---|---|---|---|
-| IRS Form 990-N (e-Postcard) | Annual | 2027-05-15 | For FY ending 2026-12-31. Replaced by 990-EZ / 990 above thresholds (see below). |
+| IRS Form 990-N (e-Postcard) | Annual | 2027-05-15 | For FY ending 2026-12-31. First e-Postcard **Accepted 2026-06-25 for TY2025** (Submission ID 10215720261761055725). Replaced by 990-EZ / 990 above thresholds (see below). |
 | NY Form CHAR500 | Annual | 2027-05-15 | 4.5 months after FY end. Via charitiesnys.com. |
 | NY DOS biennial statement | Every 2 yrs | March 2028 | $9. |
 | Board annual meeting | Annual | per bylaws | |
@@ -26,8 +26,9 @@ update the "last filed" note here rather than deleting the row.
 
 ## Event-driven deadlines
 
-- **IRS determination letter arrives** → file CHAR410 within 30 days (or before
-  any NY solicitation, whichever is first), and run the [`docs/TODO.md`](../TODO.md)
-  🟡 "determination day" batch.
-- **Before any NY solicitation** → CHAR410 must already be filed.
+- **IRS determination letter arrived** → ✅ CHAR410 **filed 2026-06-24** (under Bureau
+  review; registration # pending). The [`docs/TODO.md`](../TODO.md) 🟡 "determination day"
+  batch is now **active** — file the independent free-service applications in parallel (most
+  do **not** depend on TechSoup; see [`roadmap.md`](roadmap.md) §6).
+- **Before any NY solicitation** → ✅ CHAR410 is filed, so NY solicitation is cleared.
 - **First public-event before launch** → bind insurance (see [`operating-stack.md`](operating-stack.md) §insurance).

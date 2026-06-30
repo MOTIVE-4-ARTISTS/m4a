@@ -50,6 +50,13 @@ export const ORG = {
   // nonprofit Stripe account is verified in production. Until then /donate
   // routes gifts through the interim email/check path. Flip to true the day
   // the production checkout is confirmed working.
+  //
+  // TODO(eran, 2026-09-01): before flipping this to true, re-evaluate the
+  // donation processor. Stripe is the built-in default (lowest direct card
+  // rate, full control, donor data in our own Supabase), but cheaper hosted
+  // options exist (Zeffy ~0%, Every.org/PayPal Giving Fund) at the cost of
+  // control/data. Trade-off table + plan in docs/governance/operating-stack.md
+  // ("Donation processing"). Also enable Stripe ACH (0.8%, capped $5) for large gifts.
   onlineGivingLive: false,
 
   contact: {

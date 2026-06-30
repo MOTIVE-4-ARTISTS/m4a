@@ -4,7 +4,14 @@ The corporate paper trail for **MOTIVE 4 ARTISTS INC.** — incorporation, EIN,
 the Form 1023-EZ filing, classification, and the index of governing documents.
 
 **Maintained by:** Eran Nussinovitch, Secretary & Treasurer
-**Last updated:** 2026-05-12
+**Last updated:** 2026-06-26
+
+> Drive mirror: the shareable copy of this record is the Google Doc
+> **"MOTIVE 4 ARTISTS — Formation Record & Founding Docs Index (MASTER)"** in
+> Drive folder `00_START-HERE`. Scans referenced below live in the numbered
+> Drive folders (`01_Formation`, `02_IRS-Federal`, `03_NY-State`,
+> `04_Governance-Policies`, `05_Board`). This markdown is the canonical,
+> commit-safe version; secrets/PII stay in `founding-record.secret.md`.
 
 ## How this is split (read before editing)
 
@@ -64,8 +71,8 @@ email → `founding-record.secret.md`. Scans → secure vault (see §8).
 |---|---|
 | EIN | 41-4910645 (also `NEXT_PUBLIC_EIN`; surfaced via `ORG.ein()`) |
 | Responsible party | Eran Nussinovitch (PII in secret file) |
-| EIN assignment date | TODO(eran) — per CP-575 |
-| CP-575 letter | TODO(eran) — store scan in vault; required forever |
+| EIN assignment date | 2026-03-16 (per CP-575E, name control "MOTI") |
+| CP-575 letter | Saved → Drive `01_Formation` (`2026-03-16 — IRS CP-575 EIN Assignment`). Required forever — re-requests take weeks. |
 
 ## 4. Form 1023-EZ filing (Pay.gov)
 
@@ -77,7 +84,8 @@ email → `founding-record.secret.md`. Scans → secure vault (see §8).
 | Agency tracking ID | 77385255089 |
 | User fee | $275.00 (ACH from Chase ...3355, paid 2026-05-13) |
 | Confirmation emails | eran.nussinovitch@gmail.com, hello@motive4artists.org |
-| Confirmation PDF | TODO(eran) — store in vault |
+| As-filed PDF | Drive `02_IRS-Federal` (`2026-05-12 — IRS Form 1023-EZ (As Filed)`) |
+| Payment confirmation | Drive `02_IRS-Federal` (`2026-05-13 — IRS 1023-EZ Pay.gov Payment Confirmation`) |
 
 Filing summary as submitted:
 
@@ -98,8 +106,8 @@ site-wide (see [`docs/TODO.md`](../TODO.md)).
 |---|---|
 | Determination | §501(c)(3) recognized via Form 1023-EZ |
 | Effective date of exemption | 2026-03-02 (retroactive to date of formation) |
-| Letter scan | TODO(eran) — store in vault |
-| Listed in IRS TEOS / Pub 78 | TODO(eran) — verify EIN 41-4910645 at apps.irs.gov/app/eos |
+| Letter scan | Saved → Drive `02_IRS-Federal`. IRS filename `FinalLetter_41-4910645_MOTIVE4ARTISTSINC_03022026_v1.0.pdf` confirms the 2026-03-02 effective date. |
+| Listed in IRS TEOS / Pub 78 | ✅ Verified 2026-06-27 — on Pub 78 list (deductibility code **PC**, public charity); determination letter available via TEOS |
 
 IRS exempt-org line: 877-829-5500. "Where's my application": irs.gov/charities-non-profits/charitable-organizations/wheres-my-application-for-tax-exempt-status
 
@@ -126,18 +134,25 @@ personal email/phone, terms, and COI-disclosure dates → `founding-record.secre
 
 ## 8. Governing documents index
 
-Scans live in the secure vault (TODO: choose — see `operating-stack.md` §document
-storage). This table tracks **status only**.
+Adoption dates confirmed from the board minutes (Drive `05_Board`). The governance
+pack was adopted across two founding meetings: officers + bank authorization on
+2026-04-24, bylaws + COI policy on 2026-05-01 (after a deliberate deferral for
+legal review).
 
-| Document | Status | Adopted |
-|---|---|---|
-| Certificate of Incorporation | Filed | 2026-03-02 |
-| Bylaws | TODO(eran) | — |
-| Conflict of Interest Policy | TODO(eran) | — |
-| Initial board meeting minutes | TODO(eran) | — |
-| Director COI disclosures (3) | TODO(eran) | — |
-| Officer election resolution | TODO(eran) | — |
-| Bank account authorization resolution | TODO(eran) | — |
+| Document | Status | Adopted | Location |
+|---|---|---|---|
+| Certificate of Incorporation | Filed | 2026-03-02 | Drive `01_Formation` (certified copy) |
+| Officer election resolution | Adopted | 2026-04-24 (Founding Meeting I) | Drive `05_Board` (minutes I) |
+| Bank account authorization resolution | Adopted | 2026-04-24 (reaffirmed 2026-05-01) | Drive `05_Board` (minutes I & II) |
+| Bylaws | Adopted (e-signed) | 2026-05-01 (Founding Meeting II) | Drive `04_Governance-Policies` (working copy + signed PDF) |
+| Conflict of Interest Policy | Adopted (e-signed) | 2026-05-01 (Founding Meeting II) | Drive `04_Governance-Policies` (working copy + signed PDF) |
+| Initial board meeting minutes | Recorded | 2026-04-24 & 2026-05-01 | Drive `05_Board` |
+| Director COI disclosures (3) | Signed (all 3) | per COI policy | Drive `05_Board` / vault |
+
+Board-composition note: Monte Scott Kerr attended Founding Meeting I as a
+prospective fourth director but declined (Meeting II) due to disability-benefit
+constraints; Neta Pulvermacher was floated as a possible future director. Current
+board remains the three in §6.
 
 ## 9. NY Attorney General — Charities Bureau registration
 
@@ -146,7 +161,8 @@ storage). This table tracks **status only**.
 | Forms | CHAR410 (registration, $25), CHAR500 (annual) |
 | Portal | charitiesnys.com |
 | CHAR410 deadline | within 30 days of IRS determination, OR before any NY solicitation — whichever is earlier |
-| CHAR410 filed / registration # | TODO(eran) — surface the # on `/transparency` once filed (see [`docs/TODO.md`](../TODO.md) 🔴) |
+| CHAR410 filed | 2026-06-24 — $25 paid; status: submitted / under Bureau review |
+| CHAR410 registration # | Pending — issued after review; surface it on `/transparency` once received (see [`docs/TODO.md`](../TODO.md) 🔴) |
 | First CHAR500 due | 2027-05-15 |
 
 ## 10. NY State sales-tax exemption (optional, recommended)
@@ -162,14 +178,77 @@ Work the day the EIN lands in TEOS, then after the first 990.
 
 | Platform | Status / action |
 |---|---|
-| IRS TEOS + Pub 78 | TODO — apps.irs.gov/app/eos (EIN 41-4910645) |
-| Candid / GuideStar | TODO — claim once in TEOS; aim Bronze Seal minimum |
+| IRS TEOS + Pub 78 | ✅ Verified 2026-06-27 — listed; Pub 78 deductibility code PC |
+| Candid / GuideStar | 🟦 Claim escalated to human support **Case #01013088** (2026-06-28); CP-575 + officer-election resolution submitted to prove admin authority. Awaiting review; aim Seal of Transparency. |
+| Google for Nonprofits | ✅ **Verified 2026-06-30** (Goodstack). Workspace free-tier activation submitted (~3-day review); Ad Grants ($10k/mo) next. |
 | ProPublica Nonprofit Explorer | auto-populates after first 990 |
 | Cause IQ | auto-populates after first 990 |
-| NY Charities Bureau registry | after CHAR410 |
+| NY Charities Bureau registry | CHAR410 filed 2026-06-24 (under review) |
+| TechSoup | Qualified 2026-06-25 — see §15 |
 | SAM.gov (UEI/DUNS) | TODO — required for any federal grant |
 
-## 12. Document & file index
+## 12. Annual returns filed
 
-Master index of where each artifact physically lives. Until a vault is chosen,
-entries read "TODO → vault". Sensitive locations stay in `founding-record.secret.md`.
+| Return | Period | Status | Reference |
+|---|---|---|---|
+| IRS Form 990-N (e-Postcard) | Tax Year 2025 (2025-01-01 → 2025-12-31) | **Accepted 2026-06-25** | Submission ID 10215720261761055725; copy in Drive `02_IRS-Federal` |
+
+The first e-Postcard covered TY2025; the next 990-N (FY2026) is due 2027-05-15.
+
+## 13. Grants received
+
+| Grant | Amount | Applied as | Status / treatment |
+|---|---|---|---|
+| Brooklyn Arts Council (artist residency) | $5,000 | MOtiVE Brooklyn (pre-formation) | Funder permits transfer; to be **recognized as grant income of MOTIVE 4 ARTISTS INC.** |
+| Harkness Foundation for Dance | $2,500 | MOtiVE Brooklyn (pre-formation) | Same — recognize as nonprofit grant income |
+
+> Related-party note: both were applied for under MOtiVE Brooklyn before the
+> nonprofit existed. Document the transfer/assignment (a short board-minuted memo)
+> so the income is cleanly attributable to MOTIVE 4 ARTISTS INC. The original
+> funders (a public arts council + a private foundation) are favorable sources for
+> the future public-support test. Award letters → Drive `07_Programs-Grants`.
+
+## 14. NY State sales-tax exemption (optional, recommended)
+
+Tracked in §10 above (ST-119.2 — not yet filed).
+
+## 15. Operating accounts & vendor programs
+
+Back-office services, insurance, and advisors live in
+[`operating-stack.md`](operating-stack.md). Status highlights:
+
+| Item | Status |
+|---|---|
+| TechSoup | **Qualified 2026-06-25** — association code `4149-ISTS-3LQB`; unlocks Microsoft 365, QuickBooks Online ($80/yr), Adobe. Validation token per provider via TechSoup FAQ. |
+| Google Workspace | GfN **verified 2026-06-30**; free-tier activation submitted (~3-day review); Ad Grants next |
+| Adobe | **Approved 2026-06-30** (Goodstack) — 1-yr free Express Premium + 1-yr Acrobat Pro discount; activation links emailed to Eran |
+| OpenAI / ChatGPT | **Approved 2026-06-30** — nonprofit discount (auto-applied); approved under Lilach — confirm org account/email |
+| Anthropic Claude | **Approved 2026-06-30** — Claude for Nonprofits; discount applies on Claude for Teams signup with the Goodstack-verified email (prefer `hello@`) |
+| Stripe | Live account active (Chase …3355) — `acct_1TnANUPdKNJwJlqG` (hello@); under 24h verification (2026-06-30); nonprofit fee discount submitted via portal. 2FA backup codes in Drive `08_Tech-Accounts` (move to vault). |
+| Banking | JPMorgan Chase business checking (…3355); $3,000 seed. Full details → `founding-record.secret.md` |
+
+## 16. Document & file index (Drive map)
+
+Drive is now organized into numbered folders (account: hello@motive4artists.org).
+Sensitive locations (bank, home addresses) stay in `founding-record.secret.md`.
+
+| Folder | Holds |
+|---|---|
+| `00_START-HERE` | This record (MASTER Google Doc) |
+| `01_Formation` | Certified Certificate of Incorporation, NY DOS receipt + acknowledgement, CP-575 EIN, EIN application |
+| `02_IRS-Federal` | 1023-EZ (as filed) + payment confirmation, 501(c)(3) determination letter, 990-N copies |
+| `03_NY-State` | CHAR410 (signed/filed); future CHAR500, DOS biennial, ST-119.2 |
+| `04_Governance-Policies` | Bylaws + COI policy (working copies + signed PDFs) |
+| `05_Board` | Board minutes, resolutions, COI disclosures, `Recordings/` |
+| `06_Financial-Banking` | Bank docs, budgets, bookkeeping exports |
+| `07_Programs-Grants` | BAC + Harkness award letters, program + grant records |
+| `08_Tech-Accounts` | TechSoup, Google, Stripe, etc. confirmations + tokens |
+| `09_Insurance` | D&O, GL (once bound) |
+| `10_Reference-Templates` | Bylaws/COI guide, incorporating guide, letterhead, templates |
+| `99_Archive` | Superseded drafts (incl. pre-rename "For The Artists! Inc." certificate), test files |
+
+> Naming convention going forward: prefix dated artifacts with ISO date
+> `YYYY-MM-DD — <Form/Type> — <description>` so files sort chronologically and are
+> searchable by form name. Note: two e-signed PDFs (signed Bylaws, signed COI) keep
+> their original names because the e-signature content-lock blocks renaming via API;
+> they are correctly filed in `04_Governance-Policies`.
