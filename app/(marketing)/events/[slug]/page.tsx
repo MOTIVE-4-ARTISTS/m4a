@@ -42,7 +42,7 @@ function EventInitials({ title }: { title: string }) {
   return (
     <div
       aria-hidden="true"
-      className="flex h-full w-full items-center justify-center bg-[var(--color-brand-soft)] text-6xl text-[var(--color-brand-deep)] font-[family-name:var(--font-display)] font-semibold"
+      className="flex h-full w-full items-center justify-center bg-[var(--color-brand)] text-6xl text-[var(--color-ink)] font-[family-name:var(--font-display)] font-semibold"
     >
       {initials}
     </div>

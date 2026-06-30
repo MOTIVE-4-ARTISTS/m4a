@@ -206,13 +206,20 @@ export function Carousel({
                 onClick={() => goTo(i)}
                 aria-label={`Go to slide ${i + 1} of ${count}`}
                 aria-current={active === i ? "true" : undefined}
-                className={cn(
-                  "block h-1.5 rounded-full transition-all",
-                  active === i
-                    ? "w-5 bg-[var(--color-brand-deep)]"
-                    : "w-1.5 bg-[var(--color-rule)] hover:bg-[var(--color-ink-muted)]",
-                )}
-              />
+                // 24x24 hit target (WCAG 2.2 AA 2.5.8 target-size) with a small
+                // visual pill centered inside, so the dots read as dots but
+                // remain comfortably tappable.
+                className="group flex h-6 w-6 items-center justify-center"
+              >
+                <span
+                  className={cn(
+                    "block h-1.5 rounded-full transition-all",
+                    active === i
+                      ? "w-5 bg-[var(--color-brand-deep)]"
+                      : "w-1.5 bg-[var(--color-rule)] group-hover:bg-[var(--color-ink-muted)]",
+                  )}
+                />
+              </button>
             </li>
           ))}
         </ul>

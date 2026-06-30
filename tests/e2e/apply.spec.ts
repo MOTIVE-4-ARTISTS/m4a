@@ -8,8 +8,9 @@ import { expect, test } from "@playwright/test";
 
 test("apply landing lists the three flagship programs", async ({ page }) => {
   await page.goto("/apply");
+  // Brand voice keeps marketing h1s lowercase on purpose (AGENTS.md > Voice).
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Three programs, three small forms.",
+    "three programs, three small forms.",
   );
 
   for (const program of [
@@ -37,11 +38,14 @@ test("discounted-space form submits and surfaces the not-configured fallback in 
 }) => {
   await page.goto("/apply/discounted-space");
 
-  await page.getByLabel(/your name/i).fill("Test Applicant");
-  await page.getByLabel(/email/i).fill("test@example.com");
-  await page.getByLabel(/city/i).fill("New York");
+  // Scope to <main>: the footer newsletter also has an "Email address" field,
+  // so an unscoped getByLabel(/email/i) would match two inputs.
+  const form = page.getByRole("main");
+  await form.getByLabel(/your name/i).fill("Test Applicant");
+  await form.getByLabel(/email/i).fill("test@example.com");
+  await form.getByLabel(/city/i).fill("New York");
 
-  await page.getByLabel(/monthly package/i).selectOption("10");
+  await form.getByLabel(/monthly package/i).selectOption("10");
   await page.getByLabel(/how many months/i).fill("1");
   await page
     .getByLabel(/what will you use the hours for/i)
@@ -51,9 +55,10 @@ test("discounted-space form submits and surfaces the not-configured fallback in 
 
   // Either: Supabase is configured (real success) or it isn't (typed
   // not_configured error). CI sees the latter; locking the contract on
-  // both keeps the test stable as keys are added.
-  const success = page.getByText(/submission received/i);
-  const notConfigured = page.getByRole("alert");
+  // both keeps the test stable as keys are added. Scope to <main> — the form's
+  // alert/status lives there, not in any global live region.
+  const success = form.getByText(/submission received/i);
+  const notConfigured = form.getByRole("alert");
 
   await expect(async () => {
     const successVisible = await success.isVisible();
