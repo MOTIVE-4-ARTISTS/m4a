@@ -4,8 +4,8 @@ import { type NextRequest, NextResponse } from "next/server";
 // Edge middleware composes three concerns in one place:
 //   1. Refresh Supabase session cookie so long-lived admin tabs don't hit
 //      expired tokens on the next click.
-//   2. Apply a strict, nonce-based Content Security Policy so any XSS
-//      attempt has no `unsafe-inline` budget to abuse.
+//   2. Apply a Content Security Policy (see buildCsp for the static-vs-nonce
+//      tradeoff and docs/adr/0008-csp-static-tradeoff.md).
 //   3. Apply baseline security headers (HSTS in prod, Referrer-Policy,
 //      Permissions-Policy, X-Frame-Options, X-Content-Type-Options).
 //
@@ -15,33 +15,27 @@ import { type NextRequest, NextResponse } from "next/server";
 // When we need real distributed rate limiting we'll add Upstash Ratelimit
 // (KV-backed); an ADR is queued for that.
 
-function generateNonce(): string {
-  // crypto.randomUUID is available in the edge runtime.
-  return crypto.randomUUID().replaceAll("-", "").slice(0, 24);
-}
-
-function buildCsp(nonce: string): string {
+function buildCsp(): string {
   const isDev = process.env.NODE_ENV !== "production";
 
-  // 'strict-dynamic' lets nonced scripts load further scripts without
-  // enumerating every Stripe / PostHog domain. Modern browsers honor it;
-  // older browsers fall back to the explicit allow-list below.
-  //
-  // Dev-only carve-outs we deliberately accept:
-  //  - 'unsafe-eval' — React dev mode uses Function/eval for HMR and
-  //    fast-refresh module concatenation. Production React never does;
-  //    we drop it from the prod CSP.
-  //  - 'unsafe-inline' on scripts — Next.js dev runtime injects inline
-  //    bootstrap scripts that pre-date its own nonce propagation. Without
-  //    this, /keystatic renders blank in dev and you get console-error
-  //    overlays on every route. Prod build does NOT need this.
-  //  - 'ws:' in connect-src for Turbopack HMR.
+  // CSP design + tradeoff (see docs/adr/0008-csp-static-tradeoff.md):
+  // We deliberately do NOT use a per-request script nonce. Next.js statically
+  // prerenders most pages, so a nonce minted per request in middleware can
+  // never match the build-time nonce baked into the cached HTML — the browser
+  // then blocks every script and the app never hydrates (forms dead, reveal
+  // animations stuck hidden). Keeping static generation (the right call for a
+  // content marketing site) means script-src uses 'self' + 'unsafe-inline'.
+  // Residual XSS risk is low: we render no untrusted user-supplied HTML and
+  // React escapes by default; every other directive stays strict (object-src
+  // none, frame-ancestors none, base-uri/form-action self). Dev additionally
+  // needs 'unsafe-eval' (React fast-refresh) and 'ws:' (Turbopack HMR),
+  // both dropped in prod.
   const stripeOrigins = "https://js.stripe.com https://*.stripe.com";
   const supabaseOrigins = "https://*.supabase.co https://*.supabase.in";
 
   const scriptSrc = isDev
-    ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' 'unsafe-inline' ${stripeOrigins}`
-    : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${stripeOrigins}`;
+    ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${stripeOrigins}`
+    : `script-src 'self' 'unsafe-inline' ${stripeOrigins}`;
 
   const connectSrc = isDev
     ? `connect-src 'self' ${supabaseOrigins} ${stripeOrigins} https://api.resend.com https://us.i.posthog.com ws: wss:`
@@ -74,14 +68,9 @@ function buildCsp(nonce: string): string {
 }
 
 export async function middleware(req: NextRequest) {
-  const nonce = generateNonce();
-  const csp = buildCsp(nonce);
+  const csp = buildCsp();
 
-  const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-nonce", nonce);
-  requestHeaders.set("Content-Security-Policy", csp);
-
-  const res = NextResponse.next({ request: { headers: requestHeaders } });
+  const res = NextResponse.next();
 
   res.headers.set("Content-Security-Policy", csp);
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");

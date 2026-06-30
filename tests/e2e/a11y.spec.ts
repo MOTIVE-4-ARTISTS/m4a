@@ -28,14 +28,19 @@ for (const route of ROUTES) {
   });
 }
 
-test("compliance footer surfaces required legal disclosures on every page", async ({ page }) => {
+test("compliance footer surfaces the legal-identity line and legal links on every page", async ({
+  page,
+}) => {
+  // Footer scope is deliberately narrow (AGENTS.md > Compliance, peer-website-
+  // benchmarking.md §4.6): a one-line legal identity (name + EIN) plus the
+  // accessibility/privacy/terms cluster. The §174-B charities disclosure and
+  // the 501(c)(3) deductibility line attach to *solicitation* surfaces, not
+  // every page — they're asserted on /donate by the test below.
   await page.goto("/");
   const footer = page.locator("footer");
   await expect(footer).toBeVisible();
   await expect(footer).toContainText("MOTIVE 4 ARTISTS INC.");
   await expect(footer).toContainText("EIN");
-  await expect(footer).toContainText("501(c)(3)");
-  await expect(footer).toContainText("NY Attorney General's Charities Bureau");
   await expect(footer.getByRole("link", { name: /accessibility statement/i })).toBeVisible();
   await expect(footer.getByRole("link", { name: /privacy/i })).toBeVisible();
   await expect(footer.getByRole("link", { name: /terms/i })).toBeVisible();

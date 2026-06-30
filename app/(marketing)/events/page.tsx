@@ -35,9 +35,9 @@ function EventCard({ event }: { event: EventRecord }) {
         <CardTitle className="mt-1">{event.title}</CardTitle>
         <p className="mt-2 text-sm text-[var(--color-ink-muted)]">{formatEventLocation(event)}</p>
         <p className="mt-3 line-clamp-3 text-sm text-[var(--color-ink)]">{event.summary}</p>
-        <span className="mt-4 inline-flex items-baseline gap-1.5 text-xs text-[var(--color-brand-deep)]">
+        <span className="mt-4 inline-flex items-baseline gap-1.5 text-xs text-[var(--color-accent-ink)]">
           details + calendar
-          <SoftChevron size={10} className="text-[var(--color-brand-deep)]" />
+          <SoftChevron size={10} className="text-[var(--color-accent-ink)]" />
         </span>
       </Card>
     </Link>
