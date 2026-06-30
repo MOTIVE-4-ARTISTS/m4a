@@ -21,7 +21,7 @@ export function getStripe(): Stripe | null {
     // Stripe rotates the API version frequently; pin so we don't get
     // surprise breaking changes on a dependency bump. Update intentionally
     // by reviewing the changelog and running the regression suite.
-    apiVersion: "2026-04-22.dahlia",
+    apiVersion: "2026-06-24.dahlia",
     typescript: true,
     appInfo: {
       name: "motive4artists.org",
