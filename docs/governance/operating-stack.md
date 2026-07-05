@@ -24,10 +24,10 @@ secure vault / `founding-record.secret.md`, never here.
 | Bookkeeping / accounting | QuickBooks Online (via TechSoup) | redeemable now | engage/import before first 990 |
 | Payroll | N/A — no employees yet | — | Gusto / Justworks when needed |
 | Donor / CRM | TODO — Givebutter / Donorbox / Bloomerang | — | needed before fundraising push |
-| Payments (Stripe) | live account active (Chase …3355) | profile under 24h verification (2026-06-30); nonprofit fee discount submitted via portal | `acct_1TnANUPdKNJwJlqG` (hello@); target 2.2% + $0.30 nonprofit rate. 2FA backup codes in Drive `08_Tech-Accounts` — move to the password vault. |
+| Payments (Stripe) | live account active (Chase …3355) | **nonprofit pricing approved 2026-07-03** | `acct_1TnANUPdKNJwJlqG` (hello@): 2.2% + $0.30 domestic, 3.2% + $0.30 intl, 3.5% Amex (card-not-present). Constraint: account must stay **primarily donations** (fine — studio rental is the LLC). Enable ACH (0.8%, cap $5) for large gifts. 2FA codes in Drive `08_Tech-Accounts` — move to the vault. |
 | Document storage | Google Drive (numbered folders) | done — organized 2026-06-26 | see [`formation-record.md`](formation-record.md) §16 Drive map |
 | Password manager | TODO — 1Password / Bitwarden | — | move `founding-record.secret.md` here |
-| GitHub | Organization (github.com/MOTIVE-4-ARTISTS) | **GitHub for Nonprofits applied 2026-06-30** (~10-day human review) | converted from user account to org; repo `m4a` org-owned. Update git remote from old `MOtiVE4ARTists` name before pushing. |
+| GitHub | Organization (github.com/MOTIVE-4-ARTISTS) | **GitHub for Nonprofits approved 2026-07-04** | activate by selecting the free **Team** plan at nonprofits.github.com. Repo `m4a` org-owned; secret scanning + push protection + CodeQL + Dependabot already on (free — public repo). |
 
 ### Post-determination "apply for free" upgrades
 
@@ -44,7 +44,7 @@ Box, Asana. **TODO(eran): pick the password manager + document vault**, then mov
 ## Donation processing — decision to revisit before online giving goes live
 
 The repo is built around **Stripe** (embedded checkout, `/api/stripe/webhook`, receipts via
-Resend, donor data in our own Supabase). We've requested Stripe's nonprofit rate. Before we
+Resend, donor data in our own Supabase). Stripe's nonprofit rate is now **approved (2.2% + $0.30 domestic)**. Before we
 flip `ORG.onlineGivingLive` to `true`, re-confirm Stripe vs. cheaper hosted options — the
 trade-off is **fees vs. control/data ownership** (rates approximate; verify before choosing):
 
@@ -53,7 +53,7 @@ trade-off is **fees vs. control/data ownership** (rates approximate; verify befo
 | **Zeffy** | **0% — truly free** (we keep 100%) | Funded by an *optional donor tip* prompt; hosted/branded; we don't own the stack |
 | **PayPal Giving Fund** | ~0% (PayPal absorbs fees on their channels) | Monthly payout, limited donor data, enrollment required |
 | **Every.org** | 0% platform + pass-through card (~2.2% + $0.30) | Hosted/branded; free auto-receipts + DAF/stock/crypto; charter already anticipates an Every.org widget |
-| **Stripe nonprofit** (current) | 2.2% + $0.30 (rate requested) | We build/own the flow + donor data; lowest *direct* card rate |
+| **Stripe nonprofit** (current) | 2.2% + $0.30 (approved 2026-07-03) | We build/own the flow + donor data; lowest *direct* card rate |
 | **Stripe ACH** | 0.8%, capped $5 | Cheapest for *large* gifts; enable for big donors regardless of processor |
 | PayPal direct | 1.99% + $0.49 | Lower % but higher fixed fee; worse on small gifts |
 

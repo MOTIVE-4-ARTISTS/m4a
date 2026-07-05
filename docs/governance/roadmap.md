@@ -52,12 +52,12 @@ parallel. See §6.
 | TechSoup validation | ✅ Done | Qualified 2026-06-25 (code 4149-ISTS-3LQB); MS 365 / QuickBooks / Adobe now redeemable |
 | NY Charities registration (CHAR410) | 🟦 In review | Filed 2026-06-24; registration # pending |
 | Google for Nonprofits | ✅ Done | Verified 2026-06-30; Workspace free-tier activation pending (~3-day); Ad Grants next |
-| Nonprofit software approvals | 🟧 In progress | Adobe / ChatGPT / Claude ✅ approved 2026-06-30; Stripe live (24h verify) + fee-discount requested; Supabase/Sentry/GitHub deferred to app deploy |
+| Nonprofit software approvals | 🟧 In progress | Adobe / ChatGPT / Claude ✅ 2026-06-30; **Stripe nonprofit pricing ✅ 2026-07-03 (2.2% + $0.30)**; **GitHub for Nonprofits ✅ 2026-07-04 (select Team plan)**; Supabase/Sentry deferred to app deploy |
 | NY sales-tax exemption (ST-119.2) | 🟥 Not started | Form filled + verified; mail the packet (Drive `03_NY-State`) |
 | IRS TEOS / Pub 78 listing verified | ✅ Done | Verified 2026-06-27 — Pub 78 (deductibility code PC) + determination letter listed |
 | Candid / GuideStar profile | 🟦 In review | Claim escalated — Case #01013088 |
 | Public website | 🟧 Interim live | Landing page live at https://motive4artists.org (+ www) on Cloudflare Pages, org-owned account, SSL valid; full Next.js app still pending |
-| Online donations | 🟥 Blocked | Needs website live + Stripe nonprofit account |
+| Online donations | 🟥 Blocked | Stripe nonprofit rate ✅ 2026-07-03; still needs the full app deployed + Checkout verified, then flip `onlineGivingLive` |
 | Insurance (D&O / general liability) | 🟥 Not started | Bind before first public event |
 | Bookkeeping / accounting | 🟥 Not started | Engage before first 990 |
 
@@ -154,10 +154,10 @@ These are independent applications. File them in parallel; none requires TechSou
 
 | Apply to | Why | Depends on TechSoup? |
 |---|---|---|
-| **Stripe nonprofit rate** (`nonprofit@stripe.com`) | Drops fees to ~2.2% + $0.30; required for online giving | No |
+| **Stripe nonprofit rate** (via support fee-discount form) | Drops fees to 2.2% + $0.30; required for online giving | ✅ 2026-07-03 |
 | **Google for Nonprofits** | Free Workspace **+ $10,000/month Google Ad Grants** (free search ads) | No |
 | **Cloudflare for Nonprofits / Project Galileo** | Free enterprise security/CDN | No |
-| **GitHub for Nonprofits** | Free Team plan | No |
+| **GitHub for Nonprofits** | Free Team plan | ✅ 2026-07-04 (select Team plan) |
 | **Supabase nonprofit discount** | 40–80% off Pro (database/auth) | No |
 | **Sentry for Good** | Free error monitoring | No |
 | **NY ST-119.2** | Stop paying NY sales tax on purchases | No |

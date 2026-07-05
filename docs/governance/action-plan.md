@@ -47,6 +47,11 @@ Nonprofits, Adobe, ChatGPT, Claude, TechSoup, Stripe) are in hand. Ordered by va
 
 ---
 
+## Recent milestones — 2026-07-04
+
+- **Stripe nonprofit pricing APPROVED** ✅ — `acct_1TnANUPdKNJwJlqG` is now on charity rates: **2.2% + $0.30** domestic, 3.2% + $0.30 international, 3.5% Amex (all card-not-present). Caveat from Stripe: the account must stay **primarily donations** (fine — studio rental runs through the LLC). This clears the last *external* blocker on in-app giving; the flag `ORG.onlineGivingLive` still waits on the full app being deployed + production Checkout verified. Enable **ACH** (0.8%, cap $5) for large gifts when we wire it.
+- **GitHub for Nonprofits APPROVED** ✅ — activate the free **Team** plan at nonprofits.github.com. (Secret scanning, push protection, CodeQL, and Dependabot are already on — free because the repo is public; Team adds free private repos + more Actions minutes if we ever need them.)
+
 ## Recent milestones — 2026-06-30
 
 - **Google for Nonprofits: ORGANIZATION VERIFIED** ✅ (Goodstack). Google Workspace **free-tier** activation submitted for motive4artists.org (~3-day review). Ad Grants ($10k/mo) is the next unlock (privacy page already live).

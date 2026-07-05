@@ -224,7 +224,8 @@ Back-office services, insurance, and advisors live in
 | Adobe | **Approved 2026-06-30** (Goodstack) — 1-yr free Express Premium + 1-yr Acrobat Pro discount; activation links emailed to Eran |
 | OpenAI / ChatGPT | **Approved 2026-06-30** — nonprofit discount (auto-applied); approved under Lilach — confirm org account/email |
 | Anthropic Claude | **Approved 2026-06-30** — Claude for Nonprofits; discount applies on Claude for Teams signup with the Goodstack-verified email (prefer `hello@`) |
-| Stripe | Live account active (Chase …3355) — `acct_1TnANUPdKNJwJlqG` (hello@); under 24h verification (2026-06-30); nonprofit fee discount submitted via portal. 2FA backup codes in Drive `08_Tech-Accounts` (move to vault). |
+| Stripe | `acct_1TnANUPdKNJwJlqG` (hello@) — **nonprofit pricing approved 2026-07-03**: 2.2% + $0.30 domestic, 3.2% + $0.30 intl, 3.5% Amex (card-not-present). Account must stay primarily donations. 2FA backup codes in Drive `08_Tech-Accounts` (move to vault). |
+| GitHub | Org github.com/MOTIVE-4-ARTISTS; **GitHub for Nonprofits approved 2026-07-04** — select the free Team plan at nonprofits.github.com to activate. |
 | Banking | JPMorgan Chase business checking (…3355); $3,000 seed. Full details → `founding-record.secret.md` |
 
 ## 16. Document & file index (Drive map)
