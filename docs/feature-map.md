@@ -24,8 +24,8 @@ All routes are server-rendered, server-first (Server Components by default), and
 | Route | Status | Content source | Key files | Notes |
 |---|---|---|---|---|
 | `/` | live | static + Supabase + Keystatic | [`app/(marketing)/page.tsx`](../app/(marketing)/page.tsx) | Artist-first (design audit 2026-05): h1 "the artist comes first", brand-yellow on the "browse opportunities" CTA, "support" demoted below the fold. Composes live blocks — application-status strip ([`lib/programs.ts`](../lib/programs.ts)), opportunities preview, cohort spotlight, next-event teaser — each self-suppressing when its source is empty. Pendency line required by IRS framing. The cohort spotlight is an auto-rotating [`<ArtistCarousel />`](../components/content/artist-carousel.tsx) of the **whole** most-recent cohort (not a sliced sample). |
-| `/about` | live | static | [`app/(marketing)/about/page.tsx`](../app/(marketing)/about/page.tsx) | Hub for the three sub-pages below. |
-| `/about/mission` `/about/vision` `/about/what-matters` | live | static | `app/(marketing)/about/*/page.tsx` | Hand-authored MDX-style copy; no CMS yet. |
+| `/about` | live | static | [`app/(marketing)/about/page.tsx`](../app/(marketing)/about/page.tsx) | Hub for the sub-pages below. |
+| `/about/story` `/about/mission` `/about/values` | live | static | `app/(marketing)/about/*/page.tsx` | Hand-authored MDX-style copy; no CMS yet. July 2026 board pass: Vision merged into Mission, "What Matters" renamed to Values, "Our Story" added (redirects live in `next.config.ts`). |
 | `/team` | live | static + `lib/org.ts` | [`app/(marketing)/team/page.tsx`](../app/(marketing)/team/page.tsx) | Reads board from `ORG.board`. |
 | `/programs` | live | static | [`app/(marketing)/programs/page.tsx`](../app/(marketing)/programs/page.tsx) | Hub for the four sub-pages. |
 | `/programs/residency` `/programs/international-exchange` `/programs/discounted-space` `/programs/pedagogies` | live | static | `app/(marketing)/programs/*/page.tsx` | One page per flagship program. Each links into its `/apply/...` form. |

@@ -6,12 +6,24 @@ import { Section } from "@/components/ui/section";
 export const metadata = {
   title: "About",
   description:
-    "Who we are — Mission, Vision, what matters to us, the team, and our transparency disclosures.",
+    "Who we are — our story, mission, the values we hold ourselves to, the people behind it, and our transparency disclosures.",
 };
 
-// "About" is a landing for the four standalone pages below. Keeping it lean
+// "About" is a landing for the standalone pages below. Keeping it lean
 // avoids duplicating the long-form copy that lives on each child page.
+//
+// July 2026 board pass: Mission and Vision merged (the standalone Vision
+// page's "dance house" dream was cut as premature — see /about/mission);
+// "What Matters" became "Values"; the team card reads "Who we are" (the
+// old "Who's behind this" read as accusatory); "Our Story" was added as
+// the missing origin narrative (board minutes 2026-07-13).
 const CHILDREN = [
+  {
+    href: "/about/story",
+    eyebrow: "Our Story",
+    title: "How we got here",
+    blurb: "From a hand-painted Dumbo studio to a 501(c)(3) built to make the work last.",
+  },
   {
     href: "/about/mission",
     eyebrow: "Mission",
@@ -20,28 +32,22 @@ const CHILDREN = [
       "A community-oriented organization supporting movement-based artists in New York City and beyond.",
   },
   {
-    href: "/about/vision",
-    eyebrow: "Vision",
-    title: "What we're building toward",
-    blurb: "A house with a theater, studios, a café, and a place to lay your head.",
-  },
-  {
-    href: "/about/what-matters",
-    eyebrow: "What Matters",
+    href: "/about/values",
+    eyebrow: "Values",
     title: "What we hold ourselves to",
     blurb:
       "The artist comes first. Accessibility, agency, and community are the rails everything else runs on.",
   },
   {
     href: "/team",
-    eyebrow: "Team",
-    title: "Who's behind this",
+    eyebrow: "Who we are",
+    title: "The people behind it",
     blurb: "Lilach, Eran, Sara, and the board.",
   },
   {
     href: "/transparency",
     eyebrow: "Transparency",
-    title: "Where the money goes",
+    title: "Public-record disclosures",
     blurb: "EIN, 501(c)(3) status, board governance, and (soon) financials.",
   },
 ] as const;
