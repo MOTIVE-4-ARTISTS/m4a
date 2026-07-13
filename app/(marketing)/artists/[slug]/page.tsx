@@ -186,7 +186,7 @@ export default async function ArtistPage({ params }: { params: Promise<Params> }
       </div>
 
       {/* End glyph — the audit's "second-layer reward" detail. Same
-          treatment used on /about/vision so the punctuation feels
+          treatment used on /about/story so the punctuation feels
           consistent across long editorial pages. */}
       <div className="mt-16 flex justify-center">
         <StarMark size={20} className="text-[var(--color-brand-deep)]" />

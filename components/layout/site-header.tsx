@@ -3,12 +3,18 @@ import { BrandLockup } from "@/components/brand/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
 
-// Top-level navigation. Order is artist-first per the May 2026 design audit
-// (docs/research/design-audit-2026-05.md §6): Opportunities first because
-// it's the highest-utility item for an arriving artist who doesn't know us
-// yet; Apply as a dedicated top-level item (the MacDowell pattern — Apply
-// is always one click away); About fifth because due-diligence visitors
-// scroll for it, first-visit artists do not.
+// Top-level navigation. Order is artist-first: Programs and Apply lead
+// because a first-visit artist's questions are "what do you run?" and "can
+// I apply?"; Artists is the peer-proof; About sits last because
+// due-diligence visitors scroll for it, first-visit artists do not.
+//
+// "Resources" points at the /opportunities engine (grants/residencies we
+// surface for the field). The July 2026 board relabeled it away from
+// "Opportunities" — that word read as "jobs we're hiring for" — and moved
+// it off the first slot so it doesn't front the whole site (board minutes
+// 2026-07-13). The URL stays /opportunities; only the label + position
+// changed. Events left the primary nav in the same pass (still reachable
+// via the homepage teaser + direct route) pending a layout rethink.
 //
 // "Studio" used to be a top-level external link to motivebrooklyn.com
 // (LLC). The audit moved it out of the primary nav: an artist clicking it
@@ -24,11 +30,10 @@ import { Button } from "@/components/ui/button";
 // close the <details> disclosure when a link is tapped. The component
 // itself is the only client code added by the header.
 const NAV = [
-  { href: "/opportunities", label: "Opportunities" },
   { href: "/programs", label: "Programs" },
   { href: "/apply", label: "Apply" },
   { href: "/artists", label: "Artists" },
-  { href: "/events", label: "Events" },
+  { href: "/opportunities", label: "Resources" },
   { href: "/about", label: "About" },
 ] as const;
 

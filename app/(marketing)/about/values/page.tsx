@@ -3,25 +3,27 @@ import { Prose, ProseHero } from "@/components/ui/prose";
 import { PullQuote } from "@/components/ui/pull-quote";
 import { Section } from "@/components/ui/section";
 
-// "What Matters" is the org's stated values. The MOtiVE Brooklyn site
-// referenced this in its nav but never published it (the page 404s). This
-// is therefore a fresh page; review with Lilach before launch.
+// "Values" is the org's stated values (renamed from "What Matters" in the
+// July 2026 board pass — the board landed on plain "values" as the clearer
+// label; board minutes 2026-07-13). The MOtiVE Brooklyn site referenced
+// this in its nav but never published it (the page 404'd), so the body copy
+// is fresh; review with Lilach before launch.
 //
 // Voice register: lowercase headings, warm-prose body. The pull-quote
 // belongs to "failure is part of the practice" — the single sentence on
 // this page that's actually counter-cultural to a typical nonprofit
 // values statement, which is the audit's bar for a pull-quote moment.
 export const metadata = {
-  title: "What Matters",
+  title: "Values",
   description:
     "The values that guide every program decision: the artist first, accessibility, agency, community, and experimentation.",
 };
 
-export default function WhatMattersPage() {
+export default function ValuesPage() {
   return (
     <Section>
       <ProseHero
-        eyebrow="What Matters"
+        eyebrow="Values"
         title="the values we hold ourselves to."
         lead="we refer back to these when we make hard decisions about programming, partnerships, and funding."
       />

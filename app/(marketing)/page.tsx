@@ -18,7 +18,7 @@ import { OPEN_PROGRAMS, PROGRAMS } from "@/lib/programs";
 //
 //  1. Hero. "the artist comes first." as the h1, paired with a real photo of
 //     the 68 Jay St studio — the audit's #1 gap was "no dancer/space imagery."
-//     Brand-yellow stays reserved for the "browse opportunities" CTA.
+//     Brand-yellow stays reserved for the "browse resources" CTA.
 //  2. Application-status strip. The artist's first question is "is
 //     anything open right now?" — answer it before they scroll. Sourced
 //     from lib/programs.ts so the apply hub + home + future announcement
@@ -104,7 +104,7 @@ export default async function HomePage() {
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
               <Button as={Link} href="/opportunities" intent="brand" size="lg">
-                browse opportunities
+                browse resources
               </Button>
               <Button as={Link} href="/apply" intent="ink" size="lg">
                 apply for a residency
@@ -344,7 +344,7 @@ export default async function HomePage() {
           </div>
           <div>
             <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
-              who's behind this
+              who we are
             </p>
             <h2
               id="who-title"
@@ -359,7 +359,7 @@ export default async function HomePage() {
             </p>
             <div className="mt-8">
               <Link
-                href="/about"
+                href="/about/story"
                 className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
               >
                 our story

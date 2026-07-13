@@ -14,6 +14,14 @@ import { Section } from "@/components/ui/section";
 // warmer copy. The legal description still lives in the compliance footer
 // + the /transparency page; it doesn't need to be the first sentence the
 // artist reads.
+//
+// July 2026 board pass merged Mission + Vision here. The former
+// /about/vision page cataloged a "dance house" dream (theater, apartment,
+// café); the board cut it as premature — it read pie-in-the-sky and did
+// not help funders or artists today. What survives is a single grounded
+// forward-looking paragraph; specific milestones go up when they're real
+// (board minutes 2026-07-13). Revisit a fuller, more specific vision once
+// the org is more established.
 export const metadata = {
   title: "Mission",
   description:
@@ -44,6 +52,11 @@ export default function MissionPage() {
           our programs propose services and partnerships that enhance the art-making experience —
           not a fixed institutional template the artist has to fit themselves into. we invite
           individuals and communities near and far to join us in this exchange.
+        </p>
+        <p>
+          looking ahead, we want more room to do this work — more subsidized space, deeper
+          exchanges, and one day a home where artists gather daily. we'll name specific milestones
+          as they become real, not before.
         </p>
       </Prose>
     </Section>

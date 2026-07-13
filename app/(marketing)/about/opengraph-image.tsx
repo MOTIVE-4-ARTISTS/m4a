@@ -1,10 +1,10 @@
 import { ImageResponse } from "next/og";
 import { BRAND_HEX } from "@/lib/brand/assets";
 
-// Per-route OG image for /about + the four /about/* sub-pages (Next.js
+// Per-route OG image for /about + the /about/* sub-pages (Next.js
 // inherits the OG image down the route tree, so this single card covers
-// /about, /about/mission, /about/vision, /about/what-matters until any
-// of those grow their own card).
+// /about, /about/story, /about/mission, /about/values until any of those
+// grow their own card).
 export const alt =
   "MOtiVE 4 Artists — a small New York nonprofit, made by and for movement-based artists";
 export const size = { width: 1200, height: 630 };
