@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
-import { ein, ORG } from "@/lib/org";
+import { ORG } from "@/lib/org";
 
 export const metadata = {
   title: "Thank you",
@@ -50,9 +50,7 @@ export default function ThanksPage() {
           </a>
           . We'll respond within two business days.
         </p>
-        <p>
-          {ORG.legalName} · EIN: {ein()}
-        </p>
+        <p>{ORG.legalName}</p>
       </Prose>
 
       <div className="mt-10 flex gap-3">

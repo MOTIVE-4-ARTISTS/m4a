@@ -755,7 +755,7 @@
 
 ### 4.6 Footer compliance patterns (US 501(c)(3) and NY specifically)
 
-- **The dominant pattern across all peer sites is that EIN, 501(c)(3) status, and NY Charities Bureau registration are NOT displayed in the visible footer.** This is industry-common, but it is a legal weakness and a missed trust signal.
+- **The dominant pattern across all peer sites is that EIN, 501(c)(3) status, and NY Charities Bureau registration are NOT displayed in the visible footer.** This matches the actual compliance boundary: none of those identifiers is legally required in global website chrome.
 - Most orgs include in the footer:
   - Organization legal/trade name
   - Address(es)
@@ -767,7 +767,7 @@
 - Privacy / Terms / Accessibility appear as a clustered legal-link group at the bottom — this is the right minimum.
 - Cookie banners are present mostly on Squarespace sites (auto-configured) and the more legally cautious orgs (IndieSpace, The Field).
 - Newsletter signup is often in or near the footer (Mailchimp or Constant Contact rails).
-- NY-specific compliance (the §174-B disclosure that a donor may obtain the latest financial report from the org or from the AG's Charities Bureau registry, with the AG's website + phone) is not present on any peer homepage we sampled. This is a widespread non-compliance pattern in the sector but is also an opportunity: putting it correctly into the donate page is a small-cost, high-trust move.
+- NY-specific compliance (§174-b program, financial-report, registry, and Attorney General disclosures) is not present on any peer homepage we sampled. A homepage that does not solicit need not carry it; a donate page or other solicitation does.
 
 ### 4.7 Tech-stack patterns
 
@@ -791,7 +791,7 @@
 - **Publish your rate sheet and your subsidy logic.** Even if you don't have Gibney's Salesforce stack, a public PDF or HTML page with: dimensions per studio + amenities + hourly rate by use-case + named subsidy programs and how to qualify, is friction-removing. Model: Gibney for sophistication; A.R.T./NY for the minimum viable form-based version.
 - **Build a "Programs" mega-section with product-style names.** Chashama's "Space to Create / Space to Present / Space to Connect / Storefront Startup" is unforgettable. Motive 4 Artists has three pillars (residencies, education, public presentation); name them in a similar memorable way.
 - **Use a publication or journal arm to project intellectual authority.** Movement Research's Critical Correspondence, Gibney's Imagining, FCA's recipient archive, Danspace's catalogues — all add credibility disproportionate to their cost. Even a simple "Field Notes" blog with bylined contributor essays elevates the brand.
-- **Quantify impact in a 5-line block on the About page.** Chashama nails this ("Awards $11 million worth of real estate / 300 artist work spaces / 215 free art classes / 200 artists free space to present / 75 businesses free space"). Even a brand-new org can do this with "Year 1 commitments" or "Three-year goals."
+- **Quantify impact only with verified results.** Chashama nails this ("Awards $11 million worth of real estate / 300 artist work spaces / 215 free art classes / 200 artists free space to present / 75 businesses free space"). A brand-new organization should state concrete program capacity on program pages, not present goals or commitments as impact.
 - **Use GiveLively as the donation processor.** It's free (no per-transaction fee to the nonprofit beyond Stripe's 2.9% + 30¢ card fee), it's nonprofit-native, and it generates compliant receipts automatically. Many peers (Movement Research, Brooklyn Arts Council) use it. If you need to graduate to a membership program later, **Givebutter** or **Donorbox** are the standard next step before going to Tessitura.
 - **List your funders on a dedicated Supporters page.** This is your social proof and your development pipeline. Even before you have major funders, list the smaller ones, the in-kind partners, and the board's contributions.
 - **Add the three-link legal footer cluster: Privacy / Terms / Accessibility.** The Field models this correctly. It's a 30-minute job and a real legal/UX upgrade.
@@ -829,18 +829,18 @@
 
 ## 7. Compliance checklist for a US 501(c)(3) website (especially NY)
 
-### 7.1 Legal disclosures on the site
+### 7.1 Legal identity and solicitation disclosures
 
-- Publish your full legal name as registered with the NY Department of State (Motive 4 Artists Inc., DOS ID 7848002) — at minimum in the footer or the About page.
-- Publish the registered address (currently 609 East 11th St., Apt 6A, NY 10009 per state records) — or update the registered address to your operating/PO Box address before launching, and use that publicly. (Most orgs do not list a residential apartment as the public business address.)
-- Once you have your IRS Determination Letter, publish your EIN and the line: "Motive 4 Artists Inc. is a 501(c)(3) tax-exempt organization. Contributions are tax-deductible to the extent allowed by law." Put this on the donate page and in the footer.
+- Use the full legal name where the legal entity matters. The global footer keeps "MOTIVE 4 ARTISTS INC." to distinguish the nonprofit from MOtiVE Brooklyn LLC; that is an identity decision, not a statutory footer requirement.
+- Use the organization's mailing address where a rule requires it, including §174-b solicitations and CAN-SPAM email footers. Do not repeat a residential address across unrelated pages merely as a trust signal; move to an operating address or PO Box when practical.
+- State the determined §501(c)(3) status and tax-deductibility position on the donate page. Keep the EIN in donation receipts and filed public records, not in the global footer.
 - Register with the **NY State Attorney General's Charities Bureau** at `charitiesnys.com` before soliciting donations in New York. This is required for most NY charities that solicit contributions, hold charitable assets, or engage in charitable activities (NY Executive Law Article 7-A).
-- Once registered, include the **NY Executive Law §174-B disclosure** in solicitations (including the donate page and any solicitation emails):
-  - A statement that, upon request, a person may obtain from the organization or from the Charities Bureau a copy of the latest financial report filed with the Attorney General.
+- Once registered, include the **NY Executive Law §174-b disclosure** in solicitations (including the donate page and any solicitation emails):
+  - A statement that, upon request, a person may obtain from the organization or from the Charities Bureau a copy of the latest financial report filed with the Attorney General. If no report is yet due, state the date the first report will be filed instead.
   - The organization's address and the Attorney General's address.
-  - A statement identifying the website (`charitiesnys.com`) and telephone (212-416-8401) of the NY State Office of the Attorney General where information on charitable organizations can be obtained.
+  - A statement identifying the website (`charitiesnys.com`) and disclosure-guidance telephone (212-416-8686) of the NY State Office of the Attorney General where information on charitable organizations can be obtained.
   - In written solicitations, the disclosure must be conspicuous and no smaller than 10-point bold or the most-used point size in the piece — relevant if you're printing event programs or direct-mail appeals.
-- Plan to file the annual **CHAR500** with the AG (with audited financials threshold rising with revenue) — note this on your compliance calendar even though it doesn't display on the site.
+- Plan to file the annual **CHAR500** with the AG (with audited financials threshold rising with revenue). Create a public `/financials` page only after a substantive filing or board-adopted annual report exists.
 - If you operate beyond NY (online solicitation that reaches other states), you may need to register in those states too. The **Unified Registration Statement (URS)** covers ~36 states; track this as an annual obligation.
 
 ### 7.2 IRS substantiation language

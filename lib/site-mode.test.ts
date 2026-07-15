@@ -52,7 +52,6 @@ describe("isBlockedInReview", () => {
     "/cohorts/2026-air",
     "/press",
     "/connect",
-    "/transparency",
     "/accessibility",
     "/privacy",
     "/terms",

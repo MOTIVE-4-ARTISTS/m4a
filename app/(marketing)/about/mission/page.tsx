@@ -11,9 +11,8 @@ import { Section } from "@/components/ui/section";
 // Artists is a New York-incorporated nonprofit corporation supporting
 // interdisciplinary movement-based artists through performances, artistic
 // development, community engagement, and educational programming.") for
-// warmer copy. The legal description still lives in the compliance footer
-// + the /transparency page; it doesn't need to be the first sentence the
-// artist reads.
+// warmer copy. The filed corporate name remains in the compliance footer;
+// the grant-language mission remains in lib/org.ts for structured contexts.
 //
 // July 2026 board pass merged Mission + Vision here. The former
 // /about/vision page cataloged a "dance house" dream (theater, apartment,

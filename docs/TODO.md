@@ -8,7 +8,7 @@ What's left to do, in one place. Each item carries a **trigger** (when it's safe
 | 🟡 | Triggered by IRS — unblocks the day the 501(c)(3) determination letter arrives |
 | 🟢 | Engineering — any human or AI agent can grab this any time |
 
-Counts as of latest commit: **4** Eran items · **10** IRS-triggered items · **11** engineering items · **2** in-code TODO comments. (3 Tier C items closed in the post-launch smoke + polish pass: knip, secretlint, `/keystatic` route-group.)
+Counts as of latest commit: **3** Eran items · **10** IRS-triggered items · **12** engineering items · **2** in-code TODO comments. (3 Tier C items closed in the post-launch smoke + polish pass: knip, secretlint, `/keystatic` route-group.)
 
 ---
 
@@ -20,10 +20,9 @@ Counts as of latest commit: **4** Eran items · **10** IRS-triggered items · **
   ```
   Once the remote is up, enable: branch protection on `main`, required CI checks (`ci`, `codeql`, `lighthouse`), Dependabot auto-merge for minor/patch.
 - [ ] **Populate `.env.local`** (model: `.env.example`)
-  - minimum to make the footer correct: `NEXT_PUBLIC_EIN`
+  - server-only `ORG_EIN` is needed only before donation receipt email is enabled
   - as services come online (in this order): Supabase URL + anon + service-role → Stripe test keys → Resend → Turnstile → PostHog
-- [ ] **File NY Charities Bureau CHAR410** (~$25)
-  - When filed, surface the registration number on the `/transparency` page (currently the footer says "registration pending")
+- [x] **File NY Charities Bureau CHAR410** (~$25) — filed 2026-06-24, **registered 2026-06-25** (NYS Reg. No. 51-61-38, Dual registrant; annual CHAR500). Registration remains verifiable in the public Charities Registry; it is not repeated in global site chrome.
 - [ ] **Decide whether to consolidate inboxes**
   - keep `dream@motivebrooklyn.com` (LLC) separate from `hello@motive4artists.org` (nonprofit)?
   - touches: `lib/org.ts`, `app/connect/page.tsx`, `app/donate/page.tsx`, `lib/email/send-receipt.ts`
@@ -82,6 +81,7 @@ These come from the "When the data layer lands" tier of prior work — gated on 
   - [ ] 🟢 **Events e2e in CI** — `tests/e2e/events.spec.ts` + the two `/events*` a11y routes are written but were only confirmed green via curl locally (the Playwright run latched onto a stray dev server before `reuseExistingServer: false` landed). Confirm they pass in CI / against a clean `pnpm build && pnpm start`.
 - [ ] **Event RSVP + ticketing (events v2)** — native RSVP (name/email → `event_rsvps` table, capacity cap, confirmation email) unblocks with `RESEND_API_KEY`; paid tickets reuse the donations Stripe checkout pattern. v1 ships external RSVP links only. See ADR 0007 "Triggers to revisit".
 - [ ] **Donor portal** (login → history → update payment method)
+- [ ] **Financials / annual reports page** — create `/financials` only after an actual CHAR500, 990/990-EZ, or board-adopted annual report exists. Publish exact filed documents, board-approved financial summaries, and verified impact results; never raw donor rows or placeholder commitments. Trigger: first substantive report, earliest 2027-05-15.
 - [ ] **Year-of-cohort retrospective UX** (Spotify-wrapped-style)
 - [ ] **i18n** with hreflang per [`docs/research/`](research/) SEO notes — Spanish first per artist community
 - [ ] **Upstash Ratelimit** when application-spam becomes real (honeypot is enough for now). Update [`docs/adr/0003-observability.md`](adr/0003-observability.md) with the install ADR.

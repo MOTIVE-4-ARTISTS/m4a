@@ -4,7 +4,7 @@ The corporate paper trail for **MOTIVE 4 ARTISTS INC.** — incorporation, EIN,
 the Form 1023-EZ filing, classification, and the index of governing documents.
 
 **Maintained by:** Eran Nussinovitch, Secretary & Treasurer
-**Last updated:** 2026-06-26
+**Last updated:** 2026-07-15
 
 > Drive mirror: the shareable copy of this record is the Google Doc
 > **"MOTIVE 4 ARTISTS — Formation Record & Founding Docs Index (MASTER)"** in
@@ -19,7 +19,7 @@ This record deliberately lives in three places, by sensitivity:
 
 | Where | What | Editable by |
 |---|---|---|
-| [`lib/org.ts`](../../lib/org.ts) | Public legal facts the **website renders** (legal name, mission, EIN via env, NTEE, classification, incorporation date, NY DOS IDs, board names + roles). Single source of truth. | Treasurer review per [`.cursor/rules/060-compliance.mdc`](../../.cursor/rules/060-compliance.mdc) |
+| [`lib/org.ts`](../../lib/org.ts) | Organization facts used by site and receipt code (legal name, mission, classification, incorporation data, board names + roles). Single source of truth; the receipt-only EIN stays in server env. | Treasurer review per [`.cursor/rules/060-compliance.mdc`](../../.cursor/rules/060-compliance.mdc) |
 | **this file** (`docs/governance/`) | Internal but non-secret records — filing reference numbers, attestations, status trackers, document index. Safe to commit. | Anyone; keep accurate |
 | `founding-record.secret.md` (gitignored) | Secrets + PII — bank account, director home addresses/contact, banker contact, scan locations. **Never committed.** | Treasurer; move to a secure vault when chosen |
 
@@ -69,7 +69,7 @@ email → `founding-record.secret.md`. Scans → secure vault (see §8).
 
 | Field | Value |
 |---|---|
-| EIN | 41-4910645 (also `NEXT_PUBLIC_EIN`; surfaced via `ORG.ein()`) |
+| EIN | 41-4910645 (also server-only `ORG_EIN`; emitted only by the donation receipt) |
 | Responsible party | Eran Nussinovitch (PII in secret file) |
 | EIN assignment date | 2026-03-16 (per CP-575E, name control "MOTI") |
 | CP-575 letter | Saved → Drive `01_Formation` (`2026-03-16 — IRS CP-575 EIN Assignment`). Required forever — re-requests take weeks. |
@@ -99,8 +99,8 @@ Filing summary as submitted:
 ## 5. IRS determination (approved)
 
 [`ORG.irsStatus`](../../lib/org.ts) is `"approved"` — the flip rippled through the
-footer, donate page, and receipt template, and removed all fiscal-sponsor copy
-site-wide (see [`docs/TODO.md`](../TODO.md)).
+donate page and receipt template, and removed all fiscal-sponsor copy site-wide
+(see [`docs/TODO.md`](../TODO.md)).
 
 | Field | Value |
 |---|---|
@@ -161,9 +161,11 @@ board remains the three in §6.
 | Forms | CHAR410 (registration, $25), CHAR500 (annual) |
 | Portal | charitiesnys.com |
 | CHAR410 deadline | within 30 days of IRS determination, OR before any NY solicitation — whichever is earlier |
-| CHAR410 filed | 2026-06-24 — $25 paid; status: submitted / under Bureau review |
-| CHAR410 registration # | Pending — issued after review; surface it on `/transparency` once received (see [`docs/TODO.md`](../TODO.md) 🔴) |
-| First CHAR500 due | 2027-05-15 |
+| CHAR410 filed | 2026-06-24 — $25 paid |
+| CHAR410 registered | ✅ **2026-06-25** — Notice of Registration issued by the Charities Bureau (Director of Registrations, Hanna Rubin) |
+| NYS registration # | **51-61-38** — verifiable in the public Charities Registry; include on all Bureau correspondence/filings |
+| Registrant type | **Dual** (Article 7-A + EPTL) → annual filing on **CHAR500** |
+| First CHAR500 due | 2027-05-15 (4.5 months after FY end) |
 
 ## 10. NY State sales-tax exemption (optional, recommended)
 
@@ -183,7 +185,7 @@ Work the day the EIN lands in TEOS, then after the first 990.
 | Google for Nonprofits | ✅ **Verified 2026-06-30** (Goodstack). Workspace free-tier activation submitted (~3-day review); Ad Grants ($10k/mo) next. |
 | ProPublica Nonprofit Explorer | auto-populates after first 990 |
 | Cause IQ | auto-populates after first 990 |
-| NY Charities Bureau registry | CHAR410 filed 2026-06-24 (under review) |
+| NY Charities Bureau registry | ✅ Registered 2026-06-25 — NYS Reg. No. 51-61-38 (Dual; annual CHAR500) |
 | TechSoup | Qualified 2026-06-25 — see §15 |
 | SAM.gov (UEI/DUNS) | TODO — required for any federal grant |
 

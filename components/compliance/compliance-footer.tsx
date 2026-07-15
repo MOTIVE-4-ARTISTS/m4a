@@ -1,22 +1,23 @@
 import Link from "next/link";
 import { NewsletterForm } from "@/components/forms/newsletter-form";
 import { SocialLinks } from "@/components/layout/social-links";
-import { ein, ORG } from "@/lib/org";
+import { ORG } from "@/lib/org";
 import { isReviewMode } from "@/lib/site-mode";
 
-// Footer scope follows peer best practice (docs/research/peer-website-
+// Footer scope follows the observed peer pattern (docs/research/peer-website-
 // benchmarking.md §4.6): nav, contact, social, newsletter, the legal-link
 // cluster (accessibility/privacy/terms), and a one-line legal identity.
 //
 // What deliberately does NOT live here: the NY §174-B charities disclosure.
 // The hard legal requirement attaches to *solicitation* surfaces, not every
-// page — so it renders on /donate (via <CharitiesDisclosure />) and on
-// /transparency. No peer surfaces it in a global footer; doing so crowds the
-// footer's actual job without adding legal protection. See AGENTS.md > Compliance.
+// page, so it renders on /donate via <CharitiesDisclosure />. No peer surfaces
+// it in a global footer; doing so crowds the footer's actual job without adding
+// legal protection. See AGENTS.md > Compliance.
 //
-// The legal name + EIN line below is a low-cost trust signal (kept per the
-// research §7.1). Treasurer (Eran) reviews legal-text changes before merge
-// per .cursor/rules/060-compliance.mdc.
+// The filed corporate name stays visible to distinguish the nonprofit from
+// MOtiVE Brooklyn LLC. The EIN is receipt data, not persistent site chrome.
+// Treasurer (Eran) reviews legal-text changes before merge per
+// .cursor/rules/060-compliance.mdc.
 export function ComplianceFooter() {
   const review = isReviewMode();
   return (
@@ -73,11 +74,6 @@ export function ComplianceFooter() {
               <li>
                 <Link href="/about" className="underline-offset-4 hover:underline">
                   About
-                </Link>
-              </li>
-              <li>
-                <Link href="/transparency" className="underline-offset-4 hover:underline">
-                  Transparency
                 </Link>
               </li>
               {review ? null : (
@@ -149,9 +145,7 @@ export function ComplianceFooter() {
         </div>
 
         <div className="flex flex-col gap-1 border-t border-[var(--color-rule)] pt-6 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <p>
-            {ORG.legalName} · EIN: {ein()}
-          </p>
+          <p>{ORG.legalName}</p>
           <p>
             © {new Date().getFullYear()} {ORG.legalName}
           </p>

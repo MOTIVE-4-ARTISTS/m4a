@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { CalloutMark } from "@/components/brand/marks";
 import { CharitiesDisclosure } from "@/components/compliance/charities-disclosure";
 import { DonationForm } from "@/components/donations/donation-form";
@@ -25,8 +24,7 @@ export const metadata = {
 //   2. The primary card flips to the embedded <DonationForm />
 //
 // The "where the money goes" callout sits adjacent to the give CTAs so the
-// math justification reads next to the ask, mirroring the transparency
-// year-one-commitments treatment.
+// donor sees the program rationale at the point of solicitation.
 
 const FUND_USES: Array<{ headline: string; detail: string }> = [
   {
@@ -85,9 +83,6 @@ export default function DonatePage() {
                 size="lg"
               >
                 give by email
-              </Button>
-              <Button as={Link} href="/transparency" intent="ink" size="lg">
-                see the receipts
               </Button>
             </div>
             <p className="text-xs text-[var(--color-ink-muted)]">

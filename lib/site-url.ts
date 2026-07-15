@@ -6,7 +6,7 @@
 //  2. VERCEL_URL — the per-deployment origin Vercel injects at build and
 //     runtime. This lets a Preview emit correct absolute OG/canonical URLs
 //     without copying a fresh URL into env settings for every deployment
-//     (content-review preview goal: Eran sets only SITE_MODE + EIN).
+//     (content-review preview goal: Eran sets only SITE_MODE).
 //  3. localhost — local dev fallback.
 //
 // Read from raw process.env (not publicEnv) on purpose: publicEnv defaults

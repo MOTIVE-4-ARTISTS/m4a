@@ -1,10 +1,10 @@
-import { ein, ORG } from "@/lib/org";
+import { ORG } from "@/lib/org";
 import { resolveSiteUrl } from "@/lib/site-url";
 
 // Schema.org Organization JSON-LD. Gives search engines and grant directories
-// a structured handle on our legal identity, mission, and EIN. Lives in the
-// root layout so every page emits it; per-page Person / Event / Article
-// JSON-LD is added in the routes that own that content.
+// a structured handle on our legal identity and mission. Lives in the root
+// layout so every page emits it; per-page Person / Event / Article JSON-LD is
+// added in the routes that own that content.
 export function OrganizationJsonLd() {
   const siteUrl = resolveSiteUrl();
   const json = {
@@ -28,7 +28,6 @@ export function OrganizationJsonLd() {
     },
     email: ORG.contact.email,
     nonprofitStatus: ORG.irsStatus === "approved" ? "Nonprofit501c3" : undefined,
-    taxID: ein(),
     member: ORG.board.map((b) => ({ "@type": "Person", name: b.name, jobTitle: b.role })),
   };
 

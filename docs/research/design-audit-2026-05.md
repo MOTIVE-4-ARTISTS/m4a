@@ -206,7 +206,7 @@ What goes in it:
 - **Application calendar** — our three program opening/closing dates with ICS export and per-program email-notify signup
 - **Eligibility quick-check** — yes/no questions ("Are you NYC-based? Do you work in movement-based dance? Have you been making for at least N years?") that confirm fit. Removes gatekeeping anxiety.
 - **Past cohort archive** — when ready
-- **What doesn't go in it:** donor story, funder credits, fiscal sponsor compliance text. Those belong on `/donate` and in the footer.
+- **What doesn't go in it:** donor story or solicitation compliance text; those belong on `/donate`. Funder credits belong on About or a dedicated supporters page.
 
 ---
 
@@ -227,7 +227,7 @@ Twenty-one routes. Each scored `LOW / MED / HIGH` impact with specific recommend
 | `/cohorts/[slug]` | cohort detail | MED | Group-photograph hero. Each artist as a named tile within. Year + program eyebrow. |
 | `/events` | scaffold (1 hard-coded entry) | LOW until Phase 7 | Hold. The scaffold is honest. When the Supabase `events` table lands, treat each event as its own editorial card with a venue photo. |
 | `/press` | Keystatic text cards | LOW | Add outlet logo + one-line pull-quote per mention. Reusable strip rendered on home page. |
-| `/transparency` | static + `lib/org.ts` | LOW | When NY Charities Bureau reg lands, surface it. Add a 5-line "year-1 commitments" quantified block (Chashama pattern). |
+| `/transparency` | removed July 2026 after compliance review | — | No law required the route, and placeholder commitments performed transparency without publishing records. Create `/financials` only after an actual filing or board-adopted annual report exists. |
 | `/donate` | 2-card layout, fiscal-sponsor block | LOW–MED | Add one warm photograph of an artist whose residency was made possible by the org. Switch copy from "Support our work" to "Every dollar goes to artists. Here's the math." |
 | `/donate/thanks` | static | LOW | Lowercase warm thanks. A single named photograph. |
 | `/apply` | 3-card hub | MED | Apply hub stays the same shape but cards gain a "next cycle opens" line and a per-program photograph. |
@@ -339,7 +339,7 @@ Priority order, mixing impact and effort.
 3. **Rewrite the home page for artist-first POV.** Pull "the artist comes first." up to the H1. New CTA hierarchy: brand-yellow `browse opportunities` primary, outline `apply for a residency` (or `our programs`) secondary. Lowercase voice. Below the hero, add four new blocks: application-status strip, opportunities preview, program trio, cohort spotlight (placeholder until real photos). The "Support our work" CTA leaves the hero entirely. **Effort: 4–6 hours. Impact: critical (this is the first impression).**
 4. **Re-order the global nav.** `Opportunities / Programs / Apply / Artists / Events / About / Support`. Studio moves to the footer with a sentence about the two-entity structure. Support is muted-styled. **Effort: 1 hour. Impact: MED–HIGH.**
 5. **Voice pass on the home / about / programs / apply landing copy.** Match the lowercase warm register of [lib/opportunities/copy.ts](../../lib/opportunities/copy.ts). Centralize the new copy in a new `lib/copy.ts` or extend [lib/org.ts](../../lib/org.ts) so future edits happen in one place. **Effort: 2–3 hours. Impact: MED.**
-6. **Add a press / funder strip component.** New `components/layout/press-funder-strip.tsx`. Renderable on home + about + transparency. Seed with placeholder slots so even 1–2 mentions look intentional. **Effort: 2 hours. Impact: MED.**
+6. **Add a press / funder strip component.** New `components/layout/press-funder-strip.tsx`. Renderable on home + about. Seed with placeholder slots so even 1–2 mentions look intentional. **Effort: 2 hours. Impact: MED.**
 7. **Introduce the decorative-motif kit.** Six small hand-feeling SVG marks (wavy rule, triangle bullet, callout marker, em-dash flourish, small chevron, hand-drawn star) saved to `public/marks/` and surfaced through a thin React wrapper. Used as section dividers, list bullets, callout markers. See [moodboard-04-decorative-motif-kit.png](_design-audit-2026-05/moodboard-04-decorative-motif-kit.png). For v1, hand-draw or AI-generate them; commission a real kit later. **Effort: 3–4 hours. Impact: MED (cumulative).**
 8. **Add a hairline-rule section separator.** A reusable `<HairlineRule />` primitive in `components/ui/`. Replaces the current alternating-background-color pattern of `Section tone="warm"` vs `tone="default"`. **Effort: 1 hour. Impact: MED.**
 9. **Photography commission (the v2 starter).** Brief Lilach or a friend-photographer for a single 2-hour shoot of 1–3 dancers in the MOtiVE Brooklyn studio (consent-permitting). Documentary candid, available light. 8–12 frames at full resolution. Until these exist, the bigger moves (full-bleed hero photograph, named-artist b&w portrait) can't ship. **Effort: 1 shoot day + 1 editing day. Impact: critical for v2.**

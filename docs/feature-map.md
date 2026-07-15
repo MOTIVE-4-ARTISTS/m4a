@@ -36,8 +36,8 @@ All routes are server-rendered, server-first (Server Components by default), and
 | `/events/[slug]` | live | Supabase `events` | [`app/(marketing)/events/[slug]/page.tsx`](../app/(marketing)/events/[slug]/page.tsx) | Detail page: date/time/location, external RSVP, "add to calendar", cohort/program cross-links. Per-route OG image. |
 | `/events/[slug]/event.ics` | live | Supabase `events` | [`app/(marketing)/events/[slug]/event.ics/route.ts`](../app/(marketing)/events/[slug]/event.ics/route.ts) | Per-event iCalendar download (timed VEVENT, STATUS:CANCELLED). |
 | `/press` | live | Keystatic | [`app/(marketing)/press/page.tsx`](../app/(marketing)/press/page.tsx) | One entry committed (Dumbo Direct). Adding more is editorial, not engineering. |
-| `/transparency` | wip | static + `lib/org.ts` | [`app/(marketing)/transparency/page.tsx`](../app/(marketing)/transparency/page.tsx) | Footer line currently says "registration pending" — flips when NY CHAR410 is filed. |
-| `/accessibility` `/privacy` `/terms` | live | static | `app/(marketing)/{accessibility,privacy,terms}/page.tsx` | Legal disclosures. Required by NY law; do not delete. |
+| `/financials` | planned | filed public records + board-approved reports | — | Build only after an actual CHAR500, 990/990-EZ, or annual report exists. Publish exact filings and verified impact results; no placeholder route. |
+| `/accessibility` `/privacy` `/terms` | live | static | `app/(marketing)/{accessibility,privacy,terms}/page.tsx` | Policy and legal-utility pages linked from the global footer. |
 | `/connect` | live | newsletter form | [`app/(marketing)/connect/page.tsx`](../app/(marketing)/connect/page.tsx) | Newsletter capture (see §6 Newsletter). |
 
 ## 2. Donations (`/donate`)

@@ -23,6 +23,9 @@ const schema = z.object({
   STRIPE_WEBHOOK_SECRET: optionalString(),
   RESEND_API_KEY: optionalString(),
   RESEND_FROM_EMAIL: z.string().email().default("hello@motive4artists.org"),
+  // The EIN is public record, but server-only placement enforces the decision
+  // that it appears in receipts rather than site chrome or client bundles.
+  ORG_EIN: optionalString(),
   TURNSTILE_SECRET_KEY: optionalString(),
   SENTRY_DSN: optionalString(z.string().url()),
   SENTRY_AUTH_TOKEN: optionalString(),
@@ -44,6 +47,7 @@ export const serverEnv = schema.parse({
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
+  ORG_EIN: process.env.ORG_EIN,
   TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
   SENTRY_DSN: process.env.SENTRY_DSN,
   SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,

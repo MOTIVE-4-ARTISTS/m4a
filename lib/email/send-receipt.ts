@@ -2,13 +2,15 @@ import "server-only";
 import { Resend } from "resend";
 import { publicEnv } from "@/lib/env/public";
 import { serverEnv } from "@/lib/env/server";
-import { ein, ORG } from "@/lib/org";
+import { ORG } from "@/lib/org";
 
 // Donation receipt email. Compliant with IRS §170(f)(8) substantiation
 // requirements:
-//   - Date and amount of the gift
+//   - Organization name and amount of the gift
 //   - Statement that no goods or services were received in exchange
-//   - Org legal name + EIN + 501(c)(3) status line
+//
+// We also include the gift date, EIN, and §501(c)(3) status for donor
+// convenience; those fields are useful but are not all mandated by §170(f)(8).
 //
 // We send for every donation (not only those ≥ $250) because (a) it's
 // good donor experience and (b) it future-proofs the year-end consolidated
@@ -29,8 +31,12 @@ export async function sendDonationReceipt(args: Args) {
     console.warn("[receipt] RESEND_API_KEY missing — receipt not sent:", args.sessionId);
     return;
   }
+  if (!serverEnv.ORG_EIN) {
+    throw new Error("ORG_EIN is required to generate donation receipts");
+  }
 
   const resend = new Resend(serverEnv.RESEND_API_KEY);
+  const ein = serverEnv.ORG_EIN;
   const amount = (args.amountCents / 100).toLocaleString("en-US", {
     style: "currency",
     currency: args.currency.toUpperCase(),
@@ -63,7 +69,7 @@ export async function sendDonationReceipt(args: Args) {
 
   <p>${ORG.legalName}<br>
   ${ORG.address.street}, ${ORG.address.city}, ${ORG.address.state} ${ORG.address.postal}<br>
-  EIN: ${ein()}<br>
+  EIN: ${ein}<br>
   Donations are tax-deductible under §501(c)(3).</p>
 
   <hr style="border: 0; border-top: 1px solid #e3ded1; margin: 32px 0;">
@@ -79,6 +85,6 @@ export async function sendDonationReceipt(args: Args) {
     to: args.to,
     subject: `Your donation to ${ORG.displayName} — receipt`,
     html,
-    text: `Thank you for your donation of ${amount} on ${formattedDate}. Reference: ${args.sessionId}. No goods or services were provided in exchange. ${ORG.legalName}, EIN ${ein()}.`,
+    text: `Thank you for your donation of ${amount} on ${formattedDate}. Reference: ${args.sessionId}. No goods or services were provided in exchange. ${ORG.legalName}, EIN ${ein}.`,
   });
 }
