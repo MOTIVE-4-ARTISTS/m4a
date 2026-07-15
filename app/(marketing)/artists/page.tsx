@@ -10,7 +10,7 @@ import { COHORT_PROGRAM_LABEL, type CohortProgram } from "@/lib/programs";
 export const metadata = {
   title: "Artists",
   description:
-    "Movement-based artists we've supported across residencies, the international exchange, and the discounted space subsidy — grouped by cohort.",
+    "Artists we've supported across residencies, the international exchange, and the discounted space subsidy — grouped by cohort.",
 };
 
 // The directory is browsed by cohort, not as one flat A-Z wall: an artist's

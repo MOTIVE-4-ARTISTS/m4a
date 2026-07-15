@@ -6,7 +6,7 @@ import { Section } from "@/components/ui/section";
 export const metadata = {
   title: "Pedagogies",
   description:
-    "An open invitation for movement-based artists to propose and develop classes, with production and marketing support from us.",
+    "An open invitation for artists across disciplines to propose and develop classes, with production and marketing support from us.",
 };
 
 // Pedagogies is deliberately not in lib/programs.ts — it's a practice
@@ -46,10 +46,10 @@ export default function PedagogiesPage() {
 
       <Prose>
         <p>
-          we encourage practitioners to imagine and propose pedagogical practices to share with our
-          community. we offer assistance in class planning, development, marketing, and production.
-          if you have a class you've been thinking about for years and don't know where to start,
-          write to us.
+          we encourage artists across disciplines to imagine and propose pedagogical practices to
+          share with our community. we offer assistance in class planning, development, marketing,
+          and production. if you have a class you've been thinking about for years and don't know
+          where to start, write to us.
         </p>
         <p>
           we're equally interested in single workshops, multi-week series, and longer-form

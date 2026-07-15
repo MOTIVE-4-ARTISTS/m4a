@@ -22,14 +22,14 @@ const CHILDREN = [
     href: "/about/story",
     eyebrow: "Our Story",
     title: "How we got here",
-    blurb: "From a hand-painted Dumbo studio to a 501(c)(3) built to make the work last.",
+    blurb: "From a hand-painted Dumbo studio to an artist-first organization built to last.",
   },
   {
     href: "/about/mission",
     eyebrow: "Mission",
     title: "What we do",
     blurb:
-      "A community-oriented organization supporting movement-based artists in New York City and beyond.",
+      "An artist-first organization rooted in New York City and working across disciplines and borders.",
   },
   {
     href: "/about/values",
@@ -42,7 +42,7 @@ const CHILDREN = [
     href: "/team",
     eyebrow: "Who we are",
     title: "The people behind it",
-    blurb: "Lilach, Eran, Sara, and the board.",
+    blurb: "Lilach, Eran, and Sara — our board.",
   },
 ] as const;
 
@@ -51,7 +51,7 @@ export default function AboutPage() {
     <Section>
       <ProseHero
         eyebrow="About"
-        title="a small New York nonprofit, made by and for movement-based artists."
+        title="rooted in New York City, working with artists across disciplines and borders."
         lead="the work is the relationship. programs are how we hold it."
       />
       <ul className="mt-8 grid gap-5 md:grid-cols-2">

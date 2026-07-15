@@ -33,10 +33,11 @@ export type Program = {
 // Cohort taxonomy. The `cohorts` collection tags each cohort with one of
 // these program values; `exchanges` carry the International Exchange instead.
 // Kept separate from the application PROGRAMS list above on purpose: PROGRAMS
-// drives the apply forms + the home "three programs" trio (only the three
-// live application programs belong there), whereas these values also cover
-// historical, non-application program families (Artist Support) that we
-// surface in the archive/browse but never put an "apply" button on.
+// drives the apply forms + the home application-status strip (only the three
+// application programs belong there). The homepage's complete public-program
+// overview adds Pedagogies separately; these cohort values also cover
+// historical, non-application program families (Artist Support) that never
+// receive an "apply" button.
 export type CohortProgram = "air" | "support" | "subsidy" | "international";
 
 export const COHORT_PROGRAM_LABEL: Record<CohortProgram, string> = {

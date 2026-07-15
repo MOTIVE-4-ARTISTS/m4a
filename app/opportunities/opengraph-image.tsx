@@ -9,7 +9,7 @@ import { BRAND_HEX } from "@/lib/brand/assets";
 // Node runtime — keeps us aligned with the other ImageResponse routes in
 // app/(marketing)/.
 
-export const alt = "MOtiVE 4 Artists — opportunities for NYC dance artists";
+export const alt = "MOtiVE 4 Artists — artist opportunities starting in New York City";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -44,7 +44,8 @@ export default function OpportunitiesOgImage() {
           here's what's open for you right now.
         </div>
         <div style={{ fontSize: 28, lineHeight: 1.3, opacity: 0.7 }}>
-          grants, residencies, fellowships, and calls — curated for NYC dance artists.
+          grants, residencies, fellowships, and calls — starting in New York City, growing across
+          disciplines.
         </div>
       </div>
       <div

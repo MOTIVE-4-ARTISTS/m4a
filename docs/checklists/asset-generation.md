@@ -169,7 +169,7 @@ In the same commit as the asset:
 | Editorial photography of artists | Commissioned photographer → Artist-supplied → Archive | `public/content/<collection>/` | Keystatic collection schema |
 | Environmental photography | LLC sibling (with letter) → Commissioned | `public/content/places/` | Keystatic or `lib/brand/places.ts` |
 | Team / board portraits | Commissioned → Self-taken (consistent treatment) | `public/team/` | Inline in `app/(marketing)/team/page.tsx` |
-| Press / funder logos | Provided by third party | `public/press/` or `public/funders/` | `components/layout/press-funder-strip.tsx` |
+| Press / funder logos | Provided by third party | `public/press/` or `public/funders/` | Relevant program, `/press`, or future supporters page; never global chrome |
 | Per-route OG cards | `next/og` runtime | (none) | `app/<route>/opengraph-image.tsx` |
 | Placeholders / scaffold | AI ok if labeled | `public/_placeholders/<slug>.png` | `docs/content/ai-generated-assets.md` |
 

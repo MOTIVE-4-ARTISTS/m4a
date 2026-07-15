@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { SoftChevron } from "@/components/brand/marks";
 import { ArtistCarousel } from "@/components/content/artist-carousel";
@@ -8,34 +7,37 @@ import { listArtists, listCohorts } from "@/lib/content/reader";
 import { formatEventCompact, formatEventLocation } from "@/lib/events/format";
 import { listEvents } from "@/lib/events/read";
 import { listOpportunities } from "@/lib/opportunities/read";
-import { ORG } from "@/lib/org";
-import { OPEN_PROGRAMS, PROGRAMS } from "@/lib/programs";
+import { OPEN_PROGRAMS, PROGRAMS, type ProgramId } from "@/lib/programs";
 import { isReviewMode } from "@/lib/site-mode";
 
-// The home page keeps the nonprofit legible as artist support, not a studio
-// rental brand. A named current resident leads; the physical-space origin stays
-// on /about/story, where the LLC/nonprofit transition has enough context.
+// The home page leads with the artist-first conviction, not institutional
+// status or a picture of a room. The current cohort supplies the human proof
+// lower on the page; the physical-space origin stays on /about/story, where the
+// LLC/nonprofit transition has enough context.
 
 // 90-day window picks up anything urgent without dragging in every
 // rolling program when the homepage really wants to feel current.
 const HOME_OPPORTUNITY_WINDOW_DAYS = 90;
 
-// Nadia's image documents an artist in motion rather than an empty room. The
-// visible credit is part of the editorial treatment, not metadata hidden away.
-const HERO_ARTIST = {
-  slug: "nadia-hannan",
-  name: "Nadia Hannan",
-  image: "/content/artists/nadia-hannan.jpg",
-  cohort: "2026 artist in residence",
-  photoCredit: "Rachel Keane",
-} as const;
+// The application registry contains three intake programs. Pedagogies is a
+// public program without a form, so the homepage adds it to the complete
+// program overview without forcing it into application-status logic.
+const HOME_PROGRAMS = [
+  ...PROGRAMS,
+  {
+    id: "pedagogies",
+    title: "Pedagogies",
+    programHref: "/programs/pedagogies",
+    blurb: "Bring a class or teaching practice; we'll help you shape, produce, and share it.",
+  },
+] as const;
 
 const PROGRAM_NEEDS = {
   residency: { index: "01", need: "time to make" },
   international: { index: "02", need: "connection across borders" },
   discounted_space: { index: "03", need: "room to work" },
   pedagogies: { index: "04", need: "space to teach" },
-} satisfies Record<(typeof PROGRAMS)[number]["id"], { index: string; need: string }>;
+} satisfies Record<ProgramId, { index: string; need: string }>;
 
 export default async function HomePage() {
   // Review preview hides the surfaces that link into not-yet-launched routes
@@ -84,12 +86,9 @@ export default async function HomePage() {
         className="overflow-hidden border-b border-[var(--color-rule)]"
       >
         <div className="mx-auto max-w-[var(--container-page)] px-6 pt-10 md:pt-14">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--color-rule)] pt-4">
-            <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-accent-ink)]">
-              nonprofit support for movement artists
-            </p>
+          <div className="flex justify-end border-t border-[var(--color-rule)] pt-4">
             <p className="text-xs lowercase tracking-[0.14em] text-[var(--color-ink-muted)]">
-              new york city · working across borders
+              starting in new york city · working across borders
             </p>
           </div>
 
@@ -130,32 +129,6 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
-
-        <figure className="mx-auto max-w-[var(--container-page)]">
-          <Link
-            href={`/artists/${HERO_ARTIST.slug}`}
-            aria-label={`Meet ${HERO_ARTIST.name}`}
-            className="relative block aspect-[4/3] w-full overflow-hidden bg-[var(--color-paper-warm)] md:aspect-[2/1]"
-          >
-            <Image
-              src={HERO_ARTIST.image}
-              alt={`${HERO_ARTIST.name} balancing across a low platform in a movement work`}
-              fill
-              priority
-              sizes="(min-width: 1152px) 1152px, 100vw"
-              className="object-cover object-center"
-            />
-          </Link>
-          <figcaption className="flex flex-col gap-1 px-6 py-4 text-xs text-[var(--color-ink-muted)] sm:flex-row sm:items-center sm:justify-between">
-            <Link
-              href={`/artists/${HERO_ARTIST.slug}`}
-              className="font-medium text-[var(--color-ink)] underline-offset-4 hover:underline"
-            >
-              {HERO_ARTIST.name} · {HERO_ARTIST.cohort}
-            </Link>
-            <span>photograph by {HERO_ARTIST.photoCredit}</span>
-          </figcaption>
-        </figure>
       </section>
 
       {/* Application-status strip — the artist's first question, answered
@@ -208,7 +181,7 @@ export default async function HomePage() {
                   id="opps-title"
                   className="mt-3 font-[family-name:var(--font-display)] text-3xl tracking-tight md:text-4xl"
                 >
-                  nyc dance opportunities we're tracking.
+                  artist opportunities we're tracking.
                 </h2>
               </div>
               <Link
@@ -334,7 +307,7 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-[var(--container-page)] gap-10 px-6 py-16 md:grid-cols-[0.72fr_1.28fr] md:gap-16 md:py-24">
           <div>
             <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
-              three programs, one principle
+              four programs, one principle
             </p>
             <h2
               id="programs-title"
@@ -343,13 +316,13 @@ export default async function HomePage() {
               the structure follows the artist.
             </h2>
             <p className="mt-5 max-w-md text-[var(--color-ink-muted)]">
-              time, connection, and room to work — offered through different programs, all shaped
-              through conversation.
+              time to make, connection across borders, room to work, and space to teach — four forms
+              of support, each shaped through conversation.
             </p>
           </div>
 
           <ul className="border-t border-[var(--color-rule)]">
-            {PROGRAMS.map((p) => (
+            {HOME_PROGRAMS.map((p) => (
               <li key={p.id} className="border-b border-[var(--color-rule)]">
                 <Link
                   href={p.programHref}
@@ -422,30 +395,6 @@ export default async function HomePage() {
               <SoftChevron size={12} />
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Quiet legal-identity line + a single supporter framing. "Support
-          our work" demoted from primary hero CTA per audit §6; the legal
-          status line stays visible as an IRS substantiation / trust signal. */}
-      <section className="border-t border-[var(--color-rule)]">
-        <div className="mx-auto flex max-w-[var(--container-page)] flex-col gap-6 px-6 py-12 md:flex-row md:items-center md:justify-between md:py-16">
-          <p className="max-w-xl text-sm text-[var(--color-ink-muted)]">
-            {ORG.legalName} is a New York-incorporated nonprofit corporation and a federally
-            recognized 501(c)(3) tax-exempt organization (effective {ORG.taxExemptEffective}).
-          </p>
-          {review ? null : (
-            <p className="text-sm text-[var(--color-ink)]">
-              believe in this work?{" "}
-              <Link
-                href="/donate"
-                className="underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
-              >
-                every dollar goes to artists
-              </Link>
-              .
-            </p>
-          )}
         </div>
       </section>
     </>

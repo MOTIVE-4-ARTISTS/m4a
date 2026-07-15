@@ -12,7 +12,7 @@ import { ORG } from "@/lib/org";
 export const metadata = {
   title: "Donate",
   description:
-    "Tax-deductible gifts to MOtiVE 4 Artists, a 501(c)(3) nonprofit. Every dollar subsidizes studio time, residency stipends, and travel for movement-based artists.",
+    "Tax-deductible gifts to MOtiVE 4 Artists. Every dollar subsidizes studio time, residency stipends, and travel for artists.",
 };
 
 // Donate page. We are a determined 501(c)(3); every gift is tax-deductible.
@@ -50,7 +50,7 @@ export default function DonatePage() {
       <ProseHero
         eyebrow="Support"
         title="every dollar goes to artists."
-        lead="we subsidize studio time, residency stipends, and travel for movement-based artists who otherwise couldn't afford the runway. nothing more."
+        lead="we subsidize studio time, residency stipends, and travel for artists who otherwise couldn't afford the runway. nothing more."
       />
       <HairlineRule variant="short" className="mb-12 border-[var(--color-brand)]" />
 

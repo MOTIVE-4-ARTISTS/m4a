@@ -81,7 +81,7 @@ These come from the "When the data layer lands" tier of prior work — gated on 
 - [ ] **Year-of-cohort retrospective UX** (Spotify-wrapped-style)
 - [ ] **i18n** with hreflang per [`docs/research/`](research/) SEO notes — Spanish first per artist community
 - [ ] **Upstash Ratelimit** when application-spam becomes real (honeypot is enough for now). Update [`docs/adr/0003-observability.md`](adr/0003-observability.md) with the install ADR.
-- [ ] **Design audit 2026-05 v2 ship list** — items 9–10 from [`docs/research/design-audit-2026-05.md`](research/design-audit-2026-05.md): photography commission (one 2-hour shoot of 1–3 dancers at MOtiVE Brooklyn) + display-typeface swap (test Canela Deck / Lyon / Freight Display vs Quicksand on a feature branch). Items 1–8 ship in the immediate agent-mode follow-up.
+- [ ] **Design audit 2026-05 v2 ship list** — items 9–10 from [`docs/research/design-audit-2026-05.md`](research/design-audit-2026-05.md): photograph 2–4 artists across disciplines actively making or exchanging feedback (city/studio as context, never the subject; one strong horizontal frame) + display-typeface swap (test Canela Deck / Lyon / Freight Display vs Quicksand on a feature branch). The typographic hero remains until that image exists.
 
 ### Tier C — Nice-to-haves
 

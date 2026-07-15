@@ -7,12 +7,11 @@ import { Section } from "@/components/ui/section";
 // physical studio space. Changes to legally significant wording should be
 // run by Lilach (artistic director) and Eran (treasurer).
 //
-// Voice pass May 2026 — dropped the grant-boilerplate opener ("MOtiVE 4
-// Artists is a New York-incorporated nonprofit corporation supporting
-// interdisciplinary movement-based artists through performances, artistic
-// development, community engagement, and educational programming.") for
-// warmer copy. The filed corporate name remains in the compliance footer;
-// the grant-language mission remains in lib/org.ts for structured contexts.
+// The legal mission already supports "the artists community" without a
+// discipline boundary. Public copy names movement as the organization's root,
+// not its horizon, so artists in other forms can see a truthful invitation.
+// The filed corporate name remains in the compliance footer; the verbatim
+// legal mission remains in lib/org.ts for structured contexts.
 //
 // July 2026 board pass merged Mission + Vision here. The former
 // /about/vision page cataloged a "dance house" dream (theater, apartment,
@@ -24,7 +23,7 @@ import { Section } from "@/components/ui/section";
 export const metadata = {
   title: "Mission",
   description:
-    "MOtiVE 4 Artists supports movement-based artists through residencies, education, public presentation, and community engagement.",
+    "MOtiVE 4 Artists supports artists across disciplines through residencies, education, public presentation, and community engagement.",
 };
 
 export default function MissionPage() {
@@ -32,14 +31,15 @@ export default function MissionPage() {
     <Section>
       <ProseHero
         eyebrow="Mission"
-        title="a community-oriented nonprofit offering tailored artist services for movement-based practitioners."
+        title="an artist-first organization offering tailored support across disciplines."
       />
       <HairlineRule variant="short" className="mb-12 border-[var(--color-brand)]" />
       <Prose>
         <p>
-          we support movement-based artists — dancers, choreographers, theatre makers, actors, and
-          the creative thinkers working between those forms — through residencies, exchanges,
-          subsidized space, and the kind of conversation that happens before any of it begins.
+          our roots are in movement, but the invitation is wider. we support makers, performers,
+          writers, educators, and creative thinkers working between forms through residencies,
+          exchanges, subsidized space, and the kind of conversation that happens before any of it
+          begins.
         </p>
         <p>
           our community welcomes artists at every career stage. we build relationships first and

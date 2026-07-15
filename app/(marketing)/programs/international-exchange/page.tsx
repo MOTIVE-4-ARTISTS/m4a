@@ -19,7 +19,7 @@ const BERGEN_EXCHANGE_URL = "https://bergendansesenter.no/internasjonalt-samarbe
 export const metadata = {
   title: "International Exchange",
   description:
-    "Long-term partnerships connecting movement-based artists in New York with peer organizations abroad. Travel both directions.",
+    "Long-term partnerships connecting artists and peer organizations across borders, starting in New York City. Travel both directions.",
 };
 
 const PROGRAM = PROGRAMS.find((p) => p.id === "international");

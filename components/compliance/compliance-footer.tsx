@@ -65,6 +65,11 @@ export function ComplianceFooter() {
                   Discounted Space Subsidy
                 </Link>
               </li>
+              <li>
+                <Link href="/programs/pedagogies" className="underline-offset-4 hover:underline">
+                  Pedagogies
+                </Link>
+              </li>
             </ul>
           </nav>
 

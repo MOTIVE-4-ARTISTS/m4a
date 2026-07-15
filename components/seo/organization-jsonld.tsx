@@ -15,7 +15,7 @@ export function OrganizationJsonLd() {
     url: siteUrl,
     logo: `${siteUrl}/brand/logo-square.png`,
     description:
-      "A New York-incorporated nonprofit corporation supporting interdisciplinary movement-based artists through performances, artistic development, community engagement, and educational programming.",
+      "An artist-first organization rooted in New York City and working across disciplines and borders through residencies, exchanges, resources, and subsidized space.",
     foundingDate: ORG.incorporationDate,
     foundingLocation: { "@type": "Place", name: "New York, NY" },
     address: {
