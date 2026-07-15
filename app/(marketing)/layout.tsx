@@ -2,7 +2,9 @@ import type { ReactNode } from "react";
 import { ComplianceFooter } from "@/components/compliance/compliance-footer";
 import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { PressFunderStrip } from "@/components/layout/press-funder-strip";
+import { ReviewBanner } from "@/components/layout/review-banner";
 import { SiteHeader } from "@/components/layout/site-header";
+import { isReviewMode } from "@/lib/site-mode";
 
 // Marketing-tree layout: the public site chrome. Wraps every route under
 // app/(marketing)/. The route group "(marketing)" is invisible in URLs —
@@ -17,7 +19,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <AnnouncementBanner />
+      {isReviewMode() ? <ReviewBanner /> : <AnnouncementBanner />}
       <SiteHeader />
       <main id="main" className="flex-1">
         {children}

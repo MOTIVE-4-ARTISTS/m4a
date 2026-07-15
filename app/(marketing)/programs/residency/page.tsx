@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 import { PROGRAMS } from "@/lib/programs";
+import { isReviewMode } from "@/lib/site-mode";
 
 export const metadata = {
   title: "Artist in Residency",
@@ -14,6 +15,7 @@ export const metadata = {
 const PROGRAM = PROGRAMS.find((p) => p.id === "residency");
 
 export default function ResidencyPage() {
+  const review = isReviewMode();
   return (
     <Section>
       <ProseHero
@@ -42,7 +44,13 @@ export default function ResidencyPage() {
         <h2>Applying</h2>
         <p>
           Applications for the 2027 cycle open in late 2026. When applications are open you'll find
-          the form at <Link href="/apply/residency">/apply/residency</Link>.
+          the form at{" "}
+          {review ? (
+            <code>/apply/residency</code>
+          ) : (
+            <Link href="/apply/residency">/apply/residency</Link>
+          )}
+          .
         </p>
       </Prose>
 
@@ -50,12 +58,16 @@ export default function ResidencyPage() {
         <Button as={Link} href="/cohorts/2026-air" intent="ink" size="md">
           View 2026 cohort
         </Button>
-        <Button as={Link} href="/events" intent="ghost" size="md">
-          Upcoming sharings
-        </Button>
-        <Button as={Link} href="/apply/residency" intent="ghost" size="md">
-          Application portal
-        </Button>
+        {review ? null : (
+          <>
+            <Button as={Link} href="/events" intent="ghost" size="md">
+              Upcoming sharings
+            </Button>
+            <Button as={Link} href="/apply/residency" intent="ghost" size="md">
+              Application portal
+            </Button>
+          </>
+        )}
       </div>
     </Section>
   );

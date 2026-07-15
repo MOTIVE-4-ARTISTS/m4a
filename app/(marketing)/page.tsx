@@ -10,6 +10,7 @@ import { listEvents } from "@/lib/events/read";
 import { listOpportunities } from "@/lib/opportunities/read";
 import { ORG } from "@/lib/org";
 import { OPEN_PROGRAMS, PROGRAMS } from "@/lib/programs";
+import { isReviewMode } from "@/lib/site-mode";
 
 // Home page — artist-first, per the May 2026 design audit. Decisions
 // live in docs/research/design-audit-2026-05.md §6 + §11; the photography
@@ -40,6 +41,11 @@ import { OPEN_PROGRAMS, PROGRAMS } from "@/lib/programs";
 const HOME_OPPORTUNITY_WINDOW_DAYS = 90;
 
 export default async function HomePage() {
+  // Review preview hides the surfaces that link into not-yet-launched routes
+  // (Apply, Resources/Opportunities, Support, the events teaser). Content that
+  // links only to allowed routes (cohorts, programs, story) stays.
+  const review = isReviewMode();
+
   // Parallel fetch — independent reads, ~no benefit to serializing.
   const [opps, cohorts, artists, events] = await Promise.all([
     listOpportunities({
@@ -103,12 +109,25 @@ export default async function HomePage() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Button as={Link} href="/opportunities" intent="brand" size="lg">
-                browse resources
-              </Button>
-              <Button as={Link} href="/apply" intent="ink" size="lg">
-                apply for a residency
-              </Button>
+              {review ? (
+                <>
+                  <Button as={Link} href="/programs" intent="brand" size="lg">
+                    explore the programs
+                  </Button>
+                  <Button as={Link} href="/about/story" intent="ink" size="lg">
+                    our story
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button as={Link} href="/opportunities" intent="brand" size="lg">
+                    browse resources
+                  </Button>
+                  <Button as={Link} href="/apply" intent="ink" size="lg">
+                    apply for a residency
+                  </Button>
+                </>
+              )}
             </div>
           </div>
 
@@ -128,38 +147,42 @@ export default async function HomePage() {
       {/* Application-status strip — the artist's first question, answered
           before they scroll. Renders only when there's at least one open
           program; if everything's closed, we render the "next opening"
-          framing instead (Skowhegan's "notify me" pattern). */}
-      <section
-        aria-labelledby="status-title"
-        className="border-t border-[var(--color-rule)] bg-[var(--color-paper)]"
-      >
-        <div className="mx-auto flex max-w-[var(--container-page)] flex-col gap-4 px-6 py-8 md:flex-row md:items-baseline md:justify-between md:py-10">
-          <p
-            id="status-title"
-            className="lowercase text-sm tracking-[0.16em] text-[var(--color-accent-ink)]"
-          >
-            {OPEN_PROGRAMS.length > 0 ? "applications open now" : "next applications opening"}
-          </p>
-          <ul className="flex flex-wrap items-baseline gap-x-6 gap-y-3 text-sm">
-            {(OPEN_PROGRAMS.length > 0 ? OPEN_PROGRAMS : PROGRAMS).map((p) => (
-              <li key={p.id} className="flex items-baseline gap-2">
-                <Link
-                  href={p.applyHref}
-                  className="text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
-                >
-                  {p.title.toLowerCase()}
-                </Link>
-                <span className="text-[var(--color-ink-muted)]">{p.status}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+          framing instead (Skowhegan's "notify me" pattern). Hidden in review
+          mode: every link here points at a blocked /apply/* route. */}
+      {review ? null : (
+        <section
+          aria-labelledby="status-title"
+          className="border-t border-[var(--color-rule)] bg-[var(--color-paper)]"
+        >
+          <div className="mx-auto flex max-w-[var(--container-page)] flex-col gap-4 px-6 py-8 md:flex-row md:items-baseline md:justify-between md:py-10">
+            <p
+              id="status-title"
+              className="lowercase text-sm tracking-[0.16em] text-[var(--color-accent-ink)]"
+            >
+              {OPEN_PROGRAMS.length > 0 ? "applications open now" : "next applications opening"}
+            </p>
+            <ul className="flex flex-wrap items-baseline gap-x-6 gap-y-3 text-sm">
+              {(OPEN_PROGRAMS.length > 0 ? OPEN_PROGRAMS : PROGRAMS).map((p) => (
+                <li key={p.id} className="flex items-baseline gap-2">
+                  <Link
+                    href={p.applyHref}
+                    className="text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+                  >
+                    {p.title.toLowerCase()}
+                  </Link>
+                  <span className="text-[var(--color-ink-muted)]">{p.status}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* Opportunities preview — only renders when Supabase has live data.
           We keep the absence quiet (no "no opportunities yet" empty state)
-          because a missing strip is honest; a manufactured one is not. */}
-      {previewRows.length > 0 ? (
+          because a missing strip is honest; a manufactured one is not.
+          Also suppressed in review mode (every card links to /opportunities). */}
+      {previewRows.length > 0 && !review ? (
         <section
           aria-labelledby="opps-title"
           className="border-t border-[var(--color-rule)] bg-[var(--color-paper-warm)]"
@@ -262,8 +285,10 @@ export default async function HomePage() {
       ) : null}
 
       {/* Next event teaser. One quiet line pointing at the soonest event.
-          Self-suppresses when nothing is upcoming. */}
-      {nextEvent ? (
+          Self-suppresses when nothing is upcoming. Hidden in review mode: the
+          no-database fallback surfaces a real-looking event linking to the
+          blocked /events route. */}
+      {nextEvent && !review ? (
         <section
           aria-labelledby="next-event-title"
           className="border-t border-[var(--color-rule)] bg-[var(--color-paper-warm)]"
@@ -379,16 +404,18 @@ export default async function HomePage() {
             {ORG.legalName} is a New York-incorporated nonprofit corporation and a federally
             recognized 501(c)(3) tax-exempt organization (effective {ORG.taxExemptEffective}).
           </p>
-          <p className="text-sm text-[var(--color-ink)]">
-            believe in this work?{" "}
-            <Link
-              href="/donate"
-              className="underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
-            >
-              every dollar goes to artists
-            </Link>
-            .
-          </p>
+          {review ? null : (
+            <p className="text-sm text-[var(--color-ink)]">
+              believe in this work?{" "}
+              <Link
+                href="/donate"
+                className="underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
+              >
+                every dollar goes to artists
+              </Link>
+              .
+            </p>
+          )}
         </div>
       </section>
     </>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isReviewMode } from "@/lib/site-mode";
 
 export const metadata = {
   title: "Page not found",
@@ -7,8 +8,11 @@ export const metadata = {
 
 // 404 page must remain a Server Component so it renders fast and indexable.
 // The links surfaced are the ones we never want a lost visitor to miss:
-// programs (the org's reason for being) and the donate path.
+// programs (the org's reason for being) and the donate path. In review mode
+// this page also backs every intentionally-blocked route, so the Donate link
+// is dropped — it would itself 404.
 export default function NotFound() {
+  const review = isReviewMode();
   return (
     <section className="mx-auto flex max-w-[var(--container-page)] flex-col gap-6 px-6 py-24">
       <p className="text-sm uppercase tracking-[0.22em] text-[var(--color-ink-muted)]">404</p>
@@ -35,12 +39,14 @@ export default function NotFound() {
         >
           See our programs
         </Link>
-        <Link
-          href="/donate"
-          className="inline-flex items-center rounded-[var(--radius-pill)] border border-[var(--color-ink)] px-6 py-3 text-base font-medium text-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
-        >
-          Donate
-        </Link>
+        {review ? null : (
+          <Link
+            href="/donate"
+            className="inline-flex items-center rounded-[var(--radius-pill)] border border-[var(--color-ink)] px-6 py-3 text-base font-medium text-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
+          >
+            Donate
+          </Link>
+        )}
       </div>
     </section>
   );

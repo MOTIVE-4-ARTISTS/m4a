@@ -7,6 +7,7 @@ import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 import { listArtists, listExchanges, listPartners } from "@/lib/content/reader";
 import { PROGRAMS } from "@/lib/programs";
+import { isReviewMode } from "@/lib/site-mode";
 
 // The exchange is anchored to Bergen Dansesenter; their own
 // /internasjonalt-samarbeid page documents the partnership from the
@@ -24,6 +25,7 @@ export const metadata = {
 const PROGRAM = PROGRAMS.find((p) => p.id === "international");
 
 export default async function InternationalExchangePage() {
+  const review = isReviewMode();
   const [exchanges, artists, partners] = await Promise.all([
     listExchanges(),
     listArtists(),
@@ -252,7 +254,12 @@ export default async function InternationalExchangePage() {
         <h2>If you're an artist applying for an upcoming exchange</h2>
         <p>
           When applications are open you'll find the form at{" "}
-          <Link href="/apply/international">/apply/international</Link>.
+          {review ? (
+            <code>/apply/international</code>
+          ) : (
+            <Link href="/apply/international">/apply/international</Link>
+          )}
+          .
         </p>
       </Prose>
 
@@ -260,9 +267,11 @@ export default async function InternationalExchangePage() {
         <Button as={Link} href="/artists" intent="ink" size="md">
           Browse past artists
         </Button>
-        <Button as={Link} href="/apply/international" intent="ghost" size="md">
-          Application portal
-        </Button>
+        {review ? null : (
+          <Button as={Link} href="/apply/international" intent="ghost" size="md">
+            Application portal
+          </Button>
+        )}
       </div>
     </Section>
   );

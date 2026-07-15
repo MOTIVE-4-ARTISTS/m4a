@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { isBlockedInReview, isReviewMode } from "@/lib/site-mode";
 
 // Edge middleware composes three concerns in one place:
 //   1. Refresh Supabase session cookie so long-lived admin tabs don't hit
@@ -67,12 +68,11 @@ function buildCsp(): string {
   return directives.join("; ");
 }
 
-export async function middleware(req: NextRequest) {
-  const csp = buildCsp();
-
-  const res = NextResponse.next();
-
-  res.headers.set("Content-Security-Policy", csp);
+// Baseline security headers, applied to every response — including the 404
+// we synthesize for review-blocked routes, so a hidden path is no less
+// hardened than a live one.
+function applySecurityHeaders(res: NextResponse): void {
+  res.headers.set("Content-Security-Policy", buildCsp());
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   res.headers.set("X-Content-Type-Options", "nosniff");
   res.headers.set("X-Frame-Options", "DENY");
@@ -80,6 +80,43 @@ export async function middleware(req: NextRequest) {
   if (process.env.NODE_ENV === "production") {
     res.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
   }
+}
+
+// A review-blocked route returns a genuine 404. API/route handlers get a bare
+// 404 (no HTML shell for a JSON caller); everything else is rewritten to a
+// non-existent path so Next renders app/not-found.tsx with a 404 status.
+// Rewrites from middleware don't re-enter middleware, so there's no loop even
+// though the sentinel path matches the config matcher.
+function blockForReview(req: NextRequest): NextResponse {
+  const res = req.nextUrl.pathname.startsWith("/api")
+    ? new NextResponse(null, { status: 404 })
+    : NextResponse.rewrite(new URL("/review-mode-404-not-found", req.url));
+  applySecurityHeaders(res);
+  res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  return res;
+}
+
+export async function middleware(req: NextRequest) {
+  // Review preview gate: hide every not-yet-launched, service-dependent route
+  // behind a real 404 before touching Supabase auth. See lib/site-mode.ts.
+  if (isReviewMode() && isBlockedInReview(req.nextUrl.pathname)) {
+    return blockForReview(req);
+  }
+
+  const res = NextResponse.next();
+
+  applySecurityHeaders(res);
+
+  // Mark the entire preview no-index at the edge (belt-and-suspenders with
+  // robots.ts and the per-route metadata robots flag).
+  if (isReviewMode()) {
+    res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+
+  // Keystatic's admin UI polls its API frequently; it never needs the
+  // marketing session, so skip the refresh there (preserving the pre-review
+  // behavior where this path was excluded from middleware entirely).
+  if (req.nextUrl.pathname.startsWith("/api/keystatic")) return res;
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -110,8 +147,12 @@ export async function middleware(req: NextRequest) {
 // Match every path except static assets and Next internals. Even though
 // we only auth-check on /admin, we want session refresh + CSP on every
 // page so an admin tab left open overnight still has a live token.
+//
+// /api/keystatic is intentionally NOT excluded anymore: review mode must be
+// able to 404 the CMS API at the edge. The middleware short-circuits the
+// session refresh for that prefix (above) so full-mode behavior is preserved.
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|opengraph-image.png|brand/|content/|sitemap.xml|robots.txt|api/keystatic).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|opengraph-image.png|brand/|content/|sitemap.xml|robots.txt).*)",
   ],
 };
