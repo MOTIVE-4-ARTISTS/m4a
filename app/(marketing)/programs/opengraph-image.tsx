@@ -1,9 +1,9 @@
 import { ImageResponse } from "next/og";
 import { BRAND_HEX } from "@/lib/brand/assets";
 
-// Per-route OG image for /programs. The three-programs-one-principle
+// Per-route OG image for /programs. The four-programs-one-principle
 // framing carries from the page hero.
-export const alt = "MOtiVE 4 Artists — three programs, one principle";
+export const alt = "MOtiVE 4 Artists — four programs, one principle";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -35,7 +35,7 @@ export default function ProgramsOgImage() {
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         <div style={{ fontSize: 84, fontWeight: 700, lineHeight: 1.05 }}>
-          three programs, one principle.
+          four programs, one principle.
         </div>
         <div style={{ fontSize: 28, lineHeight: 1.3, opacity: 0.7 }}>
           every program starts from the same question: what does the artist actually need?

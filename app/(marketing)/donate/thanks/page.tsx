@@ -27,9 +27,9 @@ export default function ThanksPage() {
       />
       <Prose>
         <p>
-          Your donation supports the actual hours, residencies, and travel that allow movement-based
-          artists to make their work. We do not have paid administrative staff, so essentially 100%
-          of every gift reaches programming.
+          Your donation supports the actual hours, residencies, and travel that allow artists to
+          make their work. We do not have paid administrative staff, so essentially 100% of every
+          gift reaches programming.
         </p>
         <h2>What happens next</h2>
         <ul>

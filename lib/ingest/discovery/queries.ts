@@ -2,26 +2,30 @@
 //
 // Each cron invocation runs the least-recently-run query (tracked in
 // _ingest_runs under the key `discovery:<id>`), so over a day the whole set
-// rotates. Keep these scoped to our mission — NYC + dance + funding — so the
-// grounded model returns funder pages, not generic arts-news noise. Adding a
-// query is data, not code: append here.
+// rotates. New York is the starting point, not the discipline boundary: the
+// set deliberately spans art forms and includes wider calls New York artists
+// can access. Adding a query is data, not code: append here.
 
 export const DISCOVERY_QUERIES: ReadonlyArray<{ id: string; query: string }> = [
   {
     id: "grants_choreography",
-    query: "open grants for New York City dance choreographers, current application deadline",
+    query:
+      "open grants for individual New York City artists across visual art, performance, writing, film, music, and interdisciplinary practice, current application deadline",
   },
   {
     id: "residencies",
-    query: "dance artist residency open call in New York City, accepting applications now",
+    query:
+      "artist residency open call for New York artists across disciplines, accepting applications now",
   },
   {
     id: "fellowships",
-    query: "dance or choreography fellowship for New York artists, currently open to apply",
+    query:
+      "artist fellowship for New York visual, performing, literary, film, music, or interdisciplinary artists, currently open to apply",
   },
   {
     id: "emergency_funds",
-    query: "emergency relief funds for dancers and choreographers with rolling applications",
+    query:
+      "emergency relief funds for individual artists across disciplines with rolling applications",
   },
   {
     id: "project_grants",
@@ -29,6 +33,7 @@ export const DISCOVERY_QUERIES: ReadonlyArray<{ id: string; query: string }> = [
   },
   {
     id: "commissions",
-    query: "choreography commission opportunity in New York accepting applications",
+    query:
+      "artist commission opportunity in New York for visual, performing, media, literary, or interdisciplinary work accepting applications",
   },
 ];

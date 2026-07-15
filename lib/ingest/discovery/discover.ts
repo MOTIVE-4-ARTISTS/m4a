@@ -58,7 +58,7 @@ export async function discoverCandidateUrls(query: string, max = 6): Promise<str
       model: provider(MODEL_ID),
       tools: { google_search: provider.tools.googleSearch({}) },
       temperature: 0,
-      prompt: `You are sourcing funding opportunities for New York City dance artists.
+      prompt: `You are sourcing funding opportunities for artists across disciplines, starting in New York City and including national or international opportunities they can access.
 
 Use web search to find currently-open opportunities matching: "${query}".
 

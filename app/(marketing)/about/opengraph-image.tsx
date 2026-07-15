@@ -6,7 +6,7 @@ import { BRAND_HEX } from "@/lib/brand/assets";
 // /about, /about/story, /about/mission, /about/values until any of those
 // grow their own card).
 export const alt =
-  "MOtiVE 4 Artists — a small New York nonprofit, made by and for movement-based artists";
+  "MOtiVE 4 Artists — rooted in New York City, working with artists across disciplines and borders";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -38,7 +38,7 @@ export default function AboutOgImage() {
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         <div style={{ fontSize: 80, fontWeight: 700, lineHeight: 1.05 }}>
-          a small New York nonprofit, made by and for movement-based artists.
+          rooted in New York City, working with artists across disciplines and borders.
         </div>
         <div style={{ fontSize: 28, lineHeight: 1.3, opacity: 0.7 }}>
           the work is the relationship. programs are how we hold it.

@@ -14,12 +14,12 @@
 export const OPPORTUNITIES_COPY = {
   pageTitle: "Opportunities",
   pageDescription:
-    "Grants, residencies, fellowships, and open calls — curated for NYC dance artists and verified weekly.",
+    "Grants, residencies, fellowships, and open calls — starting in New York City, growing across disciplines, and verified weekly.",
 
   hero: {
     eyebrow: "Opportunities",
     title: "here's what's open for you right now.",
-    lead: "grants, residencies, fellowships, and calls — curated for nyc dance artists, verified this week.",
+    lead: "grants, residencies, fellowships, and calls — starting in new york city, growing across disciplines, verified this week.",
   },
 
   ai: {

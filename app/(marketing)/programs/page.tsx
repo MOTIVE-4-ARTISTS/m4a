@@ -7,14 +7,14 @@ import { Section } from "@/components/ui/section";
 export const metadata = {
   title: "Programs",
   description:
-    "Three flagship programs supporting movement-based artists: Artist in Residency, International Exchange, and the Discounted Space Subsidy.",
+    "Four artist-first programs: Artist in Residency, International Exchange, Discounted Space Subsidy, and Pedagogies.",
 };
 
 // Programs landing. Ordered intentionally: AIR is the org's most visible
 // activity, International Exchange is the second public-facing program,
 // Discounted Space Subsidy is third because it depends on the LLC's studio
-// rental partnership. Pedagogies sits underneath as a long-running practice
-// area rather than a flagship.
+// rental partnership. Pedagogies is fourth: a long-running practice area
+// without a standalone application form, but still one of the public programs.
 const PROGRAMS = [
   {
     href: "/programs/residency",
@@ -29,7 +29,7 @@ const PROGRAMS = [
     eyebrow: "Flagship",
     title: "International Exchange",
     summary:
-      "Long-term partnerships connecting NYC artists with peer organizations abroad. Travel both directions.",
+      "Long-term partnerships connecting artists and peer organizations across borders, starting in New York City. Travel both directions.",
     status: "Ongoing",
   },
   {
@@ -55,7 +55,7 @@ export default function ProgramsPage() {
     <Section>
       <ProseHero
         eyebrow="Programs"
-        title="three programs, one principle."
+        title="four programs, one principle."
         lead="every program starts from the same question: what does the artist in front of us actually need?"
       />
 

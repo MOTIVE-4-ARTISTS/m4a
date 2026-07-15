@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     template: "%s · MOtiVE 4 Artists",
   },
   description:
-    "MOtiVE 4 Artists is a New York nonprofit supporting interdisciplinary movement-based artists through residencies, education, and public presentation.",
+    "Artist-first support rooted in New York City and working across disciplines and borders — residencies, exchanges, resources, and subsidized space shaped around each artist.",
   applicationName: "MOtiVE 4 Artists",
   authors: [{ name: "MOtiVE 4 Artists Inc." }],
   openGraph: {

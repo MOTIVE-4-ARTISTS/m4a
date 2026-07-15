@@ -43,14 +43,14 @@ export async function discoverNewSources(max = 6): Promise<ProposedSourceDraft[]
       model: provider(MODEL_ID),
       tools: { google_search: provider.tools.googleSearch({}) },
       temperature: 0,
-      prompt: `You help a small NYC nonprofit keep a directory of funding opportunities for dance artists.
+      prompt: `You help an artist-first organization rooted in New York City keep a directory of opportunities for artists across disciplines.
 
-Use web search to find organizations, foundations, government agencies, or aggregators that REGULARLY fund or list grants, residencies, fellowships, or open calls relevant to New York City dance artists — the kinds of sources a curator should monitor.
+Use web search to find organizations, foundations, government agencies, or aggregators that REGULARLY fund or list grants, residencies, fellowships, or open calls relevant to New York City artists across visual art, performance, dance, theatre, music, film, writing, and interdisciplinary practices. Include national or international sources when New York artists can apply — the kinds of sources a curator should monitor.
 
 Output one source per line, in EXACTLY this format:
 Name | https://homepage-or-opportunities-page | one short reason it's worth tracking
 
-No numbering, no markdown, no extra prose. Up to ${max} sources. Prefer sources specific to NYC and/or dance.`,
+No numbering, no markdown, no extra prose. Up to ${max} sources. Start with strong New York sources, then widen across disciplines and borders.`,
     });
     return parseSourceLines(text, max);
   } catch (err) {
