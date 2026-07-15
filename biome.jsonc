@@ -18,12 +18,7 @@
       "!**/playwright-report",
       "!**/test-results",
       "!next-env.d.ts",
-      "!pnpm-lock.yaml",
-      // Board/brand exploration artifacts are static HTML + SVG concepts exported to
-      // a PDF for a meeting, not application source. App-level a11y rules (e.g.
-      // useSemanticElements) would force restructuring a print layout for no
-      // shipped-code benefit, so Biome leaves this tree alone.
-      "!brand/explorations"
+      "!pnpm-lock.yaml"
     ]
   },
   "formatter": {
