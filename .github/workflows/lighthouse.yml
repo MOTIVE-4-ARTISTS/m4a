@@ -1,9 +1,11 @@
 name: lighthouse
 
-# Lighthouse on the deployed Vercel preview URL. Runs on every PR after
-# build completes; surfaces regressions in performance, a11y, SEO, and
-# best practices. Budgets are advisory at first (warn, not fail) — once
-# the team gets a feel for noise levels we tighten.
+# Lighthouse against a local production build (`next build` + `next start` on
+# 127.0.0.1), NOT the Vercel preview URL. Keeping the audit hermetic makes it
+# independent of Vercel deploy timing/availability and lets it run in parallel
+# with the deployment. Surfaces regressions in performance, a11y, SEO, and best
+# practices. Budgets are advisory at first (warn, not fail) — once we get a feel
+# for noise levels we tighten thresholds in .lighthouserc.json.
 
 on:
   pull_request:
