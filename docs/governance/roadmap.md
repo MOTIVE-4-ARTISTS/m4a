@@ -12,7 +12,7 @@ This is the *synthesis* doc. The records of truth it sits on top of:
 - [`../TODO.md`](../TODO.md) — engineering + "determination-day" task batch
 
 **Maintained by:** Eran Nussinovitch, Secretary & Treasurer
-**Last updated:** 2026-06-24
+**Last updated:** 2026-07-15
 
 ---
 
@@ -21,8 +21,8 @@ This is the *synthesis* doc. The records of truth it sits on top of:
 We are through the hardest, slowest part. MOtiVE 4 Artists is a New York not-for-profit
 corporation with **federal 501(c)(3) public-charity status** (effective retroactively to
 our 2026-03-02 formation), a complete and **board-adopted governance pack**, a funded bank
-account, and — as of **2026-06-24** — a **filed New York Charities Bureau registration
-(CHAR410)**, now in review.
+account, and — as of **2026-06-25** — a **registered New York Charities Bureau
+filing (CHAR410, NYS Reg. No. 51-61-38)**.
 
 The organization has shifted from *formation* to *operations and fundraising*. The next
 chapter is about three things: (1) turning on the free and discounted infrastructure our
@@ -50,14 +50,14 @@ parallel. See §6.
 | Entity spin-out (LLC vs nonprofit) | ✅ Done | Clean legal separation |
 | IRS 990-N (first annual e-Postcard) | ✅ Done | Accepted 2026-06-25 (TY2025); next 990-N due 2027-05-15 |
 | TechSoup validation | ✅ Done | Qualified 2026-06-25 (code 4149-ISTS-3LQB); MS 365 / QuickBooks / Adobe now redeemable |
-| NY Charities registration (CHAR410) | 🟦 In review | Filed 2026-06-24; registration # pending |
+| NY Charities registration (CHAR410) | ✅ Done | Registered 2026-06-25 — NYS Reg. No. 51-61-38 (Dual; annual CHAR500) |
 | Google for Nonprofits | ✅ Done | Verified 2026-06-30; Workspace free-tier activation pending (~3-day); Ad Grants next |
 | Nonprofit software approvals | 🟧 In progress | Adobe / ChatGPT / Claude ✅ 2026-06-30; **Stripe nonprofit pricing ✅ 2026-07-03 (2.2% + $0.30)**; **GitHub for Nonprofits ✅ 2026-07-04 (select Team plan)**; Supabase/Sentry deferred to app deploy |
 | NY sales-tax exemption (ST-119.2) | 🟥 Not started | Form filled + verified; mail the packet (Drive `03_NY-State`) |
 | IRS TEOS / Pub 78 listing verified | ✅ Done | Verified 2026-06-27 — Pub 78 (deductibility code PC) + determination letter listed |
 | Candid / GuideStar profile | 🟦 In review | Claim escalated — Case #01013088 |
-| Public website | 🟧 Interim live | Landing page live at https://motive4artists.org (+ www) on Cloudflare Pages, org-owned account, SSL valid; full Next.js app still pending |
-| Online donations | 🟥 Blocked | Stripe nonprofit rate ✅ 2026-07-03; still needs the full app deployed + Checkout verified, then flip `onlineGivingLive` |
+| Public website | 🟧 Interim live (two layers) | Cloudflare Pages landing still serves https://motive4artists.org (+ www), SSL valid. The **full Next.js app is now deployed on Vercel Pro in review mode** — content/design preview at https://m4a-pi.vercel.app (public, no-index, all service-dependent routes 404'd; ADR 0009). Custom domain not repointed yet; interactive features un-gate one at a time. |
+| Online donations | 🟥 Blocked | Stripe nonprofit rate ✅ 2026-07-03. App is deployed but donations are **gated off in review mode**; un-gating needs Supabase + Stripe production keys + Checkout verified, then flip `onlineGivingLive` (ADR 0009). |
 | Insurance (D&O / general liability) | 🟥 Not started | Bind before first public event |
 | Bookkeeping / accounting | 🟥 Not started | Engage before first 990 |
 
@@ -82,7 +82,7 @@ The legal and governance foundation is complete:
 - **Entity spin-out** — the commercial studio-rental operation (MOtiVE Brooklyn LLC) and
   the charitable programming (MOtiVE 4 Artists Inc.) are now cleanly separated. See §7.
 - **NY Charities Bureau registration (CHAR410)** — filed and paid ($25) on 2026-06-24;
-  now under Bureau review.
+  **registered 2026-06-25** (NYS Reg. No. 51-61-38, Dual registrant; annual CHAR500).
 - **IRS Form 990-N** — first annual e-Postcard **Accepted 2026-06-25** (TY2025); next due
   2027-05-15.
 - **TechSoup** — organization **validated 2026-06-25** (association code 4149-ISTS-3LQB);
@@ -98,7 +98,7 @@ Detail and reference numbers live in [`formation-record.md`](formation-record.md
 
 | Item | Who holds it | What it unblocks |
 |---|---|---|
-| **CHAR410 registration number** | NY AG Charities Bureau | Surfacing the registration # on the website `/transparency` page; clean record for funders |
+| ✅ **CHAR410 registration number** | NY AG Charities Bureau | **Received 2026-06-25** — NYS Reg. No. 51-61-38, verifiable in the public Charities Registry. Nothing else sits on an external desk. |
 
 This doesn't block the work in §6. (TechSoup validation cleared on 2026-06-25 — its catalog
 offers are now redeemable.)
@@ -111,7 +111,7 @@ offers are now redeemable.)
 flowchart TD
     det["501(c)(3) determination letter (DONE)"]
 
-    det --> char410["CHAR410 filed (DONE, in review)"]
+    det --> char410["CHAR410 registered (DONE 2026-06-25)"]
     det --> indep["Independent free-service apps<br/>NO TechSoup needed"]
     det --> techsoup["TechSoup validated (DONE 2026-06-25)"]
     det --> st1192["NY ST-119.2 sales-tax exemption"]
@@ -218,8 +218,7 @@ annually. (For external audiences like TechSoup, we describe the *charitable act
 - **Bureaucracy:** TechSoup → QuickBooks; set up bookkeeping with a clean chart of accounts
   that separates program costs (Residency / Exchange / Space Subsidy / Pedagogies) from
   general admin and fundraising; **bind D&O + general-liability insurance**; engage a
-  bookkeeper (and explore pro-bono counsel via Volunteer Lawyers for the Arts, vlany.org);
-  surface the CHAR410 registration number on `/transparency` once issued.
+  bookkeeper (and explore pro-bono counsel via Volunteer Lawyers for the Arts, vlany.org).
 - **Mission:** **deploy the website** and turn on online donations; launch a year-end /
   Giving Tuesday appeal; migrate the motivebrooklyn.com archive (past cohorts, artist bios,
   exchange roster) into the new site; claim the Candid Seal of Transparency.

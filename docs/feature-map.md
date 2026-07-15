@@ -51,7 +51,7 @@ We are a determined §501(c)(3); online card giving is staged pending Stripe pro
 | `/donate/thanks` confirmation | live | [`app/(marketing)/donate/thanks/page.tsx`](../app/(marketing)/donate/thanks/page.tsx) | Post-Stripe redirect target. |
 | Receipt email | wip | [`lib/email/send-receipt.ts`](../lib/email/send-receipt.ts) | IRS-substantiation language for gifts ≥$250. Unblocked the moment `RESEND_API_KEY` is set. |
 
-**Compliance:** every donation surface carries the §501(c)(3) tax-deductibility line and `<CharitiesDisclosure />` (NY §174-B), in addition to the global `<ComplianceFooter />`. Wording is legally-significant; see [`.cursor/rules/060-compliance.mdc`](../.cursor/rules/060-compliance.mdc).
+**Compliance:** `/donate` carries the §501(c)(3) donor-clarity line and `<CharitiesDisclosure />` (NY §174-b). The receipt email separately carries the IRS substantiation language and EIN. The global footer carries the filed corporate name but no tax identifier or solicitation disclosure. See [`.cursor/rules/060-compliance.mdc`](../.cursor/rules/060-compliance.mdc).
 
 ## 3. Applications (`/apply`)
 
@@ -173,7 +173,7 @@ Four migrations applied locally; same shape ships to production.
 | Table | Migration | Written by | Read by | RLS |
 |---|---|---|---|---|
 | `donors` | 0001 | Stripe webhook | Receipt template | service role only |
-| `donations` | 0001 | Stripe webhook | `/transparency` (future) | service role only |
+| `donations` | 0001 | Stripe webhook | Internal reporting; future public reports use approved aggregates, never raw donor rows | service role only |
 | `subscribers` | 0001 | Newsletter Server Action (post `RESEND_API_KEY`) | Resend Broadcasts (future) | service role only |
 | `applications` | 0002 | `submitApplication` Server Action | `/admin/applications/*` | admin read; anon insert via service-role admin client |
 | `application_files` | 0002 | Application file uploads (future) | `/admin/applications/[id]` | admin read |
@@ -218,8 +218,8 @@ Editorial / migration backlog lives in [TODO.md Tier D](TODO.md#tier-d-migration
 
 | Service | Plan | Status | Notes |
 |---|---|---|---|
-| Vercel | Hobby → Pro (when needed) | live | Hosting + Cron. See ADR 0001. |
-| Supabase | Pro (eventually) | wip (local stack runs on shifted ports `64321-64329` for dev) | Plan A; Plan B (Cloudflare + Turso) documented as escape hatch in ADR 0001. |
+| Vercel | **Pro** — $20/mo + tax (~$21.78) | live | Org-owned Pro team `motive-4-artists`. Hosts the interim **review-mode** deploy (`NEXT_PUBLIC_SITE_MODE=review`) at [m4a-pi.vercel.app](https://m4a-pi.vercel.app) — public + no-index, every service-dependent route 404'd (§15). Custom domain not attached yet (Cloudflare landing still serves `motive4artists.org`). Pro (not Hobby) because a 501(c)(3) site is "commercial" under Vercel's Hobby terms. See ADR 0001 + ADR 0009. |
+| Supabase | Pro (eventually) | wip — **not provisioned in the interim review deploy** (local stack runs on shifted ports `64321-64329` for dev) | Plan A; Plan B (Cloudflare + Turso) documented as escape hatch in ADR 0001. Review mode 404s every route that would read from it, so the interim site needs no backend. |
 | Google Gemini | Free tier (paid post-launch) | live (local key set) | `gemini-2.5-flash` + `gemini-embedding-001`. ADR 0004. |
 | Stripe | Standard rate → nonprofit rate post-determination | wip | `STRIPE_*` keys pending. TODO.md 🟡 batch. |
 | Resend | Standard → nonprofit allowance | wip | `RESEND_API_KEY` pending. Unblocks newsletter confirmation + application notifications + donation receipts. |
@@ -233,10 +233,10 @@ Editorial / migration backlog lives in [TODO.md Tier D](TODO.md#tier-d-migration
 
 | Component | Where it appears | What it carries |
 |---|---|---|
-| [`<ComplianceFooter />`](../components/compliance/compliance-footer.tsx) | Every marketing page | Lean, peer-standard footer (research §4.6): nav, contact, social, newsletter, accessibility/privacy/terms link cluster, and a one-line legal name + EIN. Tax-status + §174-B deliberately moved to solicitation surfaces. |
-| [`<CharitiesDisclosure />`](../components/compliance/charities-disclosure.tsx) | `/donate` + `/transparency` | NY Executive Law §174-B charities disclosure (AG Charities Bureau + charitiesnys.com). Single source of the wording. Not gated on `irsStatus` — survives wherever we solicit. |
+| [`<ComplianceFooter />`](../components/compliance/compliance-footer.tsx) | Every marketing page | Lean peer-pattern footer: nav, contact, social, newsletter, accessibility/privacy/terms links, and the filed legal name. No EIN, tax-status claim, or solicitation disclosure. |
+| [`<CharitiesDisclosure />`](../components/compliance/charities-disclosure.tsx) | `/donate` | NY Executive Law §174-b solicitation disclosure: program-information availability, first-report filing date, organization/AG addresses, registry URL, and AG disclosure phone. Fixed 14px bold styling. |
 | [`<SocialLinks />`](../components/layout/social-links.tsx) | Footer + `/connect` | Reads `ORG.social`; renders nothing until a handle is set. Instagram currently points at the brand-family sibling `@motivebrooklyn` (TODO: swap to own handle). |
-| [`<OrganizationJsonLd />`](../components/seo/organization-jsonld.tsx) | Every page | Schema.org NGO markup for search engines. Reads from `lib/org.ts`. |
+| [`<OrganizationJsonLd />`](../components/seo/organization-jsonld.tsx) | Every page | Schema.org NGO markup for search engines. Reads legal identity and mission from `lib/org.ts`; deliberately omits the EIN. |
 
 Compliance rules: [`.cursor/rules/060-compliance.mdc`](../.cursor/rules/060-compliance.mdc). The wording on every donation surface, the receipt email, and the compliance footer is legally constrained — changes need treasurer (Eran) review before merge.
 
@@ -272,6 +272,10 @@ Working exploration surfaces that are intentionally **not** public destinations:
 |---|---|---|---|---|
 | `/lab/offshore-opportunities` | experimental (noindex) | static TS dataset | [`app/(marketing)/lab/offshore-opportunities/page.tsx`](<../app/(marketing)/lab/offshore-opportunities/page.tsx>), [`lib/offshore/`](../lib/offshore/), [`components/offshore/offshore-map.tsx`](../components/offshore/offshore-map.tsx) | A first-pass world map of dance houses/centers ranked by how likely each is to partner on international exchange (tiers: active → warm → candidate → research). Map renders against the Natural Earth 110m TopoJSON at [`public/geo/countries-110m.json`](../public/geo/countries-110m.json), joined on ISO 3166-1 numeric. Seed "active" tier mirrors existing partners (Bergen, Scotland) + Machol Shalem. **Throwaway-grade research data, not verified fact** — the explicit next stage is validating each center as a trustworthy, automatable ingest source (would then feed the `/opportunities` pipeline). Sourcing audit trail: [`docs/research/offshore-dance-centers-2026-06.md`](research/offshore-dance-centers-2026-06.md). |
 
+## 15. Deployment mode (review vs full)
+
+The whole site ships behind one public flag, `NEXT_PUBLIC_SITE_MODE` (`full` default; **`review` on the live deploy today**). In **review** mode a single Edge middleware + [`lib/site-mode.ts`](../lib/site-mode.ts) returns a real **404** for every not-yet-launched, service-dependent surface (`/donate`, `/apply/*`, `/opportunities/*`, `/events/*`, `/lab/*`, `/admin`, `/keystatic`, `/api/*`), strips their entry points from the header / home / footer, fails the newsletter closed, drops blocked routes from the sitemap, and adds `X-Robots-Tag: noindex, nofollow`. This lets us publish a shareable content/design preview with **no backend account** provisioned. The *why* + the full contract live in **ADR 0009**. Deployed-preview smoke: [`tests/e2e/review-mode.spec.ts`](../tests/e2e/review-mode.spec.ts) via [`.github/workflows/preview-smoke.yml`](../.github/workflows/preview-smoke.yml).
+
 ---
 
 ## Where everything is documented
@@ -291,6 +295,8 @@ Working exploration surfaces that are intentionally **not** public destinations:
 | [`docs/adr/0005-opportunities-data-model.md`](adr/0005-opportunities-data-model.md) | Supabase schema for opportunities; canonical-key dedup; pgvector. |
 | [`docs/adr/0006-public-no-login-save.md`](adr/0006-public-no-login-save.md) | URL-hash + localStorage + ICS export; why no accounts in v1. |
 | [`docs/adr/0007-events-data-model.md`](adr/0007-events-data-model.md) | Supabase `events` table, admin CRUD, timed ICS via shared core, external-RSVP v1. |
+| [`docs/adr/0008-csp-static-tradeoff.md`](adr/0008-csp-static-tradeoff.md) | Content-Security-Policy vs static-export trade-off. |
+| [`docs/adr/0009-review-mode-launch.md`](adr/0009-review-mode-launch.md) | Interim review-mode launch — one flag gates every backend-dependent surface (§15). |
 | [`docs/research/peer-website-benchmarking.md`](research/peer-website-benchmarking.md) | Pre-build research on peer dance-org websites. |
 | [`docs/research/studio-booking-research.md`](research/studio-booking-research.md) | Pre-build research on studio rental landscape. |
 | [`docs/research/grant-source-inventory.md`](research/grant-source-inventory.md) | 40+ NYC dance grant sources, robots.txt postures, ingestion strategies. |

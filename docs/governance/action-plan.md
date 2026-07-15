@@ -2,9 +2,9 @@
 
 The "what next, in what order, and what's blocked by what" companion to
 [`roadmap.md`](roadmap.md). The roadmap is the board narrative; this is the
-operator's checklist. Status of the foundation as of **2026-06-26**: formation,
+operator's checklist. Status of the foundation as of **2026-07-15**: formation,
 EIN, 501(c)(3) determination, board-adopted governance pack, banking, **CHAR410
-filed (in review)**, **990-N accepted**, **TechSoup validated**, and Drive
+registered (NYS Reg. No. 51-61-38)**, **990-N accepted**, **TechSoup validated**, and Drive
 organized are all done. What follows is everything still open.
 
 **Maintained by:** Eran Nussinovitch, Secretary & Treasurer
@@ -46,6 +46,11 @@ Nonprofits, Adobe, ChatGPT, Claude, TechSoup, Stripe) are in hand. Ordered by va
 > Leverage note: with ChatGPT + Claude now approved, drafting grant LOIs, applications, donor copy, and board docs is much faster — use them on Tier 2 #6–7.
 
 ---
+
+## Recent milestones — 2026-07-15
+
+- **Vercel Pro live + interim site deployed.** Stood up the org-owned **Vercel Pro** team (`motive-4-artists`, **$20/mo + tax ≈ $21.78/mo**); a duplicate Pro team created during signup was **deleted and refunded**. The full Next.js app now deploys automatically from `main` and ships in **review mode** (`NEXT_PUBLIC_SITE_MODE=review`) — a public, no-index content/design preview at **https://m4a-pi.vercel.app** with every service-dependent route (donate / apply / opportunities / events / admin / CMS / API) behind a real 404 and no newsletter. **No Supabase / Stripe / Resend account provisioned.** Shared with the board for content + visual-direction review ahead of the July 21 meeting. Decision record: **ADR 0009**; cost correction in ADR 0001. This advances P1 #9 / Tier 3 #11 — the *interim* half of "deploy the full website" is done; production go-live (repoint the domain + un-gate features) remains.
+- **CI/CD green end-to-end** on `MOTIVE-4-ARTISTS/m4a` PR #13 (merged): lint / typecheck / unit / build (`ci`), `e2e`, `codeql`, `lighthouse`, plus a new **`preview-smoke`** workflow that runs a 33-check review-mode suite against each live Vercel deployment (`deployment_status`).
 
 ## Recent milestones — 2026-07-04
 
@@ -166,7 +171,7 @@ flowchart TD
 
 14. **Pick a password manager + document vault**; move `founding-record.secret.md` into it.
 15. **Stand up a donor tool** (Givebutter recommended — free, handles matching-gift prompts).
-16. **Surface the CHAR410 registration number** on `/transparency` once the Bureau issues it.
+16. ✅ **Recorded the CHAR410 registration** — Bureau issued **NYS Reg. No. 51-61-38** (registered 2026-06-25). Public verification remains in the Charities Registry; the site repeats only the solicitation disclosures the law requires.
 17. **Adopt a whistleblower policy** (one-pager; pairs with the COI policy — funder-friendly).
 18. **Launch the year-end / Giving Tuesday campaign** ("breadth beats depth": a wide base of
     $15–$50/mo recurring donors). *Depends on: 10, 12, 13, 15.*

@@ -8,17 +8,13 @@ What's left to do, in one place. Each item carries a **trigger** (when it's safe
 | 🟡 | Triggered by IRS — unblocks the day the 501(c)(3) determination letter arrives |
 | 🟢 | Engineering — any human or AI agent can grab this any time |
 
-Counts as of latest commit: **3** Eran items · **10** IRS-triggered items · **12** engineering items · **2** in-code TODO comments. (3 Tier C items closed in the post-launch smoke + polish pass: knip, secretlint, `/keystatic` route-group.)
+Counts as of latest commit: **2** Eran items · **10** IRS-triggered items · **12** engineering items · **2** in-code TODO comments. (3 Tier C items closed in the post-launch smoke + polish pass: knip, secretlint, `/keystatic` route-group.)
 
 ---
 
 ## 🔴 You (Eran) — gating items
 
-- [ ] **Create the GitHub repo + push**
-  ```bash
-  gh repo create motive-4-artists/m4a --private --source=. --push
-  ```
-  Once the remote is up, enable: branch protection on `main`, required CI checks (`ci`, `codeql`, `lighthouse`), Dependabot auto-merge for minor/patch.
+- [x] **Create the GitHub repo + push** — done: org-owned `MOTIVE-4-ARTISTS/m4a`, code on `main`, PR flow in use (#13 merged 2026-07-15). Still confirm on GitHub: branch protection on `main` + required checks (`ci`, `codeql`, `lighthouse`, `preview-smoke`), Dependabot auto-merge for minor/patch.
 - [ ] **Populate `.env.local`** (model: `.env.example`)
   - server-only `ORG_EIN` is needed only before donation receipt email is enabled
   - as services come online (in this order): Supabase URL + anon + service-role → Stripe test keys → Resend → Turnstile → PostHog
