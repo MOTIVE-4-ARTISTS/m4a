@@ -53,10 +53,14 @@ jobs:
           # third-party provisioning.
           NEXT_PUBLIC_SITE_URL: https://motive4artists.org
 
+  # Deliberately not `needs: verify` — running in parallel makes the required
+  # merge gate as slow as the longer job, not the sum of both. Trade-off: a
+  # lint/type failure in `verify` no longer short-circuits e2e, so e2e can burn
+  # minutes on an already-red PR. Worth it on a solo repo that optimizes for
+  # fast green feedback over saved minutes.
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: verify
     steps:
       - uses: actions/checkout@v7
 
@@ -72,11 +76,9 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
-
+      # No standalone build step: playwright.config.ts's webServer already runs
+      # `pnpm build && pnpm start`, so a separate `pnpm build` here compiled the
+      # app twice.
       - name: Playwright (a11y + compliance smoke)
         run: pnpm test:e2e
         env:
