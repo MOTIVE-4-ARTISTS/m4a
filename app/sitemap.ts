@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { reader } from "@/lib/content/reader";
-import { publicEnv } from "@/lib/env/public";
 import { listEvents } from "@/lib/events/read";
+import { isReviewMode } from "@/lib/site-mode";
+import { resolveSiteUrl } from "@/lib/site-url";
 
 // Sitemap covers:
 //  - the marketing routes (static)
@@ -16,9 +17,14 @@ import { listEvents } from "@/lib/events/read";
 // (app/(marketing)/artists/[slug]/opengraph-image.tsx and
 // app/(marketing)/cohorts/[slug]/opengraph-image.tsx).
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = publicEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  const base = resolveSiteUrl();
   const now = new Date();
+  const review = isReviewMode();
 
+  // Review mode advertises only the routes that actually resolve (blocked
+  // prefixes 404), so the sitemap never points a crawler at a hidden page.
+  // Combined with robots.ts disallowing everything and the no-index header,
+  // this is defense-in-depth, not the primary gate.
   const staticRoutes = [
     "",
     "/about",
@@ -33,19 +39,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/programs/discounted-space",
     "/programs/pedagogies",
     "/artists",
-    "/opportunities",
-    "/opportunities/submit",
-    "/events",
     "/press",
     "/connect",
-    "/donate",
-    "/apply",
-    "/apply/residency",
-    "/apply/international",
-    "/apply/discounted-space",
     "/accessibility",
     "/privacy",
     "/terms",
+    ...(review
+      ? []
+      : [
+          "/opportunities",
+          "/opportunities/submit",
+          "/events",
+          "/donate",
+          "/apply",
+          "/apply/residency",
+          "/apply/international",
+          "/apply/discounted-space",
+        ]),
   ];
 
   // Read Keystatic slugs at build time. If the reader fails (no content/
@@ -62,9 +72,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Published events from Supabase. Degrades to the static fallback when
   // Supabase isn't configured (listEvents handles that), so the build
-  // never crashes pre-provision.
-  const { upcoming, past } = await listEvents();
-  const eventSlugs = [...upcoming, ...past].map((e) => e.slug);
+  // never crashes pre-provision. Skipped entirely in review mode — /events
+  // is a blocked prefix there.
+  const eventSlugs = review
+    ? []
+    : await listEvents().then(({ upcoming, past }) => [...upcoming, ...past].map((e) => e.slug));
 
   return [
     ...staticRoutes.map((route) => ({

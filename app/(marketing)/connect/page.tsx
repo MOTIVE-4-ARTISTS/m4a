@@ -5,6 +5,7 @@ import { HairlineRule } from "@/components/ui/hairline-rule";
 import { ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 import { ORG } from "@/lib/org";
+import { isReviewMode } from "@/lib/site-mode";
 
 export const metadata = {
   title: "Connect",
@@ -13,6 +14,7 @@ export const metadata = {
 };
 
 export default function ConnectPage() {
+  const review = isReviewMode();
   return (
     <Section>
       <ProseHero
@@ -54,19 +56,28 @@ export default function ConnectPage() {
         </Card>
 
         <Card tone="warm" className="md:col-span-2">
-          <CardTitle>stay in the loop</CardTitle>
-          <p className="mt-3 text-sm text-[var(--color-ink-muted)]">
-            we send the newsletter sparingly — sharings, calls for applications, and the occasional
-            dispatch from the studio. you can unsubscribe at any time.
-          </p>
-          <div className="mt-5">
-            <NewsletterForm source="connect" />
-          </div>
+          <CardTitle>{review ? "follow along" : "stay in the loop"}</CardTitle>
+          {review ? null : (
+            <>
+              <p className="mt-3 text-sm text-[var(--color-ink-muted)]">
+                we send the newsletter sparingly — sharings, calls for applications, and the
+                occasional dispatch from the studio. you can unsubscribe at any time.
+              </p>
+              <div className="mt-5">
+                <NewsletterForm source="connect" />
+              </div>
+            </>
+          )}
 
           {ORG.social.instagram ? (
-            <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-[var(--color-rule)] pt-5 text-sm text-[var(--color-ink-muted)]">
+            <div
+              className={`flex flex-wrap items-center gap-3 text-sm text-[var(--color-ink-muted)] ${
+                review ? "mt-4" : "mt-6 border-t border-[var(--color-rule)] pt-5"
+              }`}
+            >
               <span>
-                or follow along on Instagram — for now we share the brand family's{" "}
+                {review ? "follow along on Instagram" : "or follow along on Instagram"} — for now we
+                share the brand family's{" "}
                 <a
                   href={ORG.social.instagram}
                   rel="noopener"

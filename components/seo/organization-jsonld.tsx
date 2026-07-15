@@ -1,18 +1,19 @@
-import { publicEnv } from "@/lib/env/public";
 import { ein, ORG } from "@/lib/org";
+import { resolveSiteUrl } from "@/lib/site-url";
 
 // Schema.org Organization JSON-LD. Gives search engines and grant directories
 // a structured handle on our legal identity, mission, and EIN. Lives in the
 // root layout so every page emits it; per-page Person / Event / Article
 // JSON-LD is added in the routes that own that content.
 export function OrganizationJsonLd() {
+  const siteUrl = resolveSiteUrl();
   const json = {
     "@context": "https://schema.org",
     "@type": "NGO",
     name: ORG.displayName,
     legalName: ORG.legalName,
-    url: publicEnv.NEXT_PUBLIC_SITE_URL,
-    logo: `${publicEnv.NEXT_PUBLIC_SITE_URL}/brand/logo-square.png`,
+    url: siteUrl,
+    logo: `${siteUrl}/brand/logo-square.png`,
     description:
       "A New York-incorporated nonprofit corporation supporting interdisciplinary movement-based artists through performances, artistic development, community engagement, and educational programming.",
     foundingDate: ORG.incorporationDate,

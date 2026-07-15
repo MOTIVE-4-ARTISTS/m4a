@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { Inter, Quicksand } from "next/font/google";
 import { PostHogProvider } from "@/components/analytics/posthog-provider";
 import { OrganizationJsonLd } from "@/components/seo/organization-jsonld";
-import { publicEnv } from "@/lib/env/public";
+import { isReviewMode } from "@/lib/site-mode";
+import { resolveSiteUrl } from "@/lib/site-url";
 import "./globals.css";
+
+const siteUrl = resolveSiteUrl();
 
 // Root layout: html/body + brand-wide concerns only (fonts, JSON-LD,
 // analytics, skip link). Site chrome (SiteHeader + ComplianceFooter) lives
@@ -24,7 +27,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(publicEnv.NEXT_PUBLIC_SITE_URL),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "MOtiVE 4 Artists",
     template: "%s · MOtiVE 4 Artists",
@@ -36,10 +39,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "MOtiVE 4 Artists",
-    url: publicEnv.NEXT_PUBLIC_SITE_URL,
+    url: siteUrl,
   },
   twitter: { card: "summary_large_image" },
-  robots: { index: true, follow: true },
+  // Review preview stays out of every index (belt-and-suspenders with the
+  // middleware X-Robots-Tag header and robots.ts disallow-all).
+  robots: isReviewMode() ? { index: false, follow: false } : { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BrandLockup } from "@/components/brand/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
+import { isReviewMode } from "@/lib/site-mode";
 
 // Top-level navigation. Order is artist-first: Programs and Apply lead
 // because a first-visit artist's questions are "what do you run?" and "can
@@ -37,7 +38,20 @@ const NAV = [
   { href: "/about", label: "About" },
 ] as const;
 
+// Review mode drops every link that would 404 (Apply → /apply, Resources →
+// /opportunities, Support → /donate) and adds Contact so reviewers still have
+// a direct way to reach us. See lib/site-mode.ts for the route blocklist.
+const REVIEW_NAV = [
+  { href: "/programs", label: "Programs" },
+  { href: "/artists", label: "Artists" },
+  { href: "/about", label: "About" },
+  { href: "/connect", label: "Contact" },
+] as const;
+
 export function SiteHeader() {
+  const review = isReviewMode();
+  const nav = review ? REVIEW_NAV : NAV;
+
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-rule)] bg-[var(--color-paper)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-paper)]/80">
       <div className="mx-auto flex max-w-[var(--container-page)] items-center justify-between gap-6 px-6 py-3">
@@ -52,7 +66,7 @@ export function SiteHeader() {
         {/* Desktop nav */}
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex items-center gap-7 text-sm">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
@@ -65,11 +79,13 @@ export function SiteHeader() {
                 </Link>
               </li>
             ))}
-            <li>
-              <Button as={Link} href="/donate" intent="ink" size="sm">
-                Support
-              </Button>
-            </li>
+            {review ? null : (
+              <li>
+                <Button as={Link} href="/donate" intent="ink" size="sm">
+                  Support
+                </Button>
+              </li>
+            )}
           </ul>
         </nav>
 
@@ -79,7 +95,7 @@ export function SiteHeader() {
             className="absolute right-0 mt-2 w-56 rounded-[var(--radius-card)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-2 shadow-lg"
           >
             <ul className="text-sm">
-              {NAV.map((item) => (
+              {nav.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -89,14 +105,16 @@ export function SiteHeader() {
                   </Link>
                 </li>
               ))}
-              <li className="mt-1 border-t border-[var(--color-rule)] pt-1">
-                <Link
-                  href="/donate"
-                  className="block rounded border border-[var(--color-ink)] px-3 py-2 text-center text-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
-                >
-                  Support
-                </Link>
-              </li>
+              {review ? null : (
+                <li className="mt-1 border-t border-[var(--color-rule)] pt-1">
+                  <Link
+                    href="/donate"
+                    className="block rounded border border-[var(--color-ink)] px-3 py-2 text-center text-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
+                  >
+                    Support
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
         </MobileNav>

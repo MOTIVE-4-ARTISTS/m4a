@@ -1,0 +1,54 @@
+name: preview-smoke
+
+# Runs the review-mode smoke suite against each successful Vercel deployment.
+# Vercel's GitHub integration emits a `deployment_status` event when a build
+# finishes; we act only on state == "success" and target that deployment's URL
+# (github.event.deployment_status.target_url). No secrets needed — the target
+# is public and the assertions only read status codes, headers, and DOM.
+#
+# While the whole site ships in review mode (SITE_MODE=review on both Preview
+# and Production), the review-mode contract must hold on EVERY deployment, so
+# this deliberately smokes production successes too. When an interactive
+# feature is later un-gated, narrow the spec accordingly.
+
+on: deployment_status
+
+concurrency:
+  group: preview-smoke-${{ github.event.deployment_status.target_url }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    if: github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Review-mode smoke against the deployed URL
+        run: pnpm exec playwright test tests/e2e/review-mode.spec.ts
+        env:
+          # Setting PLAYWRIGHT_BASE_URL drops the local webServer block in
+          # playwright.config.ts, so the suite hits the live deployment.
+          PLAYWRIGHT_BASE_URL: ${{ github.event.deployment_status.target_url }}
+          REVIEW_SMOKE: "1"
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: preview-smoke-report
+          path: playwright-report/
+          retention-days: 7

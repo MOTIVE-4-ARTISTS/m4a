@@ -6,6 +6,7 @@ import { Card, CardEyebrow, CardTitle } from "@/components/ui/card";
 import { Prose, ProseHero } from "@/components/ui/prose";
 import { Section } from "@/components/ui/section";
 import { PROGRAMS } from "@/lib/programs";
+import { isReviewMode } from "@/lib/site-mode";
 
 export const metadata = {
   title: "Discounted Space Subsidy",
@@ -26,6 +27,7 @@ const TIERS = [
 const PROGRAM = PROGRAMS.find((p) => p.id === "discounted_space");
 
 export default function DiscountedSpacePage() {
+  const review = isReviewMode();
   return (
     <Section>
       <ProseHero
@@ -104,14 +106,16 @@ export default function DiscountedSpacePage() {
         </p>
       </Prose>
 
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Button as={Link} href="/apply/discounted-space" intent="brand" size="md">
-          Apply for a package
-        </Button>
-        <Button as={Link} href="/donate" intent="ink" size="md">
-          Fund a subsidy
-        </Button>
-      </div>
+      {review ? null : (
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Button as={Link} href="/apply/discounted-space" intent="brand" size="md">
+            Apply for a package
+          </Button>
+          <Button as={Link} href="/donate" intent="ink" size="md">
+            Fund a subsidy
+          </Button>
+        </div>
+      )}
 
       <p className="mt-6 max-w-2xl text-xs text-[var(--color-ink-muted)]">
         Questions about subsidy applications go to{" "}

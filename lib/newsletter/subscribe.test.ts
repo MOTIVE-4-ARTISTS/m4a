@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { subscribe } from "./subscribe";
 
 function form(fields: Record<string, string>): FormData {
@@ -38,5 +38,23 @@ describe("subscribe", () => {
     const r = await subscribe(null, form({ email: "donor@example.com", source: "x".repeat(200) }));
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.error.code).toBe("invalid_input");
+  });
+});
+
+describe("subscribe in review mode", () => {
+  const ORIGINAL = process.env.NEXT_PUBLIC_SITE_MODE;
+  afterEach(() => {
+    if (ORIGINAL === undefined) delete process.env.NEXT_PUBLIC_SITE_MODE;
+    else process.env.NEXT_PUBLIC_SITE_MODE = ORIGINAL;
+  });
+
+  it("fails closed for a valid email — never silently accepts and drops an address", async () => {
+    // The UI hides every newsletter form in review mode, but a crafted direct
+    // Server Action POST must not report success when there is nowhere to
+    // store the address. Contrast with the pre-Resend "queued" ok above.
+    process.env.NEXT_PUBLIC_SITE_MODE = "review";
+    const r = await subscribe(null, form({ email: "donor@example.com" }));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error.code).toBe("unavailable");
   });
 });

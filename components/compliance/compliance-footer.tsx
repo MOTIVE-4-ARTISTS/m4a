@@ -2,6 +2,7 @@ import Link from "next/link";
 import { NewsletterForm } from "@/components/forms/newsletter-form";
 import { SocialLinks } from "@/components/layout/social-links";
 import { ein, ORG } from "@/lib/org";
+import { isReviewMode } from "@/lib/site-mode";
 
 // Footer scope follows peer best practice (docs/research/peer-website-
 // benchmarking.md §4.6): nav, contact, social, newsletter, the legal-link
@@ -17,6 +18,7 @@ import { ein, ORG } from "@/lib/org";
 // research §7.1). Treasurer (Eran) reviews legal-text changes before merge
 // per .cursor/rules/060-compliance.mdc.
 export function ComplianceFooter() {
+  const review = isReviewMode();
   return (
     <footer className="mt-auto border-t border-[var(--color-rule)] bg-[var(--color-paper-warm)] text-sm text-[var(--color-ink-muted)]">
       <div className="mx-auto max-w-[var(--container-page)] space-y-6 px-6 py-10">
@@ -78,11 +80,13 @@ export function ComplianceFooter() {
                   Transparency
                 </Link>
               </li>
-              <li>
-                <Link href="/donate" className="underline-offset-4 hover:underline">
-                  Support
-                </Link>
-              </li>
+              {review ? null : (
+                <li>
+                  <Link href="/donate" className="underline-offset-4 hover:underline">
+                    Support
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link href="/connect" className="underline-offset-4 hover:underline">
                   Connect
@@ -128,12 +132,14 @@ export function ComplianceFooter() {
         </div>
 
         <div className="flex flex-col gap-8 border-t border-[var(--color-rule)] pt-8 sm:flex-row sm:items-end sm:justify-between sm:gap-12">
-          <div className="w-full max-w-xs">
-            <p className="mb-3 text-xs lowercase tracking-[0.18em] text-[var(--color-accent-ink)]">
-              stay in touch
-            </p>
-            <NewsletterForm source="footer" variant="inline" />
-          </div>
+          {review ? null : (
+            <div className="w-full max-w-xs">
+              <p className="mb-3 text-xs lowercase tracking-[0.18em] text-[var(--color-accent-ink)]">
+                stay in touch
+              </p>
+              <NewsletterForm source="footer" variant="inline" />
+            </div>
+          )}
           <div className="flex items-center gap-4">
             <span className="text-xs lowercase tracking-[0.18em] text-[var(--color-ink-muted)]">
               follow

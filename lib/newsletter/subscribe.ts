@@ -4,6 +4,7 @@ import "server-only";
 import { z } from "zod";
 import { serverEnv } from "@/lib/env/server";
 import { actionError, err, ok, type Result } from "@/lib/result";
+import { isReviewMode } from "@/lib/site-mode";
 import { emailSchema, sourceSchema } from "@/lib/validation";
 
 // Degrades gracefully until Phase 4 lands the Supabase `subscribers` table
@@ -24,6 +25,19 @@ export async function subscribe(
   _prev: SubscribeResult | null,
   formData: FormData,
 ): Promise<SubscribeResult> {
+  // Review preview fails closed: the UI hides every newsletter form, but a
+  // crafted Server Action POST must never quietly accept (and drop) an
+  // address. There is no store to write to in review mode. This is the hard
+  // boundary; hiding the form is only cosmetic.
+  if (isReviewMode()) {
+    return err(
+      actionError(
+        "unavailable",
+        "Newsletter signup is disabled while the site is in review preview.",
+      ),
+    );
+  }
+
   const parsed = schema.safeParse({
     email: formData.get("email"),
     source: formData.get("source") ?? undefined,
