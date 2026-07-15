@@ -12,33 +12,30 @@ import { ORG } from "@/lib/org";
 import { OPEN_PROGRAMS, PROGRAMS } from "@/lib/programs";
 import { isReviewMode } from "@/lib/site-mode";
 
-// Home page — artist-first, per the May 2026 design audit. Decisions
-// live in docs/research/design-audit-2026-05.md §6 + §11; the photography
-// choices trace to docs/research/photo-mapping-2026-06.md. The composition
-// from top to bottom:
-//
-//  1. Hero. "the artist comes first." as the h1, paired with a real photo of
-//     the 68 Jay St studio — the audit's #1 gap was "no dancer/space imagery."
-//     Brand-yellow stays reserved for the "browse resources" CTA.
-//  2. Application-status strip. The artist's first question is "is
-//     anything open right now?" — answer it before they scroll. Sourced
-//     from lib/programs.ts so the apply hub + home + future announcement
-//     banner share a single registry.
-//  3. Opportunities preview. 3 live rows from Supabase when configured;
-//     the section self-suppresses when empty so we never ship a fake
-//     placeholder.
-//  4. Cohort spotlight. Named-artist peer-proof per audit §6 — an
-//     auto-rotating carousel of the *entire* current cohort
-//     (<ArtistCarousel />), not a hand-picked sample of three.
-//  5. Next-event teaser (quiet, self-suppressing).
-//  6. Program trio (drives from PROGRAMS — single source of truth).
-//  7. Founders band. The one authentic candid (the two founders painting the
-//     studio) humanizes the page and carries the "built by artists" ethos.
-//  8. Pendency line + single demoted "support" framing.
+// The home page keeps the nonprofit legible as artist support, not a studio
+// rental brand. A named current resident leads; the physical-space origin stays
+// on /about/story, where the LLC/nonprofit transition has enough context.
 
 // 90-day window picks up anything urgent without dragging in every
 // rolling program when the homepage really wants to feel current.
 const HOME_OPPORTUNITY_WINDOW_DAYS = 90;
+
+// Nadia's image documents an artist in motion rather than an empty room. The
+// visible credit is part of the editorial treatment, not metadata hidden away.
+const HERO_ARTIST = {
+  slug: "nadia-hannan",
+  name: "Nadia Hannan",
+  image: "/content/artists/nadia-hannan.jpg",
+  cohort: "2026 artist in residence",
+  photoCredit: "Rachel Keane",
+} as const;
+
+const PROGRAM_NEEDS = {
+  residency: { index: "01", need: "time to make" },
+  international: { index: "02", need: "connection across borders" },
+  discounted_space: { index: "03", need: "room to work" },
+  pedagogies: { index: "04", need: "space to teach" },
+} satisfies Record<(typeof PROGRAMS)[number]["id"], { index: string; need: string }>;
 
 export default async function HomePage() {
   // Review preview hides the surfaces that link into not-yet-launched routes
@@ -82,40 +79,42 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero. The brand mark already lives in the header, so the type leads;
-          the studio photo (real 68 Jay St space) does the work the empty paper
-          used to leave undone. Two columns on desktop, stacked on mobile with
-          the image first so small screens still open on a photograph. */}
       <section
         aria-labelledby="hero-title"
-        className="mx-auto max-w-[var(--container-page)] px-6 pt-12 pb-12 md:pt-20 md:pb-20"
+        className="overflow-hidden border-b border-[var(--color-rule)]"
       >
-        <div className="grid items-center gap-10 md:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-          <div className="order-2 md:order-1">
-            <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
-              for nyc's movement artists
+        <div className="mx-auto max-w-[var(--container-page)] px-6 pt-10 md:pt-14">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--color-rule)] pt-4">
+            <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-accent-ink)]">
+              nonprofit support for movement artists
+            </p>
+            <p className="text-xs lowercase tracking-[0.14em] text-[var(--color-ink-muted)]">
+              new york city · working across borders
+            </p>
+          </div>
+
+          <h1
+            id="hero-title"
+            className="mt-8 max-w-[12ch] font-[family-name:var(--font-display)] text-[clamp(3.7rem,10vw,8.75rem)] leading-[0.88] tracking-[-0.055em]"
+          >
+            <span className="block">the artist</span>
+            <span className="block md:ml-[0.72em]">comes first.</span>
+          </h1>
+
+          <div className="mt-9 grid gap-8 border-t border-[var(--color-rule)] pt-6 pb-10 md:grid-cols-[1fr_auto] md:items-end md:pb-12">
+            <p className="max-w-2xl text-lg leading-relaxed text-[var(--color-ink-muted)]">
+              we shape residencies, exchanges, resources, and subsidized space around each artist's
+              practice. the work begins with the artist, not the room.
             </p>
 
-            <h1
-              id="hero-title"
-              className="mt-5 font-[family-name:var(--font-display)] text-5xl leading-[1.02] tracking-tight md:text-6xl lg:text-7xl"
-            >
-              <span className="text-[var(--color-ink)]">the artist comes first.</span>
-            </h1>
-
-            <p className="mt-6 max-w-xl text-lg text-[var(--color-ink-muted)]">
-              residencies, international exchange, and subsidized studio space — built around what
-              each artist actually needs, not a template.
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               {review ? (
                 <>
                   <Button as={Link} href="/programs" intent="brand" size="lg">
                     explore the programs
                   </Button>
-                  <Button as={Link} href="/about/story" intent="ink" size="lg">
-                    our story
+                  <Button as={Link} href="/artists" intent="ink" size="lg">
+                    meet the artists
                   </Button>
                 </>
               ) : (
@@ -124,24 +123,39 @@ export default async function HomePage() {
                     browse resources
                   </Button>
                   <Button as={Link} href="/apply" intent="ink" size="lg">
-                    apply for a residency
+                    see what's open
                   </Button>
                 </>
               )}
             </div>
           </div>
+        </div>
 
-          <div className="relative order-1 aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-paper-warm)] md:order-2 md:aspect-[5/4]">
+        <figure className="mx-auto max-w-[var(--container-page)]">
+          <Link
+            href={`/artists/${HERO_ARTIST.slug}`}
+            aria-label={`Meet ${HERO_ARTIST.name}`}
+            className="relative block aspect-[4/3] w-full overflow-hidden bg-[var(--color-paper-warm)] md:aspect-[2/1]"
+          >
             <Image
-              src="/content/places/68jay-windows.jpg"
-              alt="MOtiVE's studio at 68 Jay Street in Dumbo, Brooklyn — wood floor, tall windows, daylight"
+              src={HERO_ARTIST.image}
+              alt={`${HERO_ARTIST.name} balancing across a low platform in a movement work`}
               fill
               priority
-              sizes="(min-width: 768px) 46vw, 100vw"
-              className="object-cover"
+              sizes="(min-width: 1152px) 1152px, 100vw"
+              className="object-cover object-center"
             />
-          </div>
-        </div>
+          </Link>
+          <figcaption className="flex flex-col gap-1 px-6 py-4 text-xs text-[var(--color-ink-muted)] sm:flex-row sm:items-center sm:justify-between">
+            <Link
+              href={`/artists/${HERO_ARTIST.slug}`}
+              className="font-medium text-[var(--color-ink)] underline-offset-4 hover:underline"
+            >
+              {HERO_ARTIST.name} · {HERO_ARTIST.cohort}
+            </Link>
+            <span>photograph by {HERO_ARTIST.photoCredit}</span>
+          </figcaption>
+        </figure>
       </section>
 
       {/* Application-status strip — the artist's first question, answered
@@ -150,10 +164,7 @@ export default async function HomePage() {
           framing instead (Skowhegan's "notify me" pattern). Hidden in review
           mode: every link here points at a blocked /apply/* route. */}
       {review ? null : (
-        <section
-          aria-labelledby="status-title"
-          className="border-t border-[var(--color-rule)] bg-[var(--color-paper)]"
-        >
+        <section aria-labelledby="status-title" className="bg-[var(--color-paper)]">
           <div className="mx-auto flex max-w-[var(--container-page)] flex-col gap-4 px-6 py-8 md:flex-row md:items-baseline md:justify-between md:py-10">
             <p
               id="status-title"
@@ -319,29 +330,47 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* Program trio. Drives from lib/programs.ts (single source of
-          truth with the apply hub + status strip above). Lowercased on
-          render to match the home register without duplicating strings. */}
       <section aria-labelledby="programs-title" className="border-t border-[var(--color-rule)]">
-        <div className="mx-auto max-w-[var(--container-page)] px-6 py-16 md:py-20">
-          <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
-            what we do
-          </p>
-          <h2
-            id="programs-title"
-            className="mt-3 font-[family-name:var(--font-display)] text-3xl tracking-tight md:text-4xl"
-          >
-            three programs, one principle.
-          </h2>
-          <ul className="mt-8 grid gap-5 md:grid-cols-3">
+        <div className="mx-auto grid max-w-[var(--container-page)] gap-10 px-6 py-16 md:grid-cols-[0.72fr_1.28fr] md:gap-16 md:py-24">
+          <div>
+            <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
+              three programs, one principle
+            </p>
+            <h2
+              id="programs-title"
+              className="mt-3 max-w-md font-[family-name:var(--font-display)] text-4xl leading-tight tracking-tight md:text-5xl"
+            >
+              the structure follows the artist.
+            </h2>
+            <p className="mt-5 max-w-md text-[var(--color-ink-muted)]">
+              time, connection, and room to work — offered through different programs, all shaped
+              through conversation.
+            </p>
+          </div>
+
+          <ul className="border-t border-[var(--color-rule)]">
             {PROGRAMS.map((p) => (
-              <li key={p.id}>
-                <Link href={p.programHref} className="block h-full">
-                  <Card className="h-full hover:border-[var(--color-brand-deep)]/40">
-                    <CardEyebrow>flagship</CardEyebrow>
-                    <CardTitle className="mt-2">{p.title.toLowerCase()}</CardTitle>
-                    <p className="mt-3 text-sm text-[var(--color-ink-muted)]">{p.blurb}</p>
-                  </Card>
+              <li key={p.id} className="border-b border-[var(--color-rule)]">
+                <Link
+                  href={p.programHref}
+                  className="group grid grid-cols-[2rem_1fr_auto] gap-4 py-6 md:grid-cols-[3rem_1fr_auto] md:py-8"
+                >
+                  <span className="pt-1 text-xs tabular-nums text-[var(--color-ink-muted)]">
+                    {PROGRAM_NEEDS[p.id].index}
+                  </span>
+                  <div>
+                    <p className="text-xs lowercase tracking-[0.16em] text-[var(--color-accent-ink)]">
+                      {PROGRAM_NEEDS[p.id].need}
+                    </p>
+                    <h3 className="mt-2 font-[family-name:var(--font-display)] text-2xl tracking-tight">
+                      {p.title.toLowerCase()}
+                    </h3>
+                    <p className="mt-2 max-w-xl text-sm text-[var(--color-ink-muted)]">{p.blurb}</p>
+                  </div>
+                  <SoftChevron
+                    size={16}
+                    className="mt-1 text-[var(--color-brand-deep)] transition-transform group-hover:translate-x-1"
+                  />
                 </Link>
               </li>
             ))}
@@ -349,48 +378,49 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Founders band. The single authentic candid in the archive — the two
-          founders painting the studio by hand — does more for trust than any
-          stock render. Image-led, two columns, to break the eyebrow+grid rhythm
-          the page repeats above. Copy traces to Lilach's bio + the AGENTS voice. */}
       <section
-        aria-labelledby="who-title"
-        className="border-t border-[var(--color-rule)] bg-[var(--color-paper-warm)]"
+        aria-labelledby="approach-title"
+        className="bg-[var(--color-accent-ink)] text-[var(--color-paper)]"
       >
-        <div className="mx-auto grid max-w-[var(--container-page)] items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-20 lg:gap-16">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-paper)]">
-            <Image
-              src="/content/about/founders-painting.jpg"
-              alt="MOtiVE founders Lilach Orenstein and Meredith Glisson painting the Dumbo studio by hand"
-              fill
-              sizes="(min-width: 768px) 46vw, 100vw"
-              className="object-cover"
-            />
+        <div className="mx-auto grid max-w-[var(--container-page)] gap-12 px-6 py-16 md:grid-cols-[0.68fr_1.32fr] md:py-24 lg:gap-20">
+          <div>
+            <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-paper)]/60">
+              how we work
+            </p>
+            <ol className="mt-8 space-y-4 border-t border-[var(--color-paper)]/20 pt-5 text-lg">
+              <li className="grid grid-cols-[2rem_1fr] gap-3">
+                <span className="text-sm text-[var(--color-paper)]/55">01</span>
+                <span>listen first.</span>
+              </li>
+              <li className="grid grid-cols-[2rem_1fr] gap-3">
+                <span className="text-sm text-[var(--color-paper)]/55">02</span>
+                <span>build together.</span>
+              </li>
+              <li className="grid grid-cols-[2rem_1fr] gap-3">
+                <span className="text-sm text-[var(--color-paper)]/55">03</span>
+                <span>let the artist define success.</span>
+              </li>
+            </ol>
           </div>
           <div>
-            <p className="lowercase text-sm tracking-[0.18em] text-[var(--color-ink-muted)]">
-              who we are
-            </p>
             <h2
-              id="who-title"
-              className="mt-3 font-[family-name:var(--font-display)] text-3xl tracking-tight md:text-4xl"
+              id="approach-title"
+              className="max-w-3xl font-[family-name:var(--font-display)] text-4xl leading-tight tracking-tight md:text-6xl"
             >
-              built by artists, for artists.
+              we begin with a conversation, not a package.
             </h2>
-            <p className="mt-5 max-w-xl text-[var(--color-ink-muted)]">
-              MOtiVE started with two artists painting an empty Dumbo studio by hand. That hands-on
-              instinct still runs the programs — every residency begins with a one-on-one
-              conversation about what the artist actually needs.
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--color-paper)]/75">
+              every residency, exchange, and subsidy starts by asking what the artist is trying to
+              make and what is getting in the way. then we shape time, mentorship, connections,
+              resources, and space around that work.
             </p>
-            <div className="mt-8">
-              <Link
-                href="/about/story"
-                className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-ink)] underline decoration-[var(--color-brand-deep)] decoration-1 underline-offset-4 hover:decoration-2"
-              >
-                our story
-                <SoftChevron size={12} className="text-[var(--color-brand-deep)]" />
-              </Link>
-            </div>
+            <Link
+              href="/about/values"
+              className="mt-9 inline-flex items-center gap-2 text-sm font-medium underline decoration-[var(--color-paper)]/45 underline-offset-4 hover:decoration-[var(--color-paper)]"
+            >
+              the values behind the work
+              <SoftChevron size={12} />
+            </Link>
           </div>
         </div>
       </section>

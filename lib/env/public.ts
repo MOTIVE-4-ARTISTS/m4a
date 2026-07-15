@@ -21,7 +21,6 @@ const schema = z.object({
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
-  NEXT_PUBLIC_EIN: z.string().min(1).optional(),
 });
 
 export const publicEnv = schema.parse({
@@ -33,7 +32,6 @@ export const publicEnv = schema.parse({
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
   NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
   NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-  NEXT_PUBLIC_EIN: process.env.NEXT_PUBLIC_EIN,
 });
 
 export type PublicEnv = z.infer<typeof schema>;

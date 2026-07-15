@@ -70,3 +70,9 @@ Adopt **Plan A** as the primary stack. Document Plan B here; design the code so 
 3. Supabase changes pricing or pauses Pro tiers in a way that breaks our reliability target.
 
 None of these are expected. The ADR exists so a future engineer (or future Eran) doesn't have to re-derive the decision.
+
+## Update — 2026-07-15: Vercel Pro live, Supabase deferred
+
+We provisioned **Vercel Pro now** (org-owned team `motive-4-artists`, **$20/mo + tax ≈ $21.78/mo**) — not in response to a fair-use letter (flip trigger #1 above) but because publishing even the interim review-mode site makes us "commercial" under Vercel's Hobby terms, so Pro is the honest, low-friction choice. A duplicate Pro team created during signup was deleted and refunded.
+
+**Supabase Pro is deliberately deferred.** The interim site ships in review mode (ADR 0009) with every service-dependent route behind a real 404, so it needs no database. Current actual recurring spend is therefore **~$21.78/mo (Vercel only)** — below this ADR's original ~$25/mo Supabase estimate. Provision Supabase Pro when the first backend feature (donations, applications, or opportunities) un-gates, and at that point file the Supabase nonprofit discount (`docs/TODO.md` 🟡).

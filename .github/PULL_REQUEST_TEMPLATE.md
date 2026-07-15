@@ -17,7 +17,7 @@
 
 ## Compliance impact
 
-- [ ] No changes to `components/compliance/**`, `lib/org.ts`, or donation / application / transparency surfaces.
+- [ ] No changes to `components/compliance/**`, `lib/org.ts`, or donation / application / receipt surfaces.
 - [ ] If checked above is false: legal-bearing wording reviewed against `.cursor/rules/060-compliance.mdc` and the IRS determination / NY filings.
 
 ## Checklist

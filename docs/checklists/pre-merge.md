@@ -57,8 +57,8 @@ The things no linter catches. Tick what applies; most PRs touch only a few.
 
 ### Compliance (legally significant — slow down here)
 
-- [ ] No changes to `components/compliance/**`, `lib/org.ts`, or donation / application / transparency / receipt surfaces — **or** if there are, the wording was reviewed against [.cursor/rules/060-compliance.mdc](../../.cursor/rules/060-compliance.mdc) and the IRS determination / NY filings, by the treasurer.
-- [ ] Tax-deductibility language (§501(c)(3)), EIN, and §174-B disclosure are untouched or deliberately + correctly changed.
+- [ ] No changes to `components/compliance/**`, `lib/org.ts`, or donation / application / receipt surfaces — **or** if there are, the wording was reviewed against [.cursor/rules/060-compliance.mdc](../../.cursor/rules/060-compliance.mdc) and the IRS determination / NY filings, by the treasurer.
+- [ ] Tax-deductibility language (§501(c)(3)), receipt-only EIN, and §174-b solicitation disclosure are untouched or deliberately + correctly changed.
 
 ### Accessibility (WCAG 2.2 AA, [.cursor/rules/050-accessibility.mdc](../../.cursor/rules/050-accessibility.mdc))
 

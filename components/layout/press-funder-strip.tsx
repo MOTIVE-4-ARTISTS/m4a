@@ -1,10 +1,9 @@
 import { EmDashFlourish } from "@/components/brand/marks";
 
-// Press / funder logo strip — a reusable component renderable above the
-// compliance footer on home, about, and transparency. Audit recommendation
-// §11 item 6: even when only 1–2 mentions exist today, the FRAME signals
-// legitimacy. The strip starts as a typographic credit list (no logo
-// images yet) and graduates to image logos as partners + press land.
+// Press / funder logo strip — a reusable component for home and about. Audit
+// recommendation §11 item 6: even when only 1–2 mentions exist today, the
+// frame signals legitimacy. The strip starts as a typographic credit list
+// (no logo images yet) and graduates to image logos as partners + press land.
 //
 // Why typographic first: a half-built logo strip with three slots and one
 // real logo reads worse than no strip at all. Names-only is honest, fast

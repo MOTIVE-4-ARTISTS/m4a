@@ -47,16 +47,21 @@ Single source of truth for the logo, color, and typography lives in **`lib/brand
 
 ## Compliance baked in
 
-Footer scope follows peer best practice (`docs/research/peer-website-benchmarking.md` §4.6: no peer surfaces tax-status or §174-B in a global footer). The global `<ComplianceFooter />` carries:
-- Legal name "MOTIVE 4 ARTISTS INC." + EIN (env: `NEXT_PUBLIC_EIN`) — a one-line trust signal
+Footer scope follows the observed peer pattern (`docs/research/peer-website-benchmarking.md` §4.6). The global `<ComplianceFooter />` carries:
+- Legal name "MOTIVE 4 ARTISTS INC." — retained to distinguish the nonprofit from MOtiVE Brooklyn LLC
 - Accessibility statement link + Privacy + Terms links (the legal-link cluster)
 - Contact, social, newsletter
 
-**Solicitation surfaces** — `/donate` today, the future Every.org/Stripe widgets — carry the legally-binding disclosures, because the requirement attaches to solicitations, not every page:
-- The tax-deductibility line ("Donations are tax-deductible under §501(c)(3)") on `/donate` and in the receipt email
-- NY Executive Law §174-B charities disclosure via `<CharitiesDisclosure />` (also on `/transparency`; not gated on `irsStatus`, so it survives post-determination)
+The footer deliberately omits the EIN, tax-status claim, and NY §174-b disclosure. No law requires an EIN in global website chrome; the EIN appears only in donation receipts via server-only `ORG_EIN`.
 
-These live in `components/compliance/`. Changing legal text touches one file. Putting them on every page would crowd unrelated routes (e.g. `/team`, `/privacy`) without adding legal protection.
+**Solicitation surfaces** — `/donate` today, future donation widgets, and fundraising emails — carry the legally significant language because NY Executive Law §174-b attaches to solicitations:
+- A clear description of the programs for which funds are sought
+- `<CharitiesDisclosure />`, including the first-report filing date while no CHAR500 is on file, the organization and Attorney General addresses, and the Attorney General website and disclosure phone number
+- The §501(c)(3) tax-deductibility line as a donor-clarity policy
+
+Federal public-inspection duties are met by providing the 1023-EZ, determination letter, and applicable 990/990-EZ returns on request; they do not require a `/transparency` route. Create `/financials` only after a substantive filing or board-adopted annual report exists, then publish exact filings and actual impact results rather than placeholder commitments.
+
+Legal text lives in `components/compliance/` and the receipt template. Changes require treasurer review; do not spread solicitation wording into the global footer.
 
 ## Directory map
 

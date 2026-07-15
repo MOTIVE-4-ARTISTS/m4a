@@ -26,7 +26,6 @@ const ALLOWED = [
   "/artists",
   "/press",
   "/connect",
-  "/transparency",
   "/accessibility",
   "/privacy",
   "/terms",

@@ -24,5 +24,15 @@ test("donate page presents the 501(c)(3) interim give path, no fiscal sponsor", 
 
 test("donate page carries the NY §174-B charities disclosure", async ({ page }) => {
   await page.goto("/donate");
-  await expect(page.getByText(/New York State Attorney General's Charities Bureau/i)).toBeVisible();
+  const disclosure = page.getByRole("complementary", {
+    name: /New York charitable solicitation disclosure/i,
+  });
+  await expect(disclosure).toBeVisible();
+  await expect(disclosure).toContainText("May 15, 2027");
+  await expect(disclosure).toContainText("28 Liberty Street");
+  await expect(disclosure).toContainText("(212) 416-8686");
+  await expect(disclosure.getByRole("link", { name: "charitiesnys.com" }).first()).toHaveAttribute(
+    "href",
+    "https://www.charitiesnys.com",
+  );
 });

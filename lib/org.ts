@@ -10,14 +10,11 @@ export const ORG = {
   dbaLine: 'MOTIVE 4 ARTISTS INC. ("MOtiVE 4 Artists")',
 
   // Verbatim charitable-purpose statement as filed on Form 1023-EZ (Part III #1).
-  // This is the *legal* mission used in structured/legal contexts (JSON-LD,
-  // /transparency). The warmer artist-facing copy on /about/mission is a
-  // separate, deliberately non-legal voice — do not unify the two.
+  // This is the *legal* mission used in structured/legal contexts such as
+  // JSON-LD. The warmer artist-facing copy on /about/mission is a separate,
+  // deliberately non-legal voice — do not unify the two.
   missionStatement:
     "The corporation is formed for the charitable purpose of supporting the artists community, including emerging and established practitioners, by providing resources, opportunities, and programs to foster artistic growth, cultural exchange, and community engagement.",
-
-  // EIN is in env (NEXT_PUBLIC_EIN) so we can keep this file off the
-  // legal-review fast path; surfaced at `ORG.ein()` below.
 
   address: {
     street: "609 E 11th St",
@@ -31,12 +28,17 @@ export const ORG = {
   incorporationDate: "2026-03-02",
   fiscalYearEnd: "December 31",
 
-  // NY DOS public-record identifiers (NY State corporation search). Public, not
-  // sensitive — surfaced on /transparency as a "show the receipts" credibility
-  // signal. Director PII from the same filing stays in the gitignored
-  // founding-record.secret.md, never here.
+  // NY DOS public-record identifiers support filing and verification workflows.
+  // Director PII from the same filing stays in the gitignored
+  // founding-record.secret.md, never here or in public site chrome.
   dosId: "7848002",
   dosFilingNumber: "260303000632",
+
+  // NY Attorney General Charities Bureau registration. "Dual" registrant
+  // (Article 7-A solicitation + EPTL), so the annual filing is CHAR500.
+  // Registered 2026-06-25; the full trail lives in
+  // docs/governance/formation-record.md §9 and the public Charities Registry.
+  nyCharitiesRegNo: "51-61-38",
 
   // Federal tax-exempt status. The 1023-EZ determination is in hand; the
   // exemption is effective to the date of formation (retroactive because the
@@ -83,10 +85,3 @@ export const ORG = {
     { name: "Sara Brown", role: "Director" },
   ],
 } as const;
-
-import { publicEnv } from "./env/public";
-
-// EIN is read from env so a typo doesn't ride through a code review unchallenged.
-export function ein(): string {
-  return publicEnv.NEXT_PUBLIC_EIN ?? "EIN pending publication";
-}

@@ -32,15 +32,14 @@ test("compliance footer surfaces the legal-identity line and legal links on ever
   page,
 }) => {
   // Footer scope is deliberately narrow (AGENTS.md > Compliance, peer-website-
-  // benchmarking.md §4.6): a one-line legal identity (name + EIN) plus the
-  // accessibility/privacy/terms cluster. The §174-B charities disclosure and
-  // the 501(c)(3) deductibility line attach to *solicitation* surfaces, not
-  // every page — they're asserted on /donate by the test below.
+  // benchmarking.md §4.6): the filed corporate name plus the
+  // accessibility/privacy/terms cluster. Tax identifiers and §174-B
+  // disclosures belong to receipt and solicitation surfaces, respectively.
   await page.goto("/");
   const footer = page.locator("footer");
   await expect(footer).toBeVisible();
   await expect(footer).toContainText("MOTIVE 4 ARTISTS INC.");
-  await expect(footer).toContainText("EIN");
+  await expect(footer).not.toContainText("EIN");
   await expect(footer.getByRole("link", { name: /accessibility statement/i })).toBeVisible();
   await expect(footer.getByRole("link", { name: /privacy/i })).toBeVisible();
   await expect(footer.getByRole("link", { name: /terms/i })).toBeVisible();

@@ -6,7 +6,7 @@ import { Section } from "@/components/ui/section";
 export const metadata = {
   title: "About",
   description:
-    "Who we are — our story, mission, the values we hold ourselves to, the people behind it, and our transparency disclosures.",
+    "Who we are — our story, mission, the values we hold ourselves to, and the people behind it.",
 };
 
 // "About" is a landing for the standalone pages below. Keeping it lean
@@ -43,12 +43,6 @@ const CHILDREN = [
     eyebrow: "Who we are",
     title: "The people behind it",
     blurb: "Lilach, Eran, Sara, and the board.",
-  },
-  {
-    href: "/transparency",
-    eyebrow: "Transparency",
-    title: "Public-record disclosures",
-    blurb: "EIN, 501(c)(3) status, board governance, and (soon) financials.",
   },
 ] as const;
 

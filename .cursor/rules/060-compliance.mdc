@@ -1,33 +1,43 @@
 ---
 description: Legal compliance (501(c)(3), NY Charities Bureau, IRS substantiation)
-globs: "{app/(donate|transparency),components/compliance,components/donations}/**/*.{ts,tsx}"
+globs: "{app/(marketing)/donate,components/compliance,components/donations,lib/email}/**/*.{ts,tsx}"
 alwaysApply: false
 ---
 
 # Compliance — do not modify casually
 
-Wording on the donate page, the receipt email, and the compliance footer is legally constrained. Changes need treasurer (Eran) review before merging.
+Wording on the donate page and receipt email is legally significant. Changes need treasurer (Eran) review before merging.
 
-## Required disclosures on every donation surface
+## New York solicitation surfaces
 
-- Legal name "MOTIVE 4 ARTISTS INC." (uppercase, as filed with NY DOS).
-- EIN.
-- Tax-deductibility line: **"Donations are tax-deductible under §501(c)(3)."** (We hold our own determination, effective March 2, 2026 — there is no longer a fiscal sponsor or pending-status wording.)
-- NY Charities Bureau §174-B disclosure with link to NY AG charities registration once filed (CHAR410, CHAR500).
+NY Executive Law §174-b applies to `/donate`, donation widgets, fundraising emails, and other solicitations. Each solicitation must carry:
+
+- A clear description of the programs and activities for which funds are sought, or directions for obtaining it.
+- `<CharitiesDisclosure />`, which is the single source for the organization/Attorney General addresses, Charities Registry URL, Attorney General disclosure phone number, and report-availability language.
+- While no CHAR500 is on file, the date the first report will be filed. Replace that sentence only after the first report is accepted.
+- Conspicuous presentation. The web component uses fixed 14px bold text; do not add a caller override that can reduce it.
+
+The site also states its determined §501(c)(3) status and tax deductibility on `/donate` as a donor-clarity policy. There must be no fiscal-sponsor or “determination pending” wording.
 
 ## IRS substantiation rules
 
-- Any single gift ≥ $250 requires a written acknowledgment with: amount, date, "no goods or services were received in exchange" line, and the org's name/EIN. Generated automatically by the receipt template.
+- A donor claiming any single gift ≥ $250 needs a contemporaneous written acknowledgment with the organization name, amount (or noncash description), and the applicable goods-or-services statement. Our receipt also records the date and sends for every gift.
+- The EIN is not an IRS-required acknowledgment field, but we include it in the receipt for donor convenience. Store it only as server-side `ORG_EIN`; never restore a `NEXT_PUBLIC_*` EIN variable or render it elsewhere on the public site.
 - Quid-pro-quo gifts > $75 (e.g., gala tickets with a meal) require a fair-market-value statement.
-- Year-end consolidated receipts go out by January 31.
+- Year-end consolidated receipts go out by January 31 as an organization policy.
 
 ## What goes in `<ComplianceFooter />`
 
-A single reusable component used in the marketing layout. It carries the **lean** set only: legal name + EIN (one-line trust signal), the accessibility/privacy/terms link cluster, contact, social, and newsletter. Peer best practice (`docs/research/peer-website-benchmarking.md` §4.6) — no peer surfaces tax-status or §174-B in a global footer, and doing so crowds the footer without adding legal protection.
+A single reusable component used in the marketing layout. It carries the lean set only:
 
-The legally-binding disclosures render on **solicitation surfaces** instead:
+- Filed legal name "MOTIVE 4 ARTISTS INC." to distinguish the nonprofit from MOtiVE Brooklyn LLC.
+- Accessibility/privacy/terms links.
+- Contact, social, and newsletter.
 
-- The §501(c)(3) tax-deductibility line → `/donate` and the receipt email.
-- `<CharitiesDisclosure />` (NY §174-B) → `/donate` and `/transparency`. Not gated on `irsStatus` — it must remain wherever we solicit.
+Do not add the EIN, tax-status claim, NTEE code, foundation classification, Charities registration number, or §174-b wording to the global footer. The peer benchmark found none of the sampled arts nonprofits displayed an EIN there, and no federal or New York rule requires it.
 
-Each piece of legal text lives in exactly one component under `components/compliance/`. Don't inline the wording anywhere else.
+## Public records and future financials
+
+There is no `/transparency` route. Federal law requires the 1023-EZ, determination letter, and applicable 990/990-EZ filings to be available for inspection/copying on request; posting them on a dedicated page is optional.
+
+Create `/financials` only after an actual CHAR500, 990/990-EZ, or board-adopted annual report exists. Publish exact filed documents and verified impact results. Do not create placeholder “transparency” commitments, publish board minutes, or surface raw registry identifiers merely to fill a page.

@@ -65,7 +65,6 @@ jobs:
             http://127.0.0.1:3000/donate
             http://127.0.0.1:3000/apply
             http://127.0.0.1:3000/programs/discounted-space
-            http://127.0.0.1:3000/transparency
           uploadArtifacts: true
           # Budgets file lets us require performance/a11y/seo scores.
           # Configured advisory (warnings) until we see a few runs of
