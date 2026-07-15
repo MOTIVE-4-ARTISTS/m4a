@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 430" role="img" aria-labelledby="title desc">
+  <title id="title">MOtiVE 4 Artists: Built Around the Artist concept</title>
+  <desc id="desc">Four open gestures gather around one central point.</desc>
+  <g fill="none" fill-rule="evenodd">
+    <g stroke="#1a1a1a" stroke-linecap="round" stroke-width="16">
+      <path d="M76 161c8-57 54-93 112-99"/>
+      <path d="M232 65c56 11 91 54 95 111"/>
+      <path d="M324 228c-10 57-54 91-111 98"/>
+      <path d="M166 324c-56-12-89-56-93-112"/>
+    </g>
+    <circle cx="201" cy="195" r="20" fill="#e4a315"/>
+    <text
+      x="406"
+      y="191"
+      fill="#1a1a1a"
+      font-family="Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif"
+      font-size="124"
+      font-weight="500"
+      letter-spacing="1"
+    >MOtiVE <tspan fill="#e4a315">4</tspan></text>
+    <text
+      x="401"
+      y="342"
+      fill="#1a1a1a"
+      font-family="Baskerville, Iowan Old Style, Georgia, serif"
+      font-size="160"
+      font-style="italic"
+      font-weight="400"
+      letter-spacing="-2"
+    >Artists</text>
+  </g>
+</svg>

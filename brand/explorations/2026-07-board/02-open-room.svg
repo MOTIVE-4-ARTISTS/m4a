@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 430" role="img" aria-labelledby="title desc">
+  <title id="title">MOtiVE 4 Artists: Open Room concept</title>
+  <desc id="desc">An open architectural frame surrounds a four that moves through its edge.</desc>
+  <g fill="none" fill-rule="evenodd">
+    <path
+      d="M286 68H67v276h147"
+      stroke="#1a1a1a"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="16"
+    />
+    <g stroke="#e4a315" stroke-linecap="round" stroke-linejoin="round" stroke-width="17">
+      <path d="m250 91-127 157h181"/>
+      <path d="M258 94v285"/>
+    </g>
+    <text
+      x="390"
+      y="194"
+      fill="#1a1a1a"
+      font-family="Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif"
+      font-size="150"
+      font-weight="500"
+      letter-spacing="1"
+    >MOtiVE</text>
+    <text
+      x="398"
+      y="335"
+      fill="#1a1a1a"
+      font-family="Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif"
+      font-size="100"
+      font-weight="600"
+      letter-spacing="8"
+    ><tspan fill="#e4a315">4</tspan><tspan dx="18">ARTISTS</tspan></text>
+  </g>
+</svg>
