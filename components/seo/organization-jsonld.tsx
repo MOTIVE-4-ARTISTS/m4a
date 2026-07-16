@@ -18,12 +18,14 @@ export function OrganizationJsonLd() {
       "An artist-first organization rooted in New York City and working across disciplines and borders through residencies, exchanges, resources, and subsidized space.",
     foundingDate: ORG.incorporationDate,
     foundingLocation: { "@type": "Place", name: "New York, NY" },
+    // City-level only: the registered street address is the founders' home, so
+    // we don't feed it to search engines / grant directories as a venue. The
+    // full address still appears where legally required (donation disclosures,
+    // receipts).
     address: {
       "@type": "PostalAddress",
-      streetAddress: ORG.address.street,
       addressLocality: ORG.address.city,
       addressRegion: ORG.address.state,
-      postalCode: ORG.address.postal,
       addressCountry: ORG.address.country,
     },
     email: ORG.contact.email,
