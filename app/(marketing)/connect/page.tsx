@@ -9,8 +9,7 @@ import { isReviewMode } from "@/lib/site-mode";
 
 export const metadata = {
   title: "Connect",
-  description:
-    "Address, email, subway, and the (rare) newsletter — the ways to reach MOtiVE 4 Artists.",
+  description: "Email, Instagram, and the (rare) newsletter — the ways to reach MOtiVE 4 Artists.",
 };
 
 export default function ConnectPage() {
@@ -20,23 +19,22 @@ export default function ConnectPage() {
       <ProseHero
         eyebrow="Connect"
         title="we're a small team and we read everything."
-        lead="virtually, snail mail, or in person — we'd love to hear from you."
+        lead="email us, follow along, or catch the occasional newsletter — we'd love to hear from you."
       />
       <HairlineRule variant="short" className="mb-10 border-[var(--color-brand)]" />
 
       <div className="grid gap-8 md:grid-cols-2">
+        {/* No street address on purpose: the registered address is the founders'
+            home, not a public venue. It stays only where the law or a donor
+            transaction requires it (the /donate charities disclosure, the
+            check-by-mail line, and emailed receipts) — never as a "come visit"
+            invitation in general site chrome. */}
         <Card>
-          <CardTitle>visit</CardTitle>
-          <address className="mt-4 not-italic text-sm leading-relaxed text-[var(--color-ink-muted)]">
-            <span className="text-[var(--color-ink)]">{ORG.displayName}</span>
-            <br />
-            {ORG.address.street}
-            <br />
-            {ORG.address.city}, {ORG.address.state} {ORG.address.postal}
-          </address>
-          <p className="mt-4 text-sm text-[var(--color-ink-muted)]">
-            <span className="text-[var(--color-ink)]">subway:</span> nearest stops are 1st Avenue
-            (L) and 3rd Avenue (L); Astor Place (6) is a short walk west.
+          <CardTitle>where we are</CardTitle>
+          <p className="mt-4 text-sm leading-relaxed text-[var(--color-ink-muted)]">
+            <span className="text-[var(--color-ink)]">{ORG.displayName}</span> is rooted in New York
+            City and works with artists across borders. we're a small, studio-based team without a
+            public front desk — so email is the surest way to reach us.
           </p>
         </Card>
 

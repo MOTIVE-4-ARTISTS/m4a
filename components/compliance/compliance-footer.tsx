@@ -26,10 +26,12 @@ export function ComplianceFooter() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-2">
             <p className="font-[var(--font-display)] text-[var(--color-ink)]">{ORG.displayName}</p>
+            {/* City only, not the street: the registered address is the founders'
+                home. The full address belongs on solicitation/legal surfaces
+                (the /donate charities disclosure, check-by-mail, receipts), not
+                in chrome that repeats on every page. */}
             <address className="not-italic">
-              {ORG.address.street}
-              <br />
-              {ORG.address.city}, {ORG.address.state} {ORG.address.postal}
+              {ORG.address.city}, {ORG.address.state}
             </address>
             <p>
               <a
@@ -92,20 +94,6 @@ export function ComplianceFooter() {
                 <Link href="/connect" className="underline-offset-4 hover:underline">
                   Connect
                 </Link>
-              </li>
-              <li>
-                {/* MOtiVE Brooklyn (LLC) is the studio-rental sibling. We
-                    link it from the footer rather than the top nav so an
-                    artist looking for nonprofit programming isn't routed
-                    to a studio-rental landing page by mistake (audit §6). */}
-                <a
-                  href="https://www.motivebrooklyn.com"
-                  rel="noopener"
-                  target="_blank"
-                  className="underline-offset-4 hover:underline"
-                >
-                  Studio rental (LLC) ↗
-                </a>
               </li>
             </ul>
           </nav>
